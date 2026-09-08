@@ -1,25 +1,191 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My First Website</title>
-
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A professional free-to-play gaming portal." />
+  <title>GameHub — Play Free Games</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-home>
+        <span class="brand-mark">G</span>
+        <span class="brand-name">GameHub</span>
+      </a>
 
-  <div class="container">
-    <h1>Welcome to My Website!</h1>
+      <nav class="nav-main" aria-label="Main navigation">
+        <button class="nav-item active" data-section="home"><span>⌂</span> Home</button>
+        <button class="nav-item" data-section="recent"><span>◷</span> Recently played</button>
+        <button class="nav-item" data-section="new"><span>✦</span> New</button>
+        <button class="nav-item" data-section="popular"><span>🔥</span> Popular Games</button>
+        <button class="nav-item" data-section="updated"><span>↻</span> Updated</button>
+        <button class="nav-item" data-section="originals"><span>◈</span> Originals</button>
+        <button class="nav-item" data-section="multiplayer"><span>♟</span> Multiplayer</button>
+        <button class="nav-item" data-section="leaderboards"><span>🏆</span> Leaderboards</button>
+      </nav>
 
-    <p>This is my first mobile-friendly website.</p>
+      <div class="nav-divider"></div>
 
-    <button id="helloButton">Click Me</button>
+      <div class="category-title">CATEGORIES</div>
+      <nav class="nav-categories" aria-label="Categories">
+        <button class="category-item" data-category="Action">⚡ <span>Action</span></button>
+        <button class="category-item" data-category="Adventure">◉ <span>Adventure</span></button>
+        <button class="category-item" data-category="Arcade">♟ <span>Arcade</span></button>
+        <button class="category-item" data-category="Board">♜ <span>Board</span></button>
+        <button class="category-item" data-category="Card">▣ <span>Card</span></button>
+        <button class="category-item" data-category="Clicker">◉ <span>Clicker</span></button>
+        <button class="category-item" data-category="Driving">◍ <span>Driving</span></button>
+        <button class="category-item" data-category="io">● <span>.io</span></button>
+        <button class="category-item" data-category="Puzzle">🧩 <span>Puzzle</span></button>
+        <button class="category-item" data-category="Shooting">⌖ <span>Shooting</span></button>
+        <button class="category-item" data-category="Simulation">◒ <span>Simulation</span></button>
+        <button class="category-item" data-category="Sports">⚽ <span>Sports</span></button>
+        <button class="category-item" data-category="Strategy">♟ <span>Strategy</span></button>
+        <button class="category-item" data-category="Trivia">? <span>Trivia</span></button>
+        <button class="category-item" data-category="Word">W <span>Word</span></button>
+      </nav>
 
-    <p id="message"></p>
+      <div class="sidebar-footer">© 2026 GameHub</div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
+        <a class="mobile-brand" href="#" data-home><span class="brand-mark">G</span> GameHub For SAJAHAN</a>
+
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input id="searchInput" type="search" placeholder="Search games..." autocomplete="off" />
+        </div>
+
+        <div class="auth-area">
+          <button class="guest-pill" id="guestStatus">Guest</button>
+          <button class="login-btn" id="openLogin">Login</button>
+          <div class="user-menu hidden" id="userMenu">
+            <button class="avatar-btn" id="avatarBtn" aria-label="Account menu">
+              <span id="avatarText">U</span>
+            </button>
+            <div class="user-dropdown" id="userDropdown">
+              <div class="user-meta">
+                <div class="user-name" id="userName">User</div>
+                <div class="user-email" id="userEmail">user@email.com</div>
+              </div>
+              <button id="logoutBtn">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="hero-strip">
+        <div class="hero-card hero-a">
+          <div class="hero-copy"><span class="hero-icon">🧠</span><div><strong>Train your brain</strong><small>Quick puzzles & challenges</small></div></div>
+        </div>
+        <div class="hero-card hero-b">
+          <div class="hero-copy"><span class="hero-icon">🏎️</span><div><strong>Adrenaline rush</strong><small>Speed, race & action</small></div></div>
+        </div>
+        <div class="hero-card hero-c">
+          <div class="hero-copy"><span class="hero-icon">🎉</span><div><strong>With friends</strong><small>Multiplayer fun</small></div></div>
+        </div>
+        <div class="hero-card hero-d">
+          <div class="hero-copy"><span class="hero-icon">☕</span><div><strong>5-minute fun</strong><small>Perfect for breaks</small></div></div>
+        </div>
+        <div class="hero-card hero-e">
+          <div class="hero-copy"><span class="hero-icon">🕹️</span><div><strong>Meme & arcade</strong><small>Easy to pick up</small></div></div>
+        </div>
+      </section>
+
+      <div class="page-title-row">
+        <div>
+          <div class="eyebrow">PLAY FREE</div>
+          <h1 id="pageTitle">Top games today</h1>
+        </div>
+        <div class="results-note" id="resultsNote">15 games</div>
+      </div>
+
+      <section id="featuredSection" class="game-section">
+        <div class="section-heading">
+          <h2>Featured games</h2>
+          <button class="text-link" data-section="popular">See all <span>›</span></button>
+        </div>
+        <div class="featured-grid" id="featuredGrid"></div>
+      </section>
+
+      <section id="newSection" class="game-section">
+        <div class="section-heading">
+          <h2>New games</h2>
+          <button class="text-link" data-section="new">See all <span>›</span></button>
+        </div>
+        <div class="games-grid" id="newGrid"></div>
+      </section>
+
+      <section id="popularSection" class="game-section">
+        <div class="section-heading">
+          <h2>Popular games</h2>
+          <button class="text-link" data-section="popular">See all <span>›</span></button>
+        </div>
+        <div class="games-grid" id="popularGrid"></div>
+      </section>
+
+      <section id="recentSection" class="game-section hidden">
+        <div class="section-heading"><h2>Recently played</h2></div>
+        <div class="games-grid" id="recentGrid"></div>
+        <div class="empty-state hidden" id="recentEmpty">Play a game once and it will appear here.</div>
+      </section>
+
+      <section id="searchSection" class="game-section hidden">
+        <div class="section-heading"><h2>Search results</h2></div>
+        <div class="games-grid" id="searchGrid"></div>
+        <div class="empty-state hidden" id="searchEmpty">No games found. Try another search.</div>
+      </section>
+
+      <footer class="site-footer">
+        <span>GameHub</span>
+        <span>Free-to-play portal • Build your games here</span>
+      </footer>
+    </main>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Login Modal -->
+  <div class="modal-backdrop hidden" id="loginModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <button class="modal-close" id="closeLogin" aria-label="Close">×</button>
+      <div class="modal-logo"><span class="brand-mark">G</span></div>
+      <h2 id="loginTitle">Sign in to GameHub</h2>
+      <p class="modal-subtitle">Save your progress, favorites and recently played games.</p>
+
+      <button class="oauth-btn google" id="googleLogin">
+        <span class="oauth-icon">G</span>
+        Continue with Google
+      </button>
+
+      <button class="oauth-btn facebook" id="facebookLogin">
+        <span class="oauth-icon">f</span>
+        Continue with Facebook
+      </button>
+
+      <div class="or-divider"><span>or</span></div>
+
+      <div class="guest-box">
+        <div>
+          <strong>Play as Guest</strong>
+          <span>No account needed. Progress is saved on this device.</span>
+        </div>
+        <button class="secondary-btn" id="continueGuest">Continue</button>
+      </div>
+
+      <div class="login-note">
+        Google/Facebook login becomes active after you connect this site to your Firebase project.
+      </div>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
