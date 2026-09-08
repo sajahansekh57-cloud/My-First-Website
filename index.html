@@ -1,33 +1,25 @@
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My First Website</title>
-  <style>
-    body {
-      font-family: Arial;
-      text-align: center;
-      background: #f0f8ff;
-      padding: 50px;
-    }
-    h1 {
-      color: #ff6600;
-    }
-    button {
-      padding: 12px 25px;
-      background: #ff6600;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-  </style>
+
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <h1>Welcome to My Website!</h1>
-  <p>This is my first website.</p>
-  <button onclick="alert('Hello!')">Click Me</button>
+  <div class="container">
+    <h1>Welcome to My Website!</h1>
 
+    <p>This is my first mobile-friendly website.</p>
+
+    <button id="helloButton">Click Me</button>
+
+    <p id="message"></p>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
