@@ -21,14 +21,27 @@ import {
    1) PASTE YOUR FIREBASE CONFIG HERE
    Firebase Console -> Project settings -> Your apps -> Web app
    ========================================================= */
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "PASTE_API_KEY",
-  authDomain: "PASTE_PROJECT_ID.firebaseapp.com",
-  projectId: "PASTE_PROJECT_ID",
-  storageBucket: "PASTE_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "PASTE_SENDER_ID",
-  appId: "PASTE_APP_ID"
+  apiKey: "AIzaSyA5WKh6tXIXLFxWAwmY1z5bBBPV8DVJPUM",
+  authDomain: "gamehub-for-sajahan.firebaseapp.com",
+  projectId: "gamehub-for-sajahan",
+  storageBucket: "gamehub-for-sajahan.firebasestorage.app",
+  messagingSenderId: "610152819687",
+  appId: "1:610152819687:web:d6b531420d1136e13aab42",
+  measurementId: "G-EBBQQB06WH"
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
 const FIREBASE_READY = !Object.values(firebaseConfig).some(v => String(v).includes("PASTE_"));
 
