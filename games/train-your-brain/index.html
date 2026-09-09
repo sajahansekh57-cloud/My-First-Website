@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Train Your Brain</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="menu-btn" id="menuBtn" type="button">☰ Menu</button>
+      <div class="title-wrap">
+        <h1>Train Your <span>Brain</span></h1>
+        <p>Small Practice • Big Intelligence!</p>
+      </div>
+      <button class="icon-btn" id="soundBtn" aria-label="Toggle sound">🔊</button>
+    </header>
+
+    <main class="layout">
+      <aside class="modes-panel">
+        <h2>Choose a Mode</h2>
+        <button class="mode-btn active addition" data-mode="addition"><b>＋</b><span><strong>Addition</strong><small>Choose a difficulty</small></span></button>
+        <button class="mode-btn subtraction" data-mode="subtraction"><b>−</b><span><strong>Subtraction</strong><small>Choose a difficulty</small></span></button>
+        <button class="mode-btn multiplication" data-mode="multiplication"><b>×</b><span><strong>Multiplication</strong><small>Choose a difficulty</small></span></button>
+        <button class="mode-btn division" data-mode="division"><b>÷</b><span><strong>Division</strong><small>Exact-division practice</small></span></button>
+        <div class="tip-card">💡 <strong>Practice Today</strong><br>Build a smarter tomorrow!</div>
+      </aside>
+
+      <section class="game-panel">
+        <div class="mode-heading" id="modeHeading">
+          <span id="modeIcon">＋</span><strong id="modeName">Addition</strong><em id="progress">1 / 10</em>
+        </div>
+        <div class="question-card">
+          <div class="question" id="question">47 + 28 = <span>?</span></div>
+          <div class="feedback" id="feedback"></div>
+          <div class="answer-box" id="answerBox">?</div>
+          <div class="action-row">
+            <button class="action-btn clear" id="clearBtn">↻ Clear</button>
+            <button class="action-btn submit" id="submitBtn">✓ Submit</button>
+          </div>
+        </div>
+        <div class="keypad">
+          <button class="key" data-key="1">1</button><button class="key" data-key="2">2</button><button class="key" data-key="3">3</button>
+          <button class="key" data-key="4">4</button><button class="key" data-key="5">5</button><button class="key" data-key="6">6</button>
+          <button class="key" data-key="7">7</button><button class="key" data-key="8">8</button><button class="key" data-key="9">9</button>
+          <button class="key" data-key="0">0</button><button class="key backspace" data-key="backspace">⌫</button>
+        </div>
+      </section>
+
+      <aside class="stats-panel">
+        <div class="stat-card"><span>⏱️</span><div><small>Time</small><strong id="timer">00:00</strong></div></div>
+        <div class="stat-card"><span>⭐</span><div><small>Score</small><strong id="score">0</strong></div></div>
+        <div class="stat-card"><span>🔥</span><div><small>Streak</small><strong id="streak">0</strong></div></div>
+        <div class="stat-card lives-card"><span>❤️</span><div><small>Lives</small><strong id="lives" aria-label="5 lives remaining">❤️ ❤️ ❤️ ❤️ ❤️</strong></div></div>
+        <button class="restart-btn" id="restartBtn">↻ Restart Game</button>
+        <div class="encourage">You Can Do It! 💪</div>
+      </aside>
+    </main>
+    <footer>👑 Train Your Brain • Build Your Skills • Be a Better You!</footer>
+  </div>
+
+  <div class="modal hidden" id="resultModal">
+    <div class="modal-card">
+      <div class="trophy">🏆</div>
+      <h2>Great Job!</h2>
+      <p id="resultText">You finished 10 questions.</p>
+      <div class="result-stats">
+        <div><span>Score</span><strong id="finalScore">0</strong></div>
+        <div><span>Correct</span><strong id="finalCorrect">0</strong></div>
+        <div><span>Time</span><strong id="finalTime">00:00</strong></div>
+      </div>
+      <button class="restart-btn" id="modalRestart">Play Again</button>
+    </div>
+  </div>
+
+  <div class="menu-overlay" id="menuOverlay">
+    <div class="menu-card">
+      <p class="menu-kicker">GameHub Mini Challenge</p>
+      <h2 id="modeMenuTitle">Choose your mode</h2>
+
+      <div class="menu-layout">
+        <div class="menu-panel" id="modePanel">
+          <div class="menu-grid" id="modeGrid">
+            <button class="menu-option addition active" data-mode="addition" type="button">
+              <span>＋</span>
+              <strong>Addition</strong>
+            </button>
+            <button class="menu-option subtraction" data-mode="subtraction" type="button">
+              <span>−</span>
+              <strong>Subtraction</strong>
+            </button>
+            <button class="menu-option multiplication" data-mode="multiplication" type="button">
+              <span>×</span>
+              <strong>Multiplication</strong>
+            </button>
+            <button class="menu-option division" data-mode="division" type="button">
+              <span>÷</span>
+              <strong>Division</strong>
+            </button>
+          </div>
+        </div>
+
+        <div class="menu-panel difficulty-panel hidden" id="difficultyPanel">
+          <h3>Difficulty</h3>
+          <div class="difficulty-grid" id="difficultyGrid">
+            <button class="difficulty-option simple active" data-difficulty="simple" type="button">
+              <span>1</span>
+              <strong>Simple<br><small>1–120</small></strong>
+            </button>
+            <button class="difficulty-option medium" data-difficulty="medium" type="button">
+              <span>2</span>
+              <strong>Medium<br><small>121–225</small></strong>
+            </button>
+            <button class="difficulty-option hard" data-difficulty="hard" type="button">
+              <span>3</span>
+              <strong>Hard<br><small>226–300</small></strong>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="back-btn hidden" id="backToModesBtn" type="button">Back</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
