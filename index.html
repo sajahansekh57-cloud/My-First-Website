@@ -66,16 +66,45 @@
         <div class="auth-area">
           <button class="guest-pill" id="guestStatus">Guest</button>
           <button class="login-btn" id="openLogin">Login</button>
-          <div class="user-menu hidden" id="userMenu">
-            <button class="avatar-btn" id="avatarBtn" aria-label="Account menu">
-              <span id="avatarText">U</span>
+
+          <div class="user-menu-wrap hidden" id="userMenu">
+            <button class="simple-user-logo" id="avatarButton" type="button" title="Open profile">
+              <span id="avatarText">G</span>
             </button>
-            <div class="user-dropdown" id="userDropdown">
-              <div class="user-meta">
-                <div class="user-name" id="userName">User</div>
-                <div class="user-email" id="userEmail">user@email.com</div>
+
+            <div class="profile-panel hidden" id="profilePanel" aria-live="polite">
+              <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">G</div>
+                <div>
+                  <div class="profile-name" id="profileName">Guest</div>
+                  <div class="profile-role" id="profileRole">Guest account</div>
+                </div>
               </div>
-              <button id="logoutBtn">Sign out</button>
+
+              <label class="profile-label" for="profileAbout">About</label>
+              <textarea id="profileAbout" rows="3" maxlength="220" placeholder="Write a short intro about yourself..."></textarea>
+
+              <label class="profile-label" for="profileCategoryInput">Category</label>
+              <div class="profile-category-row">
+                <input id="profileCategoryInput" type="text" maxlength="28" placeholder="Add a category" />
+                <button id="addCategoryBtn" type="button">Add</button>
+              </div>
+              <div class="profile-category-list" id="profileCategoryList"></div>
+
+              <div class="profile-progress-wrap">
+                <div class="profile-progress-header">
+                  <span>Profile complete</span>
+                  <strong id="profilePercent">0%</strong>
+                </div>
+                <div class="profile-progress-bar">
+                  <span id="profileBar"></span>
+                </div>
+              </div>
+
+              <div class="profile-actions">
+                <button class="close-btn" id="closeProfileBtn" type="button">Close</button>
+                <button class="logout-btn" id="logoutBtn" type="button">Log out</button>
+              </div>
             </div>
           </div>
         </div>
@@ -216,6 +245,35 @@
       </div>
     </div>
   </div>
+
+  <!-- Guest Profile -->
+  <div class="modal-backdrop hidden" id="guestModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="guestTitle">
+      <button class="modal-close" id="closeGuest" aria-label="Close">×</button>
+
+      <div class="modal-logo"><span class="brand-mark">G</span></div>
+
+      <h2 id="guestTitle">Play as Guest</h2>
+      <p class="modal-subtitle">
+        Enter your name and date of birth. No account or password is needed.
+      </p>
+
+      <label class="form-label" for="guestName">Your name</label>
+      <input class="form-input" id="guestName" type="text" maxlength="40" placeholder="Your name" autocomplete="name">
+
+      <label class="form-label" for="guestDob">Date of birth</label>
+      <input class="form-input" id="guestDob" type="date" autocomplete="bday">
+
+      <button class="primary-form-btn" id="startGuest" type="button">
+        Continue as Guest
+      </button>
+
+      <div class="login-note">
+        Your guest name and birth date are saved only on this device. No login is required.
+      </div>
+    </div>
+  </div>
+
 
   <div class="toast hidden" id="toast"></div>
 

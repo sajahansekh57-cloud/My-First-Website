@@ -1,16 +1,16 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
 import {
   getAuth,
   GoogleAuthProvider,
   FacebookAuthProvider,
   signInWithPopup,
-  createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
 import {
   getFirestore,
   doc,
@@ -30,22 +30,156 @@ const firebaseConfig = {
   measurementId: "G-EBBQQB06WH"
 };
 
-const FIREBASE_READY = !Object.values(firebaseConfig).some(v => String(v).includes("PASTE_"));
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
 
-let auth = null;
-let db = null;
-let googleProvider = null;
-let facebookProvider = null;
+const $ = selector => document.querySelector(selector);
+const $$ = selector => [...document.querySelectorAll(selector)];
+const safelySetText = (selector, value) => {
+  const el = $(selector);
+  if (el) el.textContent = value;
+};
+const safelyToggleClass = (selector, className, force) => {
+  const el = $(selector);
+  if (el) el.classList.toggle(className, force);
+};
 
-if (FIREBASE_READY) {
-  const app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db = getFirestore(app);
-  googleProvider = new GoogleAuthProvider();
-  facebookProvider = new FacebookAuthProvider();
+let currentUser = null;
+let guestProfile = loadGuestProfile();
+let recentIds = loadRecent();
+
+function loadGuestProfile() {
+  try {
+    const profile = JSON.parse(
+      localStorage.getItem("gamehub_guest_profile") || "null"
+    );
+    if (!profile) return null;
+    return {
+      name: profile.name || "",
+      dob: profile.dob || "",
+      about: profile.about || "",
+      isGuest: true
+    };
+  } catch {
+    return null;
+  }
 }
 
-/* Demo catalog — replace/add your own games later. */
+function saveGuestProfile(profile) {
+  if (!profile) {
+    localStorage.removeItem("gamehub_guest_profile");
+    return;
+  }
+
+  localStorage.setItem(
+    "gamehub_guest_profile",
+    JSON.stringify(profile)
+  );
+}
+
+function getGuestProfileCompletion(profile = guestProfile) {
+  const data = profile || {};
+  const checks = [
+    Boolean(data.name && data.name.trim()),
+    Boolean(data.dob),
+    Boolean(data.about && data.about.trim()),
+    Array.isArray(data.categories) ? data.categories.length > 0 : false
+  ];
+
+  const filled = checks.filter(Boolean).length;
+  return Math.round((filled / checks.length) * 100);
+}
+
+function renderCategoryTags() {
+  const list = $("#profileCategoryList");
+  if (!list) return;
+
+  const categories = Array.isArray(guestProfile?.categories) ? guestProfile.categories : [];
+  if (!categories.length) {
+    list.innerHTML = '<span class="profile-tag">No category added</span>';
+    return;
+  }
+
+  list.innerHTML = categories.map((category, index) => `
+    <span class="profile-tag">
+      <span>${category}</span>
+      <button type="button" data-category-index="${index}" aria-label="Remove ${category}">×</button>
+    </span>
+  `).join("");
+}
+
+function syncGuestProfileUI() {
+  const name = guestProfile?.name || "Guest";
+  const initials = name.trim().charAt(0).toUpperCase() || "G";
+  const percent = getGuestProfileCompletion();
+
+  const avatarText = $("#avatarText");
+  const profileAvatar = $("#profileAvatar");
+  const profileName = $("#profileName");
+  const profileRole = $("#profileRole");
+  const currentAbout = $("#profileAbout");
+  const percentEl = $("#profilePercent");
+  const bar = $("#profileBar");
+
+  if (avatarText) avatarText.textContent = initials;
+  if (profileAvatar) profileAvatar.textContent = initials;
+  if (profileName) profileName.textContent = name;
+  if (profileRole) profileRole.textContent = guestProfile?.dob ? "Guest account" : "Guest account";
+  if (currentAbout) currentAbout.value = guestProfile?.about || "";
+  if (percentEl) percentEl.textContent = `${percent}%`;
+  if (bar) bar.style.width = `${percent}%`;
+
+  renderCategoryTags();
+}
+
+function addGuestCategory() {
+  const input = $("#profileCategoryInput");
+  if (!input || !guestProfile) return;
+
+  const category = input.value.trim();
+  if (!category) {
+    showToast("Write a category first.");
+    return;
+  }
+
+  guestProfile.categories = Array.isArray(guestProfile.categories) ? guestProfile.categories : [];
+  if (!guestProfile.categories.includes(category)) {
+    guestProfile.categories.push(category);
+  }
+
+  saveGuestProfile(guestProfile);
+  input.value = "";
+  syncGuestProfileUI();
+  showToast("Category added.");
+}
+
+function removeGuestCategory(index) {
+  if (!guestProfile || !Array.isArray(guestProfile.categories)) return;
+
+  guestProfile.categories.splice(index, 1);
+  saveGuestProfile(guestProfile);
+  syncGuestProfileUI();
+}
+
+function toggleProfilePanel(forceOpen) {
+  const panel = $("#profilePanel");
+  if (!panel) return;
+
+  if (typeof forceOpen === "boolean") {
+    panel.classList.toggle("hidden", !forceOpen);
+    return;
+  }
+
+  panel.classList.toggle("hidden");
+}
+
+function closeProfilePanel() {
+  toggleProfilePanel(false);
+}
+
 const games = [
   {id:"neon-racer", title:"Neon Racer", category:"Driving", type:"Popular", emoji:"🏎️", color:"color-1", rating:"4.8"},
   {id:"block-blitz", title:"Block Blitz", category:"Puzzle", type:"Featured", emoji:"🧱", color:"color-2", rating:"4.7"},
@@ -64,29 +198,25 @@ const games = [
   {id:"mini-golf", title:"Mini Golf", category:"Sports", type:"New", emoji:"⛳", color:"color-15", rating:"4.5"}
 ];
 
-const $ = (sel) => document.querySelector(sel);
-const $$ = (sel) => [...document.querySelectorAll(sel)];
-
-let currentUser = null;
-let recentIds = loadGuestRecent();
-
-function loadGuestRecent() {
+function loadRecent() {
   try { return JSON.parse(localStorage.getItem("gamehub_recent") || "[]"); }
   catch { return []; }
 }
-function saveGuestRecent() {
-  localStorage.setItem("gamehub_recent", JSON.stringify(recentIds.slice(0,10)));
+
+function saveRecent() {
+  localStorage.setItem("gamehub_recent", JSON.stringify(recentIds.slice(0, 10)));
 }
 
-function escapeHtml(value){
-  return String(value).replace(/[&<>"']/g, ch => ({
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[ch]));
+  }[c]));
 }
 
-function gameCard(game, featured=false){
+function gameCard(game, featured=false) {
   return `
-    <article class="${featured ? "featured-card " + (game.id === "block-blitz" ? "large" : "medium") : "game-card"}" data-game-id="${game.id}" tabindex="0">
+    <article class="${featured ? "featured-card " + (game.id === "block-blitz" ? "large" : "medium") : "game-card"}"
+             data-game-id="${game.id}" tabindex="0">
       <div class="${featured ? "featured-art" : "game-art"} ${game.color}">${game.emoji}</div>
       <div class="game-content">
         <div class="game-title">${escapeHtml(game.title)}</div>
@@ -96,26 +226,23 @@ function gameCard(game, featured=false){
     </article>`;
 }
 
-function renderHome(){
-  const featured = games.slice(0,7);
-  const newGames = games.filter(g => g.type === "New").slice(0,8);
-  const popular = games.filter(g => g.type === "Popular").slice(0,8);
-
-  $("#featuredGrid").innerHTML = featured.map(g => gameCard(g, true)).join("");
-  $("#newGrid").innerHTML = newGames.map(g => gameCard(g)).join("");
-  $("#popularGrid").innerHTML = popular.map(g => gameCard(g)).join("");
+function renderHome() {
+  $("#featuredGrid").innerHTML = games.slice(0,7).map(g => gameCard(g,true)).join("");
+  $("#newGrid").innerHTML = games.filter(g => g.type==="New").slice(0,8).map(g => gameCard(g)).join("");
+  $("#popularGrid").innerHTML = games.filter(g => g.type==="Popular").slice(0,8).map(g => gameCard(g)).join("");
   updateResultsNote(games.length);
+  bindGameClicks();
 }
 
-function renderRecent(){
-  const ids = recentIds;
-  const recent = ids.map(id => games.find(g => g.id === id)).filter(Boolean);
+function renderRecent() {
+  const recent = recentIds.map(id => games.find(g => g.id===id)).filter(Boolean);
   $("#recentGrid").innerHTML = recent.map(g => gameCard(g)).join("");
   $("#recentEmpty").classList.toggle("hidden", recent.length !== 0);
   updateResultsNote(recent.length);
+  bindGameClicks();
 }
 
-function renderSearch(query){
+function renderSearch(query) {
   const q = query.trim().toLowerCase();
   const results = q
     ? games.filter(g => `${g.title} ${g.category} ${g.type}`.toLowerCase().includes(q))
@@ -123,120 +250,243 @@ function renderSearch(query){
   $("#searchGrid").innerHTML = results.map(g => gameCard(g)).join("");
   $("#searchEmpty").classList.toggle("hidden", results.length !== 0);
   updateResultsNote(results.length);
+  bindGameClicks();
 }
 
-function updateResultsNote(count){
-  $("#resultsNote").textContent = `${count} ${count === 1 ? "game" : "games"}`;
+function updateResultsNote(count) {
+  safelySetText("#resultsNote", `${count} ${count === 1 ? "game" : "games"}`);
 }
 
-function setActiveNav(section){
-  $$(".nav-item").forEach(btn => btn.classList.toggle("active", btn.dataset.section === section));
+function setActiveNav(section) {
+  $$(".nav-item").forEach(btn => btn.classList.toggle("active", btn.dataset.section===section));
 }
 
-function showSection(section){
+function closeSidebar() {
+  const sidebar = $("#sidebar");
+  if (sidebar) sidebar.classList.remove("open");
+}
+
+function showSection(section) {
   $$(".game-section").forEach(s => s.classList.add("hidden"));
-  $("#pageTitle").textContent = "Top games today";
+  const title = $("#pageTitle");
+  if (title) title.textContent = "Top games today";
 
-  if(section === "home" || section === "popular"){
-    $("#featuredSection").classList.remove("hidden");
-    $("#newSection").classList.remove("hidden");
-    $("#popularSection").classList.remove("hidden");
-    if(section === "popular") $("#pageTitle").textContent = "Popular games";
-  } else if(section === "new"){
-    $("#newSection").classList.remove("hidden");
-    $("#pageTitle").textContent = "New games";
-  } else if(section === "recent"){
-    $("#recentSection").classList.remove("hidden");
+  if (section==="home" || section==="popular") {
+    $("#featuredSection")?.classList.remove("hidden");
+    $("#newSection")?.classList.remove("hidden");
+    $("#popularSection")?.classList.remove("hidden");
+    if (section==="popular" && title) title.textContent = "Popular games";
+  } else if (section==="new") {
+    $("#newSection")?.classList.remove("hidden");
+    if (title) title.textContent = "New games";
+  } else if (section==="recent") {
+    $("#recentSection")?.classList.remove("hidden");
     renderRecent();
-    $("#pageTitle").textContent = "Recently played";
+    if (title) title.textContent = "Recently played";
   } else {
-    $("#featuredSection").classList.remove("hidden");
-    $("#pageTitle").textContent = `${section[0].toUpperCase()}${section.slice(1)} games`;
+    $("#featuredSection")?.classList.remove("hidden");
+    if (title) title.textContent = `${section.charAt(0).toUpperCase()}${section.slice(1)} games`;
   }
 
   setActiveNav(section);
-  window.scrollTo({top:0, behavior:"smooth"});
+  window.scrollTo({top:0,behavior:"smooth"});
   closeSidebar();
 }
 
-function openSearch(query){
+function openSearch(query) {
   $$(".game-section").forEach(s => s.classList.add("hidden"));
-  $("#searchSection").classList.remove("hidden");
-  $("#pageTitle").textContent = `Search: ${query}`;
+  $("#searchSection")?.classList.remove("hidden");
+  const pageTitle = $("#pageTitle");
+  if (pageTitle) pageTitle.textContent = `Search: ${query}`;
   renderSearch(query);
   setActiveNav("");
-  window.scrollTo({top:0, behavior:"smooth"});
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-async function markRecent(gameId){
-  recentIds = [gameId, ...recentIds.filter(id => id !== gameId)].slice(0,10);
-  saveGuestRecent();
-
-  if(currentUser && db){
-    try{
-      const ref = doc(db, "users", currentUser.uid);
-      const snap = await getDoc(ref);
-      if(!snap.exists()){
-        await setDoc(ref, {recentGames: recentIds, favorites: [], updatedAt: Date.now()});
-      }else{
-        await updateDoc(ref, {recentGames: arrayUnion(gameId), updatedAt: Date.now()});
-      }
-    }catch(err){
-      console.warn("Cloud save failed:", err);
-    }
-  }
-}
-
-function showToast(message){
-  const t = $("#toast");
-  t.textContent = message;
-  t.classList.remove("hidden");
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => t.classList.add("hidden"), 2600);
-}
-
-function launchGame(game){
-  markRecent(game.id);
-  showToast(`"${game.title}" selected. Add your game URL in script.js to make it playable.`);
-  // Later replace with:
-  // window.location.href = `games/${game.id}/index.html`;
-}
-
-function bindGameClicks(){
+function bindGameClicks() {
   $$(".game-card, .featured-card").forEach(card => {
-    const handler = () => launchGame(games.find(g => g.id === card.dataset.gameId));
-    card.addEventListener("click", handler);
-    card.addEventListener("keydown", e => {
-      if(e.key === "Enter" || e.key === " ") { e.preventDefault(); handler(); }
+    if (card.dataset.bound === "true") return;
+    card.dataset.bound = "true";
+    const handler = () => {
+      const game = games.find(g => g.id===card.dataset.gameId);
+      if (!game) return;
+      recentIds = [game.id, ...recentIds.filter(id => id!==game.id)].slice(0,10);
+      saveRecent();
+      if (currentUser) {
+        const ref = doc(db,"users",currentUser.uid);
+        getDoc(ref).then(snap => {
+          if (!snap.exists()) {
+            return setDoc(ref,{
+              uid:currentUser.uid,
+              displayName:currentUser.displayName || "Player",
+              email:currentUser.email || "",
+              recentGames:recentIds,
+              favorites:[],
+              createdAt:Date.now(),
+              updatedAt:Date.now()
+            });
+          }
+          return updateDoc(ref,{recentGames:arrayUnion(game.id),updatedAt:Date.now()});
+        }).catch(err => console.warn("Cloud recent save:",err));
+      }
+      showToast(`"${game.title}" selected. Add the real game later.`);
+    };
+    card.addEventListener("click",handler);
+    card.addEventListener("keydown",e => {
+      if (e.key==="Enter" || e.key===" ") { e.preventDefault(); handler(); }
     });
   });
 }
 
-function openLoginModal(){
-  $("#forgotPassword").classList.add("hidden");
-  $("#loginModal").classList.remove("hidden");
+function showToast(message) {
+  const toast = $("#toast");
+  toast.textContent = message;
+  toast.classList.remove("hidden");
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.add("hidden"), 3200);
 }
-function closeLoginModal(){ $("#loginModal").classList.add("hidden"); }
 
-function updateAuthUI(user){
+function openLoginModal() {
+  const forgotPassword = $("#forgotPassword");
+  if (forgotPassword) forgotPassword.classList.add("hidden");
+  const loginModal = $("#loginModal");
+  if (loginModal) loginModal.classList.remove("hidden");
+}
+
+function closeLoginModal() {
+  const loginModal = $("#loginModal");
+  if (loginModal) loginModal.classList.add("hidden");
+}
+
+function getUserInitial(user) {
+  const source =
+    (user?.displayName && user.displayName.trim()) ||
+    (user?.email && user.email.trim()) ||
+    "G";
+
+  return source.charAt(0).toUpperCase();
+}
+
+// ============================================================
+// GUEST PROFILE
+// ============================================================
+function openGuestModal() {
+  $("#guestName").value = guestProfile?.name || "";
+  $("#guestDob").value = guestProfile?.dob || "";
+  $("#guestModal").classList.remove("hidden");
+}
+
+function closeGuestModal() {
+  $("#guestModal").classList.add("hidden");
+}
+
+function continueAsGuest() {
+  const name = $("#guestName").value.trim();
+  const dob = $("#guestDob").value;
+
+  if (!name) {
+    showToast("Enter your name.");
+    return;
+  }
+
+  if (!dob) {
+    showToast("Select your date of birth.");
+    return;
+  }
+
+  guestProfile = {
+    name,
+    dob,
+    about: guestProfile?.about || "",
+    categories: Array.isArray(guestProfile?.categories) ? guestProfile.categories : [],
+    isGuest: true
+  };
+
+  saveGuestProfile(guestProfile);
+
+  currentUser = null;
+
+  closeGuestModal();
+  updateAuthUI(null);
+  toggleProfilePanel(true);
+
+  showToast(`Welcome, ${name}!`);
+}
+
+function updateAuthUI(user) {
+
   currentUser = user;
-  $("#guestStatus").classList.toggle("hidden", !!user);
-  $("#openLogin").classList.toggle("hidden", !!user);
-  $("#userMenu").classList.toggle("hidden", !user);
 
-  if(user){
-    const name = user.displayName || "Player";
-    $("#userName").textContent = name;
-    $("#userEmail").textContent = user.email || "Signed-in player";
-    $("#avatarText").textContent = name.trim().charAt(0).toUpperCase();
+  const hasGuest = !user && !!guestProfile;
+  const hasIdentity = !!user || hasGuest;
+
+  safelyToggleClass("#guestStatus", "hidden", hasIdentity);
+  safelyToggleClass("#openLogin", "hidden", hasIdentity);
+  safelyToggleClass("#userMenu", "hidden", !hasIdentity);
+
+  if (user) {
+    safelySetText("#avatarText", getUserInitial(user));
+    loadUserData(user);
+    ensureUserDocument(user);
+    closeProfilePanel();
+    return;
+  }
+
+  if (guestProfile) {
+    syncGuestProfileUI();
+    return;
+  }
+
+  safelySetText("#avatarText", "G");
+  closeProfilePanel();
+}
+async function ensureUserDocument(user) {
+  try {
+    const ref = doc(db,"users",user.uid);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) {
+      await setDoc(ref,{
+        uid:user.uid,
+        displayName:user.displayName || "Player",
+        email:user.email || "",
+        photoURL:user.photoURL || "",
+        recentGames:recentIds,
+        favorites:[],
+        createdAt:Date.now(),
+        updatedAt:Date.now()
+      });
+    }
+  } catch(err) {
+    console.warn("User document save skipped:",err);
   }
 }
 
+async function loadUserData(user) {
+  try {
+    const snap = await getDoc(doc(db,"users",user.uid));
+    if (!snap.exists()) return;
+    const data = snap.data();
+    if (Array.isArray(data.recentGames)) {
+      recentIds = [...new Set([...data.recentGames,...recentIds])].slice(0,10);
+      saveRecent();
+    }
+  } catch(err) {
+    console.warn("User cloud data load skipped:",err);
+  }
+}
 
-// ============================================================
-// EMAIL + PASSWORD LOGIN
-// ============================================================
-async function emailPasswordLogin(email, password) {
+async function loginWithEmail() {
+
+  const email =
+    $("#loginEmail").value.trim();
+
+  const password =
+    $("#loginPassword").value;
+
+  if (!email || !password) {
+    showToast("Enter your email and password.");
+    return;
+  }
 
   try {
 
@@ -247,322 +497,340 @@ async function emailPasswordLogin(email, password) {
         password
       );
 
-    closeLoginModal();
+    // Successful login: reload Home page.
+    // Firebase preserves the signed-in session.
+    window.location.replace(
+      "index.html?login=success"
+    );
+
+  } catch (error) {
+
+    console.error("Login error:", error);
 
     $("#forgotPassword")
       .classList
-      .add("hidden");
+      .remove("hidden");
 
-    showToast(
-      `Welcome back, ${
-        result.user.displayName ||
-        result.user.email ||
-        "Player"
-      }!`
+    if (error.code === "auth/invalid-email") {
+      showToast("Please enter a valid email.");
+    } else if (error.code === "auth/too-many-requests") {
+      showToast("Too many attempts. Try again later.");
+    } else if (error.code === "auth/operation-not-allowed") {
+      showToast("Email/Password sign-in is not enabled in Firebase.");
+    } else {
+      showToast("Email or password is incorrect.");
+    }
+  }
+}
+
+async function sendReset() {
+  const email = $("#resetEmail").value.trim();
+
+  if (!email) {
+    showToast("Enter your email first.");
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth,email);
+    $("#resetModal").classList.add("hidden");
+    $("#loginModal").classList.add("hidden");
+    showToast("Reset email sent. Check your Gmail inbox and spam folder.");
+  } catch(error) {
+    console.error("Reset password:",error);
+    showToast("Could not send reset email.");
+  }
+}
+
+async function socialLogin(providerName) {
+
+  try {
+
+    const provider =
+      providerName === "google"
+        ? googleProvider
+        : facebookProvider;
+
+    const result =
+      await signInWithPopup(
+        auth,
+        provider
+      );
+
+    const user = result.user;
+
+    await ensureUserDocument(user);
+
+    // Successful social login: reload Home page.
+    window.location.replace(
+      "index.html?login=success"
     );
 
   } catch (error) {
 
     console.error(
-      "Email login error:",
+      "Social login error:",
       error
     );
 
     let message = "Login failed.";
 
     if (
-      error.code === "auth/invalid-credential" ||
-      error.code === "auth/wrong-password" ||
-      error.code === "auth/user-not-found"
-    ) {
-
-      message =
-        "Email or password is incorrect.";
-
-      $("#forgotPassword")
-        .classList
-        .remove("hidden");
-
-    } else if (
-      error.code === "auth/invalid-email"
-    ) {
-
-      message =
-        "Please enter a valid email address.";
-
-    } else if (
-      error.code === "auth/too-many-requests"
-    ) {
-
-      message =
-        "Too many attempts. Please try again later.";
-
-    } else if (
-      error.code === "auth/operation-not-allowed"
-    ) {
-
-      message =
-        "Enable Email/Password in Firebase Authentication.";
-
-    } else if (error.message) {
-
-      message =
-        error.message;
-
-    }
-
-    showToast(message);
-  }
-}
-
-
-// ============================================================
-// FORGOT PASSWORD
-// ============================================================
-function openResetModal(prefillEmail = "") {
-
-  $("#resetEmail").value =
-    prefillEmail;
-
-  $("#resetModal")
-    .classList
-    .remove("hidden");
-}
-
-function closeResetModal() {
-
-  $("#resetModal")
-    .classList
-    .add("hidden");
-}
-
-async function sendResetEmail() {
-
-  const email =
-    $("#resetEmail")
-      .value
-      .trim();
-
-  if (!email) {
-
-    showToast(
-      "Enter your Gmail/email first."
-    );
-
-    return;
-  }
-
-  try {
-
-    await sendPasswordResetEmail(
-      auth,
-      email
-    );
-
-    closeResetModal();
-    closeLoginModal();
-
-    showToast(
-      "Reset email sent. Check your Gmail inbox and spam folder."
-    );
-
-  } catch (error) {
-
-    console.error(
-      "Password reset error:",
-      error
-    );
-
-    let message =
-      "Could not send reset email.";
-
-    if (
       error.code ===
-      "auth/invalid-email"
+      "auth/popup-closed-by-user"
     ) {
-
       message =
-        "Please enter a valid email.";
-
+        "Login popup was closed.";
     } else if (
       error.code ===
-      "auth/too-many-requests"
+      "auth/popup-blocked"
     ) {
-
       message =
-        "Too many attempts. Please try again later.";
-
+        "Please allow popups for this website.";
+    } else if (
+      error.code ===
+      "auth/unauthorized-domain"
+    ) {
+      message =
+        "Add your GitHub domain in Firebase Authorized domains.";
     } else if (
       error.code ===
       "auth/operation-not-allowed"
     ) {
-
       message =
-        "Email/Password authentication is not enabled.";
-
+        "This login provider is not enabled in Firebase.";
     } else if (error.message) {
-
       message =
         error.message;
-
     }
 
     showToast(message);
   }
 }
 
-
-async function socialLogin(providerName){
-  if(!FIREBASE_READY){
-    showToast("Firebase setup is needed before Google/Facebook login works.");
+function init() {
+  if (!$("#pageTitle") || !$("#featuredGrid") || !$("#searchInput")) {
     return;
   }
-  try{
-    const provider = providerName === "google" ? googleProvider : facebookProvider;
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
 
-    const ref = doc(db, "users", user.uid);
-    const snap = await getDoc(ref);
-    if(!snap.exists()){
-      await setDoc(ref, {
-        displayName: user.displayName || "Player",
-        email: user.email || "",
-        photoURL: user.photoURL || "",
-        recentGames: recentIds,
-        favorites: [],
-        updatedAt: Date.now()
-      });
-    }else{
-      const cloud = snap.data();
-      if(Array.isArray(cloud.recentGames) && cloud.recentGames.length){
-        recentIds = [...new Set([...cloud.recentGames, ...recentIds])].slice(0,10);
-        saveGuestRecent();
-      }
-    }
-    closeLoginModal();
-    showToast(`Welcome, ${user.displayName || "Player"}!`);
-  }catch(err){
-    console.error(err);
-    showToast(err?.message || "Login failed.");
-  }
-}
-
-async function logout(){
-  if(auth){
-    try{ await signOut(auth); }catch{}
-  }
-  currentUser = null;
-  updateAuthUI(null);
-  $("#userDropdown").classList.remove("open");
-  showToast("Signed out.");
-}
-
-function closeSidebar(){ $("#sidebar").classList.remove("open"); }
-
-function init(){
   renderHome();
-  bindGameClicks();
 
-  $$(".nav-item").forEach(btn => btn.addEventListener("click", () => showSection(btn.dataset.section)));
-  $$(".text-link").forEach(btn => btn.addEventListener("click", () => showSection(btn.dataset.section)));
-  $$(".category-item").forEach(btn => btn.addEventListener("click", () => {
-    $("#searchInput").value = btn.dataset.category;
-    openSearch(btn.dataset.category);
-  }));
+  $$(".nav-item").forEach(btn =>
+    btn.addEventListener("click",() => showSection(btn.dataset.section))
+  );
 
-  $$("[data-home]").forEach(el => el.addEventListener("click", e => {
-    e.preventDefault();
-    $("#searchInput").value = "";
-    showSection("home");
-  }));
+  $$(".text-link").forEach(btn =>
+    btn.addEventListener("click",() => showSection(btn.dataset.section))
+  );
 
-  $("#searchInput").addEventListener("input", e => {
+  $$(".category-item").forEach(btn =>
+    btn.addEventListener("click",() => {
+      $("#searchInput").value = btn.dataset.category;
+      openSearch(btn.dataset.category);
+    })
+  );
+
+  $$("[data-home]").forEach(el =>
+    el.addEventListener("click",e => {
+      e.preventDefault();
+      $("#searchInput").value = "";
+      showSection("home");
+    })
+  );
+
+  $("#searchInput").addEventListener("input",e => {
     const value = e.target.value.trim();
-    if(value) openSearch(value);
+    if (value) openSearch(value);
     else showSection("home");
   });
 
-  $("#openLogin").addEventListener("click", openLoginModal);
-  $("#closeLogin").addEventListener("click", closeLoginModal);
+  $("#avatarButton").addEventListener("click",() => {
+    if (!guestProfile && !currentUser) return;
+    toggleProfilePanel();
+  });
 
-  $("#loginForm").addEventListener(
-    "submit",
-    async (event) => {
-      event.preventDefault();
+  $("#closeProfileBtn").addEventListener("click", closeProfilePanel);
 
-      const email =
-        $("#loginEmail").value.trim();
-
-      const password =
-        $("#loginPassword").value;
-
-      await emailPasswordLogin(
-        email,
-        password
-      );
+  $("#addCategoryBtn").addEventListener("click", addGuestCategory);
+  $("#profileCategoryInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addGuestCategory();
     }
+  });
+
+  $("#profileCategoryList").addEventListener("click", e => {
+    const button = e.target.closest("button[data-category-index]");
+    if (!button || !guestProfile) return;
+    removeGuestCategory(Number(button.dataset.categoryIndex));
+  });
+
+  $("#profileAbout").addEventListener("input",e => {
+    if (!guestProfile) return;
+    guestProfile.about = e.target.value;
+    saveGuestProfile(guestProfile);
+    syncGuestProfileUI();
+  });
+
+  $("#logoutBtn").addEventListener("click", () => {
+    if (currentUser) {
+      signOut(auth).catch(() => {});
+    }
+
+    guestProfile = null;
+    saveGuestProfile(null);
+    currentUser = null;
+    updateAuthUI(null);
+    closeProfilePanel();
+    showToast("Logged out.");
+  });
+
+  $("#openLogin").addEventListener("click",openLoginModal);
+  $("#closeLogin").addEventListener("click",closeLoginModal);
+
+  $("#loginForm").addEventListener("submit",e => {
+    e.preventDefault();
+    loginWithEmail();
+  });
+
+  $("#forgotPassword").addEventListener("click",() => {
+    $("#resetEmail").value = $("#loginEmail").value.trim();
+    $("#resetModal").classList.remove("hidden");
+  });
+
+  $("#closeReset").addEventListener("click",() =>
+    $("#resetModal").classList.add("hidden")
   );
 
-  $("#forgotPassword").addEventListener(
+  $("#backToLogin").addEventListener("click",() => {
+    $("#resetModal").classList.add("hidden");
+    openLoginModal();
+  });
+
+  $("#sendResetEmail").addEventListener("click",sendReset);
+
+  $("#continueGuest").addEventListener(
     "click",
     () => {
-      openResetModal(
-        $("#loginEmail").value.trim()
-      );
+      closeLoginModal();
+      openGuestModal();
     }
   );
 
-  $("#closeReset").addEventListener(
+  $("#closeGuest").addEventListener(
     "click",
-    closeResetModal
+    closeGuestModal
   );
 
-  $("#backToLogin").addEventListener(
+  $("#startGuest").addEventListener(
     "click",
-    () => {
-      closeResetModal();
-      openLoginModal();
-    }
+    continueAsGuest
   );
 
-  $("#sendResetEmail").addEventListener(
+  $("#guestModal").addEventListener(
     "click",
-    sendResetEmail
-  );
-
-  $("#resetModal").addEventListener(
-    "click",
-    (event) => {
-      if (event.target.id === "resetModal") {
-        closeResetModal();
+    event => {
+      if (event.target.id === "guestModal") {
+        closeGuestModal();
       }
     }
   );
 
-  $("#continueGuest").addEventListener("click", closeLoginModal);
-  $("#googleLogin").addEventListener("click", () => socialLogin("google"));
-  $("#facebookLogin").addEventListener("click", () => socialLogin("facebook"));
-  $("#mobileMenu").addEventListener("click", () => $("#sidebar").classList.toggle("open"));
-  $("#avatarBtn").addEventListener("click", () => $("#userDropdown").classList.toggle("open"));
-  $("#logoutBtn").addEventListener("click", logout);
+  $("#googleLogin").addEventListener(
+    "click",
+    () => socialLogin("google")
+  );
 
-  $("#loginModal").addEventListener("click", e => {
-    if(e.target.id === "loginModal") closeLoginModal();
+  $("#facebookLogin").addEventListener(
+    "click",
+    () => socialLogin("facebook")
+  );
+
+  // Only open signup when the user is NOT already logged in.
+
+  $("#mobileMenu").addEventListener(
+    "click",
+    () => $("#sidebar").classList.toggle("open")
+  );
+
+  $("#loginModal").addEventListener("click",e => {
+    if (e.target.id==="loginModal") {
+      closeLoginModal();
+    }
   });
 
-  document.addEventListener("keydown", e => {
-    if(e.key === "Escape"){
+  $("#resetModal").addEventListener("click",e => {
+    if (e.target.id==="resetModal") {
+      $("#resetModal").classList.add("hidden");
+    }
+  });
+
+  document.addEventListener("keydown",e => {
+    if (e.key==="Escape") {
       closeLoginModal();
+      $("#resetModal").classList.add("hidden");
       closeSidebar();
     }
   });
 
-  if(auth){
-    onAuthStateChanged(auth, updateAuthUI);
-  }else{
-    updateAuthUI(null);
+  onAuthStateChanged(auth,user => {
+    updateAuthUI(user);
+  });
+
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.get("signup")==="success") {
+    setTimeout(() => {
+      showToast("Account created successfully!");
+      window.history.replaceState(
+        {},
+        document.title,
+        window.location.pathname
+      );
+    },500);
   }
 }
 
-init();
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  init();
+}
+
+// ============================================================
+// URL ACTIONS
+// ============================================================
+const pageParams =
+  new URLSearchParams(
+    window.location.search
+  );
+
+if (
+  pageParams.get("openLogin") === "1"
+) {
+  setTimeout(() => {
+    openLoginModal();
+
+    window.history.replaceState(
+      {},
+      document.title,
+      window.location.pathname
+    );
+  }, 150);
+}
+
+if (
+  pageParams.get("login") === "success"
+) {
+  setTimeout(() => {
+    showToast(
+      "Login successful! Welcome to GameHub."
+    );
+
+    window.history.replaceState(
+      {},
+      document.title,
+      window.location.pathname
+    );
+  }, 350);
+}
