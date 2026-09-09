@@ -39,7 +39,7 @@ button{border:0;color:inherit}
 .nav-main,.nav-categories{display:grid;gap:4px}
 .nav-item,.category-item{
   width:100%;background:transparent;color:#d9dce6;text-align:left;cursor:pointer;
-  padding:9px 10px;border-radius:10px;display:flex;align-items:center;gap:11px;font-weight:600;font-size:14px
+  padding:9px 10px;border-radius:10px;display:flex;align-items:center;gap:11px;font-weight:600;font-size:14px;text-decoration:none
 }
 .nav-item span{width:18px;text-align:center}
 .nav-item:hover,.category-item:hover{background:#171b27}

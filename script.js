@@ -201,22 +201,8 @@ function closeProfilePanel() {
 }
 
 const games = [
-  {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-1", rating:"4.9", url:"games/neon-dodge/index.html"},
-  {id:"neon-racer", title:"Neon Racer", category:"Driving", type:"Popular", emoji:"🏎️", color:"color-1", rating:"4.8"},
-  {id:"block-blitz", title:"Block Blitz", category:"Puzzle", type:"Featured", emoji:"🧱", color:"color-2", rating:"4.7"},
-  {id:"pixel-warzone", title:"Pixel Warzone", category:"Shooting", type:"Popular", emoji:"🔫", color:"color-3", rating:"4.9"},
-  {id:"castle-defense", title:"Castle Defense", category:"Strategy", type:"Featured", emoji:"🏰", color:"color-4", rating:"4.6"},
-  {id:"armored-bots", title:"Armored Bots", category:"Action", type:"Featured", emoji:"🤖", color:"color-5", rating:"4.8"},
-  {id:"shop-simulator", title:"Shop Simulator", category:"Simulation", type:"New", emoji:"🛒", color:"color-6", rating:"4.5"},
-  {id:"empire-city", title:"Empire City", category:"Strategy", type:"New", emoji:"🏙️", color:"color-7", rating:"4.7"},
-  {id:"sky-pilot", title:"Sky Pilot", category:"Sports", type:"New", emoji:"✈️", color:"color-8", rating:"4.4"},
-  {id:"hex-stack", title:"Hexa Stack", category:"Puzzle", type:"New", emoji:"🔷", color:"color-9", rating:"4.9"},
-  {id:"bodycam", title:"Bodycam Shooter", category:"Shooting", type:"Updated", emoji:"🎯", color:"color-10", rating:"4.6"},
-  {id:"candy-pop", title:"Candy Pop", category:"Arcade", type:"Popular", emoji:"🍭", color:"color-11", rating:"4.5"},
-  {id:"traffic-fury", title:"Traffic Fury", category:"Driving", type:"Popular", emoji:"🚗", color:"color-12", rating:"4.8"},
-  {id:"word-quest", title:"Word Quest", category:"Word", type:"Popular", emoji:"🔤", color:"color-13", rating:"4.7"},
-  {id:"space-dodge", title:"Space Dodge", category:"Arcade", type:"New", emoji:"🚀", color:"color-14", rating:"4.6"},
-  {id:"mini-golf", title:"Mini Golf", category:"Sports", type:"New", emoji:"⛳", color:"color-15", rating:"4.5"}
+  {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-1", rating:"4.9", url:"games/neon-dodge/Neon%20GAME.html"},
+  {id:"train-your-brain", title:"Train Your Brain", category:"Puzzle", type:"Featured", emoji:"🧠", color:"color-2", rating:"4.8", url:"games/train-your-brain/index.html"}
 ];
 
 function loadRecent() {
@@ -249,8 +235,6 @@ function gameCard(game, featured=false) {
 
 function renderHome() {
   $("#featuredGrid").innerHTML = games.slice(0,7).map(g => gameCard(g,true)).join("");
-  $("#newGrid").innerHTML = games.filter(g => g.type==="New").slice(0,8).map(g => gameCard(g)).join("");
-  $("#popularGrid").innerHTML = games.filter(g => g.type==="Popular").slice(0,8).map(g => gameCard(g)).join("");
   updateResultsNote(games.length);
   bindGameClicks();
 }
