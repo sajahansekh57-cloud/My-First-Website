@@ -201,7 +201,7 @@ function closeProfilePanel() {
 }
 
 const games = [
-  {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-1", rating:"4.9", url:"Game/GameHub-Neon-Dodge/games/neon-dodge/Neon%20GAME.html"},
+  {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-1", rating:"4.9", url:"games/neon-dodge/index.html"},
   {id:"neon-racer", title:"Neon Racer", category:"Driving", type:"Popular", emoji:"🏎️", color:"color-1", rating:"4.8"},
   {id:"block-blitz", title:"Block Blitz", category:"Puzzle", type:"Featured", emoji:"🧱", color:"color-2", rating:"4.7"},
   {id:"pixel-warzone", title:"Pixel Warzone", category:"Shooting", type:"Popular", emoji:"🔫", color:"color-3", rating:"4.9"},
