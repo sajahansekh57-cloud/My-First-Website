@@ -283,7 +283,24 @@ function setActiveNav(section) {
 
 function closeSidebar() {
   const sidebar = $("#sidebar");
+  const mobileMenu = $("#mobileMenu");
   if (sidebar) sidebar.classList.remove("open");
+  if (mobileMenu) {
+    mobileMenu.setAttribute("aria-expanded", "false");
+    mobileMenu.setAttribute("aria-label", "Open menu");
+  }
+}
+
+function toggleSidebar() {
+  const sidebar = $("#sidebar");
+  const mobileMenu = $("#mobileMenu");
+  if (!sidebar) return;
+
+  const isOpen = sidebar.classList.toggle("open");
+  if (mobileMenu) {
+    mobileMenu.setAttribute("aria-expanded", String(isOpen));
+    mobileMenu.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+  }
 }
 
 function showSection(section) {
@@ -760,7 +777,22 @@ function init() {
 
   $("#mobileMenu").addEventListener(
     "click",
-    () => $("#sidebar").classList.toggle("open")
+    toggleSidebar
+  );
+
+  document.addEventListener(
+    "click",
+    event => {
+      const sidebar = $("#sidebar");
+      const mobileMenu = $("#mobileMenu");
+      if (
+        sidebar?.classList.contains("open") &&
+        !sidebar.contains(event.target) &&
+        !mobileMenu?.contains(event.target)
+      ) {
+        closeSidebar();
+      }
+    }
   );
 
   $("#loginModal").addEventListener("click",e => {
