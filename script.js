@@ -201,6 +201,7 @@ function closeProfilePanel() {
 }
 
 const games = [
+  {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-1", rating:"4.9", url:"Game/GameHub-Neon-Dodge/games/neon-dodge/Neon%20GAME.html"},
   {id:"neon-racer", title:"Neon Racer", category:"Driving", type:"Popular", emoji:"🏎️", color:"color-1", rating:"4.8"},
   {id:"block-blitz", title:"Block Blitz", category:"Puzzle", type:"Featured", emoji:"🧱", color:"color-2", rating:"4.7"},
   {id:"pixel-warzone", title:"Pixel Warzone", category:"Shooting", type:"Popular", emoji:"🔫", color:"color-3", rating:"4.9"},
@@ -235,7 +236,7 @@ function escapeHtml(value) {
 
 function gameCard(game, featured=false) {
   return `
-    <article class="${featured ? "featured-card " + (game.id === "block-blitz" ? "large" : "medium") : "game-card"}"
+    <article class="${featured ? "featured-card " + (game.id === "neon-dodge" ? "large" : "medium") : "game-card"}"
              data-game-id="${game.id}" tabindex="0">
       <div class="${featured ? "featured-art" : "game-art"} ${game.color}">${game.emoji}</div>
       <div class="game-content">
@@ -365,6 +366,10 @@ function bindGameClicks() {
           }
           return updateDoc(ref,{recentGames:arrayUnion(game.id),updatedAt:Date.now()});
         }).catch(err => console.warn("Cloud recent save:",err));
+      }
+      if (game.url) {
+        window.location.href = game.url;
+        return;
       }
       showToast(`"${game.title}" selected. Add the real game later.`);
     };
