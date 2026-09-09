@@ -14,11 +14,14 @@
         <h1>Train Your <span>Brain</span></h1>
         <p>Small Practice • Big Intelligence!</p>
       </div>
-      <button class="icon-btn" id="soundBtn" aria-label="Toggle sound">🔊</button>
+      <div class="header-actions">
+        <a class="hub-btn" href="../../index.html">HUB</a>
+        <button class="icon-btn" id="soundBtn" aria-label="Toggle sound">🔊</button>
+      </div>
     </header>
 
-    <main class="layout">
-      <aside class="modes-panel">
+    <main class="layout" id="gameLayout">
+      <aside class="modes-panel" id="modesPanel">
         <h2>Choose a Mode</h2>
         <button class="mode-btn active addition" data-mode="addition"><b>＋</b><span><strong>Addition</strong><small>Choose a difficulty</small></span></button>
         <button class="mode-btn subtraction" data-mode="subtraction"><b>−</b><span><strong>Subtraction</strong><small>Choose a difficulty</small></span></button>
@@ -53,7 +56,6 @@
         <div class="stat-card"><span>⭐</span><div><small>Score</small><strong id="score">0</strong></div></div>
         <div class="stat-card"><span>🔥</span><div><small>Streak</small><strong id="streak">0</strong></div></div>
         <div class="stat-card lives-card"><span>❤️</span><div><small>Lives</small><strong id="lives" aria-label="5 lives remaining">❤️ ❤️ ❤️ ❤️ ❤️</strong></div></div>
-        <button class="restart-btn" id="restartBtn">↻ Restart Game</button>
         <div class="encourage">You Can Do It! 💪</div>
       </aside>
     </main>

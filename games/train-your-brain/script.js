@@ -1,4 +1,4 @@
-const state={mode:"addition",difficulty:"simple",questionNumber:1,totalQuestions:10,score:0,correct:0,streak:0,lives:5,answer:"",correctAnswer:0,startedAt:0,timerId:null,secondsLeft:30,sound:true,locked:false};
+const state={mode:"addition",difficulty:"simple",questionNumber:1,totalQuestions:10,score:0,correct:0,correctRun:0,streak:0,lives:5,answer:"",correctAnswer:0,startedAt:0,timerId:null,secondsLeft:30,sound:true,locked:false};
 const info={addition:["Addition","＋"],subtraction:["Subtraction","−"],multiplication:["Multiplication","×"],division:["Division","÷"]};
 const difficultyLabels={simple:"Simple",medium:"Medium",hard:"Hard"};
 const difficultyRanges={simple:[1,120],medium:[121,225],hard:[226,300]};
@@ -64,10 +64,10 @@ function resolveAnswer(isCorrect,timedOut=false){
   if(state.locked)return;
   clearInterval(state.timerId);
   if(isCorrect){
-    state.correct++;state.streak++;state.score+=10+Math.min(state.streak,10)*2;
+    state.correct++;state.correctRun++;state.streak=Math.floor(state.correctRun/10);state.score+=10+Math.min(state.streak,10)*2;
     $("feedback").textContent="✅ Correct! Great job!";$("feedback").className="feedback good";beep(true)
   }else{
-    state.streak=0;state.lives=Math.max(0,state.lives-1);
+    state.correctRun=0;state.streak=0;state.lives=Math.max(0,state.lives-1);
     $("feedback").textContent=timedOut?`⌛ Time's up. Answer: ${state.correctAnswer}`:`❌ Not quite. Answer: ${state.correctAnswer}`;
     $("feedback").className="feedback bad";beep(false)
   }
@@ -81,11 +81,18 @@ function time(){return state.startedAt?Math.floor((Date.now()-state.startedAt)/1
 function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 function startQuestionTimer(){clearInterval(state.timerId);state.secondsLeft=30;$("timer").textContent=fmt(state.secondsLeft);state.timerId=setInterval(()=>{state.secondsLeft--;$("timer").textContent=fmt(Math.max(0,state.secondsLeft));if(state.secondsLeft<=0){clearInterval(state.timerId);resolveAnswer(false,true)}},1000)}
 function finish(){
+  const isGameOver=state.lives===0;
   clearInterval(state.timerId);$("finalScore").textContent=state.score;$("finalCorrect").textContent=`${state.correct}/${state.totalQuestions}`;$("finalTime").textContent=fmt(time());
-  $("resultText").textContent=state.correct>=8?"Amazing! Your brain is getting stronger!":state.correct>=5?"Nice work! Keep practicing every day!":"Good try! Practice again and beat your score!";
+  $("resultModal").querySelector("h2").textContent=isGameOver?"Game Over":"Great Job!";
+  $("resultText").textContent=isGameOver?"Your 5 hearts are finished. Choose Home to start fresh.":state.correct>=8?"Amazing! Your brain is getting stronger!":state.correct>=5?"Nice work! Keep practicing every day!":"Good try! Practice again and beat your score!";
+  $("modalRestart").textContent=isGameOver?"Home":"Play Again";
   $("resultModal").classList.remove("hidden")
 }
-function restart(){clearInterval(state.timerId);state.questionNumber=1;state.score=0;state.correct=0;state.streak=0;state.lives=5;state.answer="";state.locked=false;state.startedAt=Date.now();$("resultModal").classList.add("hidden");stats();makeQuestion();startQuestionTimer()}
+function restart(){clearInterval(state.timerId);state.questionNumber=1;state.score=0;state.correct=0;state.correctRun=0;state.streak=0;state.lives=5;state.answer="";state.locked=false;state.startedAt=Date.now();$("resultModal").classList.add("hidden");$("modesPanel")?.classList.add("hidden");$("gameLayout")?.classList.add("playing");stats();makeQuestion();startQuestionTimer()}
+function returnHome(){
+  clearInterval(state.timerId);state.mode="addition";state.difficulty="simple";state.questionNumber=1;state.score=0;state.correct=0;state.correctRun=0;state.streak=0;state.lives=5;state.answer="";state.locked=false;state.startedAt=0;
+  $("resultModal").classList.add("hidden");syncModeSelection(state.mode);stats();makeQuestion();$("timer").textContent="00:30";showModeMenu();
+}
 
 function showModeMenu(){
   clearInterval(state.timerId);
@@ -142,7 +149,7 @@ document.querySelectorAll(".difficulty-option").forEach(b=>b.addEventListener("c
 $("backToModesBtn")?.addEventListener("click",()=>showModeMenu());
 $("menuBtn")?.addEventListener("click",showModeMenu);
 document.querySelectorAll(".key").forEach(b=>b.addEventListener("click",()=>b.dataset.key==="backspace"?back():digit(b.dataset.key)));
-$("clearBtn").addEventListener("click",clearAns);$("submitBtn").addEventListener("click",submit);$("restartBtn").addEventListener("click",restart);$("modalRestart").addEventListener("click",restart);
+$("clearBtn").addEventListener("click",clearAns);$("submitBtn").addEventListener("click",submit);$("modalRestart").addEventListener("click",()=>state.lives===0?returnHome():restart());
 $("soundBtn").addEventListener("click",()=>{state.sound=!state.sound;$("soundBtn").textContent=state.sound?"🔊":"🔇"});
 document.addEventListener("keydown",e=>{
   if (!$("menuOverlay").classList.contains("hidden") || !$("resultModal").classList.contains("hidden")) return;
