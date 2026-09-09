@@ -253,21 +253,18 @@ h1{font-size:24px;line-height:1.1;margin:5px 0 0}
   padding:10px 12px;resize:vertical;min-height:78px;outline:none
 }
 #profileAbout:focus{border-color:#7c63d8;box-shadow:0 0 0 3px rgba(124,99,216,.14)}
-.profile-category-row{display:flex;gap:8px;margin-bottom:10px}
-.profile-category-row input{
-  flex:1;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#181d29;color:#fff;padding:0 10px;outline:none
+.profile-field-input{
+  width:100%;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#181d29;color:#fff;
+  padding:0 10px;outline:none;margin-bottom:10px;font:inherit
 }
-.profile-category-row input:focus{border-color:#7c63d8;box-shadow:0 0 0 3px rgba(124,99,216,.14)}
-.profile-category-row button{
-  border:0;border-radius:10px;padding:0 12px;background:linear-gradient(135deg,#a78bfa,#7c63d8);color:#fff;font-weight:800;cursor:pointer
+.profile-field-input:focus{border-color:#7c63d8;box-shadow:0 0 0 3px rgba(124,99,216,.14)}
+select.profile-field-input{appearance:none;padding-right:30px}
+#profileAbout{
+  width:100%;background:#181d29;color:#edf2ff;border:1px solid rgba(255,255,255,.08);border-radius:12px;
+  padding:10px 12px;resize:vertical;min-height:78px;outline:none;margin-bottom:10px
 }
-.profile-category-list{display:flex;flex-wrap:wrap;gap:8px;min-height:24px;margin-bottom:8px}
-.profile-tag{
-  display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:999px;background:#1d2432;border:1px solid rgba(255,255,255,.08);
-  color:#dfe6f7;font-size:11px;font-weight:700
-}
-.profile-tag button{all:unset;cursor:pointer;color:#a9afd0;font-size:12px;font-weight:900}
-.profile-progress-wrap{margin-top:10px}
+#profileAbout:focus{border-color:#7c63d8;box-shadow:0 0 0 3px rgba(124,99,216,.14)}
+.profile-progress-wrap{margin-top:6px}
 .profile-progress-header{display:flex;justify-content:space-between;align-items:center;color:#dfe6f7;font-size:12px;margin-bottom:8px}
 .profile-progress-bar{height:8px;border-radius:999px;background:#1d2432;overflow:hidden}
 .profile-progress-bar span{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#a78bfa,#7c63d8);transition:width .2s ease}

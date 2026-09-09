@@ -49,6 +49,7 @@ const safelyToggleClass = (selector, className, force) => {
 
 let currentUser = null;
 let guestProfile = loadGuestProfile();
+let userProfile = loadUserProfile();
 let recentIds = loadRecent();
 
 function loadGuestProfile() {
@@ -61,10 +62,31 @@ function loadGuestProfile() {
       name: profile.name || "",
       dob: profile.dob || "",
       about: profile.about || "",
+      gender: profile.gender || "",
+      favoriteGame: profile.favoriteGame || "",
+      occupation: profile.occupation || "",
       isGuest: true
     };
   } catch {
     return null;
+  }
+}
+
+function loadUserProfile() {
+  try {
+    const profile = JSON.parse(
+      localStorage.getItem("gamehub_user_profile") || "null"
+    );
+    if (!profile) return {};
+    return {
+      about: profile.about || "",
+      gender: profile.gender || "",
+      favoriteGame: profile.favoriteGame || "",
+      occupation: profile.occupation || "",
+      dob: profile.dob || ""
+    };
+  } catch {
+    return {};
   }
 }
 
@@ -80,88 +102,86 @@ function saveGuestProfile(profile) {
   );
 }
 
-function getGuestProfileCompletion(profile = guestProfile) {
+function saveUserProfile(profile) {
+  if (!profile) {
+    localStorage.removeItem("gamehub_user_profile");
+    return;
+  }
+
+  localStorage.setItem(
+    "gamehub_user_profile",
+    JSON.stringify(profile)
+  );
+}
+
+function getProfileCompletion(profile = getActiveProfile()) {
   const data = profile || {};
   const checks = [
-    Boolean(data.name && data.name.trim()),
-    Boolean(data.dob),
     Boolean(data.about && data.about.trim()),
-    Array.isArray(data.categories) ? data.categories.length > 0 : false
+    Boolean(data.gender),
+    Boolean(data.favoriteGame && data.favoriteGame.trim()),
+    Boolean(data.occupation && data.occupation.trim()),
+    Boolean(data.dob)
   ];
 
   const filled = checks.filter(Boolean).length;
   return Math.round((filled / checks.length) * 100);
 }
 
-function renderCategoryTags() {
-  const list = $("#profileCategoryList");
-  if (!list) return;
-
-  const categories = Array.isArray(guestProfile?.categories) ? guestProfile.categories : [];
-  if (!categories.length) {
-    list.innerHTML = '<span class="profile-tag">No category added</span>';
-    return;
-  }
-
-  list.innerHTML = categories.map((category, index) => `
-    <span class="profile-tag">
-      <span>${category}</span>
-      <button type="button" data-category-index="${index}" aria-label="Remove ${category}">×</button>
-    </span>
-  `).join("");
+function getActiveProfile() {
+  return currentUser ? userProfile : guestProfile;
 }
 
-function syncGuestProfileUI() {
-  const name = guestProfile?.name || "Guest";
-  const initials = name.trim().charAt(0).toUpperCase() || "G";
-  const percent = getGuestProfileCompletion();
+function syncProfileUI() {
+  const activeProfile = getActiveProfile() || {};
+  const displayName = currentUser
+    ? (currentUser.displayName || currentUser.email || "Player")
+    : (guestProfile?.name || "Guest");
+  const initials = displayName.trim().charAt(0).toUpperCase() || "G";
+  const percent = getProfileCompletion(activeProfile);
 
   const avatarText = $("#avatarText");
   const profileAvatar = $("#profileAvatar");
   const profileName = $("#profileName");
   const profileRole = $("#profileRole");
   const currentAbout = $("#profileAbout");
+  const profileGender = $("#profileGender");
+  const profileFavoriteGame = $("#profileFavoriteGame");
+  const profileOccupation = $("#profileOccupation");
+  const profileDob = $("#profileDob");
   const percentEl = $("#profilePercent");
   const bar = $("#profileBar");
 
   if (avatarText) avatarText.textContent = initials;
   if (profileAvatar) profileAvatar.textContent = initials;
-  if (profileName) profileName.textContent = name;
-  if (profileRole) profileRole.textContent = guestProfile?.dob ? "Guest account" : "Guest account";
-  if (currentAbout) currentAbout.value = guestProfile?.about || "";
+  if (profileName) profileName.textContent = displayName;
+  if (profileRole) profileRole.textContent = currentUser ? "Logged in" : "Guest account";
+  if (currentAbout) currentAbout.value = activeProfile.about || "";
+  if (profileGender) profileGender.value = activeProfile.gender || "";
+  if (profileFavoriteGame) profileFavoriteGame.value = activeProfile.favoriteGame || "";
+  if (profileOccupation) profileOccupation.value = activeProfile.occupation || "";
+  if (profileDob) profileDob.value = activeProfile.dob || "";
   if (percentEl) percentEl.textContent = `${percent}%`;
   if (bar) bar.style.width = `${percent}%`;
-
-  renderCategoryTags();
 }
 
-function addGuestCategory() {
-  const input = $("#profileCategoryInput");
-  if (!input || !guestProfile) return;
+function saveProfileFields() {
+  const profile = currentUser ? userProfile : guestProfile;
+  if (!profile) return;
 
-  const category = input.value.trim();
-  if (!category) {
-    showToast("Write a category first.");
-    return;
+  profile.about = $("#profileAbout")?.value.trim() || "";
+  profile.gender = $("#profileGender")?.value || "";
+  profile.favoriteGame = $("#profileFavoriteGame")?.value.trim() || "";
+  profile.occupation = $("#profileOccupation")?.value.trim() || "";
+  profile.dob = $("#profileDob")?.value || "";
+
+  if (currentUser) {
+    saveUserProfile(profile);
+  } else {
+    saveGuestProfile(profile);
   }
 
-  guestProfile.categories = Array.isArray(guestProfile.categories) ? guestProfile.categories : [];
-  if (!guestProfile.categories.includes(category)) {
-    guestProfile.categories.push(category);
-  }
-
-  saveGuestProfile(guestProfile);
-  input.value = "";
-  syncGuestProfileUI();
-  showToast("Category added.");
-}
-
-function removeGuestCategory(index) {
-  if (!guestProfile || !Array.isArray(guestProfile.categories)) return;
-
-  guestProfile.categories.splice(index, 1);
-  saveGuestProfile(guestProfile);
-  syncGuestProfileUI();
+  syncProfileUI();
 }
 
 function toggleProfilePanel(forceOpen) {
@@ -398,7 +418,9 @@ function continueAsGuest() {
     name,
     dob,
     about: guestProfile?.about || "",
-    categories: Array.isArray(guestProfile?.categories) ? guestProfile.categories : [],
+    gender: guestProfile?.gender || "",
+    favoriteGame: guestProfile?.favoriteGame || "",
+    occupation: guestProfile?.occupation || "",
     isGuest: true
   };
 
@@ -414,7 +436,6 @@ function continueAsGuest() {
 }
 
 function updateAuthUI(user) {
-
   currentUser = user;
 
   const hasGuest = !user && !!guestProfile;
@@ -425,15 +446,16 @@ function updateAuthUI(user) {
   safelyToggleClass("#userMenu", "hidden", !hasIdentity);
 
   if (user) {
-    safelySetText("#avatarText", getUserInitial(user));
+    const displayName = user.displayName || user.email || "Player";
+    safelySetText("#avatarText", displayName.charAt(0).toUpperCase());
+    syncProfileUI();
     loadUserData(user);
     ensureUserDocument(user);
-    closeProfilePanel();
     return;
   }
 
   if (guestProfile) {
-    syncGuestProfileUI();
+    syncProfileUI();
     return;
   }
 
@@ -651,34 +673,22 @@ function init() {
 
   $("#closeProfileBtn").addEventListener("click", closeProfilePanel);
 
-  $("#addCategoryBtn").addEventListener("click", addGuestCategory);
-  $("#profileCategoryInput").addEventListener("keydown", e => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addGuestCategory();
-    }
-  });
-
-  $("#profileCategoryList").addEventListener("click", e => {
-    const button = e.target.closest("button[data-category-index]");
-    if (!button || !guestProfile) return;
-    removeGuestCategory(Number(button.dataset.categoryIndex));
-  });
-
-  $("#profileAbout").addEventListener("input",e => {
-    if (!guestProfile) return;
-    guestProfile.about = e.target.value;
-    saveGuestProfile(guestProfile);
-    syncGuestProfileUI();
-  });
+  $("#profileAbout").addEventListener("input", saveProfileFields);
+  $("#profileGender").addEventListener("change", saveProfileFields);
+  $("#profileFavoriteGame").addEventListener("input", saveProfileFields);
+  $("#profileOccupation").addEventListener("input", saveProfileFields);
+  $("#profileDob").addEventListener("change", saveProfileFields);
 
   $("#logoutBtn").addEventListener("click", () => {
     if (currentUser) {
       signOut(auth).catch(() => {});
+    } else {
+      guestProfile = null;
+      saveGuestProfile(null);
     }
 
-    guestProfile = null;
-    saveGuestProfile(null);
+    userProfile = {};
+    saveUserProfile(userProfile);
     currentUser = null;
     updateAuthUI(null);
     closeProfilePanel();

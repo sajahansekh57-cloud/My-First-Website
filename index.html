@@ -84,12 +84,23 @@
               <label class="profile-label" for="profileAbout">About</label>
               <textarea id="profileAbout" rows="3" maxlength="220" placeholder="Write a short intro about yourself..."></textarea>
 
-              <label class="profile-label" for="profileCategoryInput">Category</label>
-              <div class="profile-category-row">
-                <input id="profileCategoryInput" type="text" maxlength="28" placeholder="Add a category" />
-                <button id="addCategoryBtn" type="button">Add</button>
-              </div>
-              <div class="profile-category-list" id="profileCategoryList"></div>
+              <label class="profile-label" for="profileGender">Gender</label>
+              <select id="profileGender" class="profile-field-input">
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+                <option value="Prefer not to say">Prefer not to say</option>
+              </select>
+
+              <label class="profile-label" for="profileFavoriteGame">Favorite game</label>
+              <input id="profileFavoriteGame" class="profile-field-input" type="text" maxlength="40" placeholder="Your favorite game" />
+
+              <label class="profile-label" for="profileOccupation">What do you do?</label>
+              <input id="profileOccupation" class="profile-field-input" type="text" maxlength="60" placeholder="School / College / Job / Other" />
+
+              <label class="profile-label" for="profileDob">Date of birth</label>
+              <input id="profileDob" class="profile-field-input" type="date" />
 
               <div class="profile-progress-wrap">
                 <div class="profile-progress-header">
