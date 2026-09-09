@@ -213,3 +213,14 @@ h1{font-size:24px;line-height:1.1;margin:5px 0 0}
 
 
 .form-label{display:block;color:#b9bfcc;font-size:12px;font-weight:700;margin:12px 0 6px}.form-input{width:100%;height:45px;border-radius:10px;border:1px solid rgba(255,255,255,.09);background:#181c26;color:#fff;outline:none;padding:0 13px}.form-input:focus{border-color:#7c63d8;box-shadow:0 0 0 3px rgba(124,99,216,.14)}.primary-form-btn{width:100%;height:46px;border-radius:10px;margin-top:14px;background:linear-gradient(135deg,#a78bfa,#7c63d8);color:#fff;font-weight:800;cursor:pointer}.signup-bottom{text-align:center;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);color:#747c8d;font-size:12px}.signup-bottom button{background:transparent;color:#b99cff;font-weight:800;margin-left:5px;cursor:pointer}
+.signup-link {
+  color: #b99cff;
+  font-weight: 800;
+  text-decoration: none;
+  margin-left: 5px;
+  cursor: pointer;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+}
