@@ -1907,7 +1907,7 @@
   const canDrag = target => (
     running &&
     !paused &&
-    !target.closest("button, .overlay")
+    !target.closest("button, a, .overlay")
   );
 
   const startDragging = (clientX, target, event) => {
