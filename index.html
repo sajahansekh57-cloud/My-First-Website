@@ -20,7 +20,7 @@
 
       <nav class="nav-main" aria-label="Main navigation">
         <button class="nav-item active" data-section="home"><span>⌂</span> Home</button>
-        <a class="nav-item" href="all-games.html"><span>▦</span> All games</a>
+        <button class="nav-item" data-section="all"><span>▦</span> All games</button>
         <button class="nav-item" data-section="recent"><span>◷</span> Recently played</button>
         <button class="nav-item" data-section="new"><span>✦</span> New</button>
         <button class="nav-item" data-section="popular"><span>🔥</span> Popular Games</button>
@@ -151,7 +151,7 @@
       <section id="featuredSection" class="game-section">
         <div class="section-heading">
           <h2>Play now</h2>
-          <a class="text-link" href="all-games.html">All games <span>›</span></a>
+          <button class="text-link" data-section="all">All games <span>›</span></button>
         </div>
         <div class="featured-grid" id="featuredGrid"></div>
       </section>
@@ -160,6 +160,11 @@
         <div class="section-heading"><h2>Recently played</h2></div>
         <div class="games-grid" id="recentGrid"></div>
         <div class="empty-state hidden" id="recentEmpty">Play a game once and it will appear here.</div>
+      </section>
+
+      <section id="allSection" class="game-section hidden">
+        <div class="section-heading"><h2>All games</h2></div>
+        <div class="games-grid" id="allGrid"></div>
       </section>
 
       <section id="searchSection" class="game-section hidden">

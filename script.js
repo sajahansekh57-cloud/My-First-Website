@@ -201,9 +201,26 @@ function closeProfilePanel() {
 }
 
 const games = [
-  {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-1", rating:"4.9", url:"games/neon-dodge/Neon%20GAME.html"},
-  {id:"train-your-brain", title:"Train Your Brain", category:"Puzzle", type:"Featured", emoji:"🧠", color:"color-2", rating:"4.8", url:"games/train-your-brain/index.html"}
+  {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-1", rating:"4.9", url:"games/neon-dodge/index.html"},
+  {id:"train-your-brain", title:"Train Your Brain", category:"Puzzle", type:"Featured", emoji:"🧠", color:"color-2", rating:"4.8", url:"games/train-your-brain/index.html"},
+  {id:"neon-racer", title:"Neon Racer", category:"Driving", type:"Popular", emoji:"🏎️", color:"color-1", rating:"4.8"},
+  {id:"block-blitz", title:"Block Blitz", category:"Puzzle", type:"Featured", emoji:"🧱", color:"color-2", rating:"4.7"},
+  {id:"pixel-warzone", title:"Pixel Warzone", category:"Shooting", type:"Popular", emoji:"🔫", color:"color-3", rating:"4.9"},
+  {id:"castle-defense", title:"Castle Defense", category:"Strategy", type:"Featured", emoji:"🏰", color:"color-4", rating:"4.6"},
+  {id:"armored-bots", title:"Armored Bots", category:"Action", type:"Featured", emoji:"🤖", color:"color-5", rating:"4.8"},
+  {id:"shop-simulator", title:"Shop Simulator", category:"Simulation", type:"New", emoji:"🛒", color:"color-6", rating:"4.5"},
+  {id:"empire-city", title:"Empire City", category:"Strategy", type:"New", emoji:"🏙️", color:"color-7", rating:"4.7"},
+  {id:"sky-pilot", title:"Sky Pilot", category:"Sports", type:"New", emoji:"✈️", color:"color-8", rating:"4.4"},
+  {id:"hex-stack", title:"Hexa Stack", category:"Puzzle", type:"New", emoji:"🔷", color:"color-9", rating:"4.9"},
+  {id:"bodycam", title:"Bodycam Shooter", category:"Shooting", type:"Updated", emoji:"🎯", color:"color-10", rating:"4.6"},
+  {id:"candy-pop", title:"Candy Pop", category:"Arcade", type:"Popular", emoji:"🍭", color:"color-11", rating:"4.5"},
+  {id:"traffic-fury", title:"Traffic Fury", category:"Driving", type:"Popular", emoji:"🚗", color:"color-12", rating:"4.8"},
+  {id:"word-quest", title:"Word Quest", category:"Word", type:"Popular", emoji:"🔤", color:"color-13", rating:"4.7"},
+  {id:"space-dodge", title:"Space Dodge", category:"Arcade", type:"New", emoji:"🚀", color:"color-14", rating:"4.6"},
+  {id:"mini-golf", title:"Mini Golf", category:"Sports", type:"New", emoji:"⛳", color:"color-15", rating:"4.5"}
 ];
+
+const homeGameIds = new Set(["neon-dodge", "train-your-brain"]);
 
 function loadRecent() {
   try { return JSON.parse(localStorage.getItem("gamehub_recent") || "[]"); }
@@ -234,8 +251,15 @@ function gameCard(game, featured=false) {
 }
 
 function renderHome() {
-  $("#featuredGrid").innerHTML = games.slice(0,7).map(g => gameCard(g,true)).join("");
-  updateResultsNote(games.length);
+  const homeGames = games.filter(game => homeGameIds.has(game.id));
+  $("#featuredGrid").innerHTML = homeGames.map(g => gameCard(g,true)).join("");
+  updateResultsNote(homeGames.length);
+  bindGameClicks();
+}
+
+function renderAllGames() {
+  $("#allGrid").innerHTML = games.filter(game => !homeGameIds.has(game.id)).map(g => gameCard(g)).join("");
+  updateResultsNote(games.length - homeGameIds.size);
   bindGameClicks();
 }
 
@@ -291,7 +315,7 @@ function toggleSidebar() {
 function showSection(section) {
   $$(".game-section").forEach(s => s.classList.add("hidden"));
   const title = $("#pageTitle");
-  if (title) title.textContent = "Top games today";
+  if (title) title.textContent = "Our games";
 
   if (section==="home" || section==="popular") {
     $("#featuredSection")?.classList.remove("hidden");
@@ -305,6 +329,10 @@ function showSection(section) {
     $("#recentSection")?.classList.remove("hidden");
     renderRecent();
     if (title) title.textContent = "Recently played";
+  } else if (section==="all") {
+    $("#allSection")?.classList.remove("hidden");
+    renderAllGames();
+    if (title) title.textContent = "All games";
   } else {
     $("#featuredSection")?.classList.remove("hidden");
     if (title) title.textContent = `${section.charAt(0).toUpperCase()}${section.slice(1)} games`;
