@@ -56,7 +56,7 @@
     <main class="content">
       <header class="topbar">
         <button class="mobile-menu" id="mobileMenu" aria-label="Open menu">☰</button>
-        <a class="mobile-brand" href="#" data-home><span class="brand-mark">G</span> GameHub For SAJAHAN</a>
+        <a class="mobile-brand" href="#" data-home><span class="brand-mark">G</span> GameHub</a>
 
         <div class="search-wrap">
           <span class="search-icon">⌕</span>
@@ -155,32 +155,30 @@
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
       <button class="modal-close" id="closeLogin" aria-label="Close">×</button>
       <div class="modal-logo"><span class="brand-mark">G</span></div>
-      <h2 id="loginTitle">Sign in to GameHub</h2>
-      <p class="modal-subtitle">Save your progress, favorites and recently played games.</p>
+      <h2 id="loginTitle">Login to GameHub</h2>
+      <p class="modal-subtitle">Login to save your games, scores and progress.</p>
 
-      <button class="oauth-btn google" id="googleLogin">
-        <span class="oauth-icon">G</span>
-        Continue with Google
-      </button>
+      <form id="loginForm">
+        <label class="form-label" for="loginEmail">Email</label>
+        <input class="form-input" id="loginEmail" type="email" placeholder="you@gmail.com" autocomplete="email" required>
 
-      <button class="oauth-btn facebook" id="facebookLogin">
-        <span class="oauth-icon">f</span>
-        Continue with Facebook
-      </button>
+        <label class="form-label" for="loginPassword">Password</label>
+        <input class="form-input" id="loginPassword" type="password" placeholder="Your password" autocomplete="current-password" required>
+
+        <button class="primary-form-btn" type="submit">Login</button>
+      </form>
 
       <div class="or-divider"><span>or</span></div>
 
+      <button class="oauth-btn google" id="googleLogin" type="button"><span class="oauth-icon">G</span>Continue with Google</button>
+      <button class="oauth-btn facebook" id="facebookLogin" type="button"><span class="oauth-icon">f</span>Continue with Facebook</button>
+
       <div class="guest-box">
-        <div>
-          <strong>Play as Guest</strong>
-          <span>No account needed. Progress is saved on this device.</span>
-        </div>
-        <button class="secondary-btn" id="continueGuest">Continue</button>
+        <div><strong>Play as Guest</strong><span>No account needed. Progress is saved on this device.</span></div>
+        <button class="secondary-btn" id="continueGuest" type="button">Continue</button>
       </div>
 
-      <div class="login-note">
-        Google/Facebook login becomes active after you connect this site to your Firebase project.
-      </div>
+      <div class="signup-bottom"><span>Don't have an account?</span><button id="openSignup" type="button">Sign up</button></div>
     </div>
   </div>
 
