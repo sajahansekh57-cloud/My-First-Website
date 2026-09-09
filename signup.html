@@ -101,19 +101,26 @@
 
         await updateProfile(result.user, { displayName: name });
 
-        await setDoc(doc(db, "users", result.user.uid), {
-          uid: result.user.uid,
-          displayName: name,
-          email,
-          photoURL: "",
-          recentGames: [],
-          favorites: [],
-          createdAt: Date.now(),
-          updatedAt: Date.now()
-        });
+        try {
+          await setDoc(doc(db, "users", result.user.uid), {
+            uid: result.user.uid,
+            displayName: name,
+            email,
+            photoURL: "",
+            recentGames: [],
+            favorites: [],
+            createdAt: Date.now(),
+            updatedAt: Date.now()
+          });
+        } catch (firestoreError) {
+          // The Auth account is already created and signed in.
+          // Firestore rules can be configured later without blocking signup.
+          console.warn("Firestore profile save skipped:", firestoreError);
+        }
 
-        alert("Account created successfully!");
-        window.location.href = "index.html";
+        // createUserWithEmailAndPassword signs the user in automatically.
+        // Returning to index lets onAuthStateChanged show the player's name.
+        window.location.replace("index.html?signup=success");
       } catch (error) {
         console.error(error);
 

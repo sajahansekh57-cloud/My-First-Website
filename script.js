@@ -7,6 +7,7 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
@@ -19,17 +20,14 @@ import {
   arrayUnion
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
-/* =========================================================
-   1) PASTE YOUR FIREBASE CONFIG HERE
-   Firebase Console -> Project settings -> Your apps -> Web app
-   ========================================================= */
 const firebaseConfig = {
-  apiKey: "PASTE_API_KEY",
-  authDomain: "PASTE_PROJECT_ID.firebaseapp.com",
-  projectId: "PASTE_PROJECT_ID",
-  storageBucket: "PASTE_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "PASTE_SENDER_ID",
-  appId: "PASTE_APP_ID"
+  apiKey: "AIzaSyA5WKh6tXIXLFxWAwmY1z5bBBPV8DVJPUM",
+  authDomain: "gamehub-for-sajahan.firebaseapp.com",
+  projectId: "gamehub-for-sajahan",
+  storageBucket: "gamehub-for-sajahan.firebasestorage.app",
+  messagingSenderId: "610152819687",
+  appId: "1:610152819687:web:d6b531420d1136e13aab42",
+  measurementId: "G-EBBQQB06WH"
 };
 
 const FIREBASE_READY = !Object.values(firebaseConfig).some(v => String(v).includes("PASTE_"));
@@ -214,7 +212,10 @@ function bindGameClicks(){
   });
 }
 
-function openLoginModal(){ $("#loginModal").classList.remove("hidden"); }
+function openLoginModal(){
+  $("#forgotPassword").classList.add("hidden");
+  $("#loginModal").classList.remove("hidden");
+}
 function closeLoginModal(){ $("#loginModal").classList.add("hidden"); }
 
 function updateAuthUI(user){
@@ -230,6 +231,186 @@ function updateAuthUI(user){
     $("#avatarText").textContent = name.trim().charAt(0).toUpperCase();
   }
 }
+
+
+// ============================================================
+// EMAIL + PASSWORD LOGIN
+// ============================================================
+async function emailPasswordLogin(email, password) {
+
+  try {
+
+    const result =
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+    closeLoginModal();
+
+    $("#forgotPassword")
+      .classList
+      .add("hidden");
+
+    showToast(
+      `Welcome back, ${
+        result.user.displayName ||
+        result.user.email ||
+        "Player"
+      }!`
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Email login error:",
+      error
+    );
+
+    let message = "Login failed.";
+
+    if (
+      error.code === "auth/invalid-credential" ||
+      error.code === "auth/wrong-password" ||
+      error.code === "auth/user-not-found"
+    ) {
+
+      message =
+        "Email or password is incorrect.";
+
+      $("#forgotPassword")
+        .classList
+        .remove("hidden");
+
+    } else if (
+      error.code === "auth/invalid-email"
+    ) {
+
+      message =
+        "Please enter a valid email address.";
+
+    } else if (
+      error.code === "auth/too-many-requests"
+    ) {
+
+      message =
+        "Too many attempts. Please try again later.";
+
+    } else if (
+      error.code === "auth/operation-not-allowed"
+    ) {
+
+      message =
+        "Enable Email/Password in Firebase Authentication.";
+
+    } else if (error.message) {
+
+      message =
+        error.message;
+
+    }
+
+    showToast(message);
+  }
+}
+
+
+// ============================================================
+// FORGOT PASSWORD
+// ============================================================
+function openResetModal(prefillEmail = "") {
+
+  $("#resetEmail").value =
+    prefillEmail;
+
+  $("#resetModal")
+    .classList
+    .remove("hidden");
+}
+
+function closeResetModal() {
+
+  $("#resetModal")
+    .classList
+    .add("hidden");
+}
+
+async function sendResetEmail() {
+
+  const email =
+    $("#resetEmail")
+      .value
+      .trim();
+
+  if (!email) {
+
+    showToast(
+      "Enter your Gmail/email first."
+    );
+
+    return;
+  }
+
+  try {
+
+    await sendPasswordResetEmail(
+      auth,
+      email
+    );
+
+    closeResetModal();
+    closeLoginModal();
+
+    showToast(
+      "Reset email sent. Check your Gmail inbox and spam folder."
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Password reset error:",
+      error
+    );
+
+    let message =
+      "Could not send reset email.";
+
+    if (
+      error.code ===
+      "auth/invalid-email"
+    ) {
+
+      message =
+        "Please enter a valid email.";
+
+    } else if (
+      error.code ===
+      "auth/too-many-requests"
+    ) {
+
+      message =
+        "Too many attempts. Please try again later.";
+
+    } else if (
+      error.code ===
+      "auth/operation-not-allowed"
+    ) {
+
+      message =
+        "Email/Password authentication is not enabled.";
+
+    } else if (error.message) {
+
+      message =
+        error.message;
+
+    }
+
+    showToast(message);
+  }
+}
+
 
 async function socialLogin(providerName){
   if(!FIREBASE_READY){
@@ -304,6 +485,61 @@ function init(){
 
   $("#openLogin").addEventListener("click", openLoginModal);
   $("#closeLogin").addEventListener("click", closeLoginModal);
+
+  $("#loginForm").addEventListener(
+    "submit",
+    async (event) => {
+      event.preventDefault();
+
+      const email =
+        $("#loginEmail").value.trim();
+
+      const password =
+        $("#loginPassword").value;
+
+      await emailPasswordLogin(
+        email,
+        password
+      );
+    }
+  );
+
+  $("#forgotPassword").addEventListener(
+    "click",
+    () => {
+      openResetModal(
+        $("#loginEmail").value.trim()
+      );
+    }
+  );
+
+  $("#closeReset").addEventListener(
+    "click",
+    closeResetModal
+  );
+
+  $("#backToLogin").addEventListener(
+    "click",
+    () => {
+      closeResetModal();
+      openLoginModal();
+    }
+  );
+
+  $("#sendResetEmail").addEventListener(
+    "click",
+    sendResetEmail
+  );
+
+  $("#resetModal").addEventListener(
+    "click",
+    (event) => {
+      if (event.target.id === "resetModal") {
+        closeResetModal();
+      }
+    }
+  );
+
   $("#continueGuest").addEventListener("click", closeLoginModal);
   $("#googleLogin").addEventListener("click", () => socialLogin("google"));
   $("#facebookLogin").addEventListener("click", () => socialLogin("facebook"));

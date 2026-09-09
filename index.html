@@ -165,6 +165,10 @@
         <label class="form-label" for="loginPassword">Password</label>
         <input class="form-input" id="loginPassword" type="password" placeholder="Your password" autocomplete="current-password" required>
 
+        <button class="forgot-btn hidden" id="forgotPassword" type="button">
+          Forgot password?
+        </button>
+
         <button class="primary-form-btn" type="submit">Login</button>
       </form>
 
@@ -179,6 +183,37 @@
       </div>
 
       <div class="signup-bottom"><span>Don't have an account?</span><a href="signup.html" class="signup-link">Sign up</a></div>
+    </div>
+  </div>
+
+
+  <div class="modal-backdrop hidden" id="resetModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="resetTitle">
+      <button class="modal-close" id="closeReset" aria-label="Close">×</button>
+
+      <div class="modal-logo"><span class="brand-mark">G</span></div>
+
+      <h2 id="resetTitle">Reset password</h2>
+
+      <p class="modal-subtitle">
+        Enter the Gmail/email used for your GameHub account.
+        We'll send a secure password reset email.
+      </p>
+
+      <label class="form-label" for="resetEmail">Email</label>
+      <input class="form-input" id="resetEmail" type="email" placeholder="you@gmail.com" autocomplete="email">
+
+      <button class="primary-form-btn" id="sendResetEmail" type="button">
+        Send reset email
+      </button>
+
+      <div class="signup-bottom">
+        <button id="backToLogin" type="button">Back to Login</button>
+      </div>
+
+      <div class="login-note">
+        Firebase's standard reset flow uses a secure email link, not a 6-digit OTP.
+      </div>
     </div>
   </div>
 
