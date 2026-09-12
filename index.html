@@ -13,10 +13,18 @@
 <body>
   <div class="app-shell">
     <aside class="sidebar" id="sidebar">
-      <a class="brand" href="#" data-home>
-        <span class="brand-mark">G</span>
-        <span class="brand-name">GameHub</span>
-      </a>
+      <div class="brand-row">
+        <a class="brand" href="#" data-home>
+          <span class="brand-mark">G</span>
+          <span class="brand-name">GameHub</span>
+        </a>
+
+        <button class="menu-dots" type="button" aria-label="Open menu options" title="Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
 
       <nav class="nav-main" aria-label="Main navigation">
         <button class="nav-item active" data-section="home"><span>⌂</span> Home</button>
@@ -61,7 +69,7 @@
 
         <div class="search-wrap">
           <span class="search-icon">⌕</span>
-          <input id="searchInput" type="search" placeholder="Search games..." autocomplete="off" />
+          <input id="searchInput" type="search" placeholder="Search..." autocomplete="off" />
         </div>
 
         <div class="auth-area">
@@ -122,6 +130,100 @@
         </div>
       </header>
 
+
+<!-- =========================
+     ANIMATED SPIDER CLOCK
+========================= -->
+
+<div id="ghSpiderClockWrap">
+  <div id="ghSpiderClock"
+       class="gh-spider-clock"
+       tabindex="0"
+       role="button"
+       aria-label="Animated Spider Clock">
+
+    <div class="gh-clock-web" aria-hidden="true">
+      <div class="gh-spiderman-bg">
+        <span class="gh-spiderman-eye gh-eye-left"></span>
+        <span class="gh-spiderman-eye gh-eye-right"></span>
+      </div>
+    </div>
+
+    <div class="gh-clock-face">
+
+      <span class="gh-num gh-n12">12</span>
+      <span class="gh-num gh-n1">1</span>
+      <span class="gh-num gh-n2">2</span>
+      <span class="gh-num gh-n3">3</span>
+      <span class="gh-num gh-n4">4</span>
+      <span class="gh-num gh-n5">5</span>
+      <span class="gh-num gh-n6">6</span>
+      <span class="gh-num gh-n7">7</span>
+      <span class="gh-num gh-n8">8</span>
+      <span class="gh-num gh-n9">9</span>
+      <span class="gh-num gh-n10">10</span>
+      <span class="gh-num gh-n11">11</span>
+
+      <i class="gh-tick gh-t1"></i>
+      <i class="gh-tick gh-t2"></i>
+      <i class="gh-tick gh-t4"></i>
+      <i class="gh-tick gh-t5"></i>
+      <i class="gh-tick gh-t7"></i>
+      <i class="gh-tick gh-t8"></i>
+      <i class="gh-tick gh-t10"></i>
+      <i class="gh-tick gh-t11"></i>
+
+      <div id="ghHour" class="gh-hand gh-hour"></div>
+      <div id="ghMinute" class="gh-hand gh-minute"></div>
+      <div id="ghSecond" class="gh-hand gh-second"></div>
+
+      <div class="gh-center"></div>
+
+      <div class="gh-fire-burst" aria-hidden="true"></div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Horror Screen -->
+
+<div id="ghHorrorLayer">
+  <div class="gh-horror-web gh-web-left"></div>
+  <div class="gh-horror-web gh-web-right"></div>
+
+  <div class="gh-horror-title">
+    DON'T LOOK AWAY...
+  </div>
+
+  <div class="gh-spiderman-stage">
+    <div class="gh-spiderman-character" aria-label="Spider-Man">
+      <div class="gh-spiderman-mask">
+        <span class="gh-mask-eye gh-mask-eye-left"></span>
+        <span class="gh-mask-eye gh-mask-eye-right"></span>
+      </div>
+      <div class="gh-spiderman-chest">
+        <span class="gh-chest-spider">✦</span>
+      </div>
+    </div>
+    <div class="gh-gift-box" aria-label="Opening gift box">
+      <div class="gh-gift-lid"></div>
+      <div class="gh-gift-ribbon gh-ribbon-vertical"></div>
+      <div class="gh-gift-ribbon gh-ribbon-horizontal"></div>
+      <div class="gh-blue-helper" aria-label="Blue robot cat">
+        <span class="gh-helper-ear gh-helper-ear-left"></span>
+        <span class="gh-helper-ear gh-helper-ear-right"></span>
+        <span class="gh-helper-eye gh-helper-eye-left"></span>
+        <span class="gh-helper-eye gh-helper-eye-right"></span>
+        <span class="gh-helper-bell"></span>
+      </div>
+    </div>
+    <div id="ghGiftSymbol" class="gh-gift-symbol" aria-hidden="true">✨</div>
+    <div id="ghSpiderCountdown" class="gh-spider-countdown" aria-live="polite">5</div>
+  </div>
+
+  <div id="ghSpiderContainer"></div>
+</div>
+
       <section class="hero-strip">
         <div class="hero-card hero-a">
           <div class="hero-copy"><span class="hero-icon">🧠</span><div><strong>Train your brain</strong><small>Quick puzzles & challenges</small></div></div>
@@ -132,9 +234,9 @@
         <div class="hero-card hero-c">
           <div class="hero-copy"><span class="hero-icon">🎉</span><div><strong>With friends</strong><small>Multiplayer fun</small></div></div>
         </div>
-        <div class="hero-card hero-d">
+        <a class="hero-card hero-d" href="5-Miniute Fun.html" target="_blank" rel="noopener noreferrer">
           <div class="hero-copy"><span class="hero-icon">☕</span><div><strong>5-minute fun</strong><small>Perfect for breaks</small></div></div>
-        </div>
+        </a>
         <div class="hero-card hero-e">
           <div class="hero-copy"><span class="hero-icon">🕹️</span><div><strong>Meme & arcade</strong><small>Easy to pick up</small></div></div>
         </div>

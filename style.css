@@ -28,13 +28,26 @@ button{border:0;color:inherit}
   background:#0d1017;border-right:1px solid var(--line);
   padding:18px 12px;overflow:auto;z-index:20
 }
+.brand-row{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:4px 8px 18px
+}
 .brand{
   display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;
-  font-weight:800;font-size:18px;padding:4px 8px 18px
+  font-weight:800;font-size:18px;flex:1
 }
 .brand-mark{
   width:30px;height:30px;border-radius:10px;display:grid;place-items:center;
   background:linear-gradient(135deg,#a78bfa,#6d5dfc);font-weight:900;box-shadow:0 7px 18px rgba(124,92,252,.3)
+}
+.menu-dots{
+  width:32px;height:32px;border-radius:10px;background:#171b27;border:1px solid rgba(255,255,255,.06);
+  display:grid;place-items:center;grid-template-columns:repeat(3,4px);gap:3px;cursor:pointer;
+  padding:0;transition:.2s ease
+}
+.menu-dots:hover{background:#1d2330;border-color:rgba(167,139,250,.3)}
+.menu-dots span{
+  display:block;width:4px;height:4px;border-radius:50%;background:#dfe6ff
 }
 .nav-main,.nav-categories{display:grid;gap:4px}
 .nav-item,.category-item{
@@ -84,6 +97,9 @@ button{border:0;color:inherit}
 .hero-strip{
   display:grid;grid-auto-flow:column;grid-auto-columns:minmax(220px,1fr);
   gap:10px;overflow-x:auto;padding:18px 18px 4px;scrollbar-width:thin
+}
+a.hero-card{
+  color:inherit;text-decoration:none;display:flex;align-items:end;cursor:pointer
 }
 .hero-card{
   min-height:114px;border-radius:16px;padding:18px;display:flex;align-items:end;overflow:hidden;
@@ -324,4 +340,1246 @@ select.profile-field-input{appearance:none;padding-right:30px}
 .signup-subtitle{
   text-decoration:none !important;
   border:0 !important;
+}
+/* =====================================================
+   GAMEHUB ANIMATED SPIDER CLOCK
+===================================================== */
+
+#ghSpiderClockWrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0 24px;
+  position: relative;
+  z-index: 5000;
+}
+
+.gh-spider-clock {
+  width: 220px;
+  height: 220px;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+
+  animation: ghClockFloat 4s ease-in-out infinite;
+
+  filter: drop-shadow(0 15px 25px rgba(0,0,0,.4));
+}
+
+/* Web behind clock */
+
+.gh-clock-web {
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+
+  background:
+    repeating-radial-gradient(circle, transparent 0 13px, rgba(255,255,255,.18) 14px 15px),
+    repeating-conic-gradient(from 0deg, transparent 0 13deg, rgba(255,255,255,.15) 14deg 15deg),
+    linear-gradient(145deg, #152b62 0 47%, #c91d35 48% 72%, #081638 73%);
+
+  opacity: .92;
+  overflow: hidden;
+  box-shadow: 0 0 0 4px rgba(205,29,53,.7), 0 12px 25px rgba(0,0,0,.45);
+
+  animation: ghWebPulse 3s ease-in-out infinite;
+}
+
+.gh-spiderman-bg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 112px;
+  height: 142px;
+  transform: translate(-50%, -50%);
+  border-radius: 48% 48% 42% 42%;
+  background:
+    repeating-radial-gradient(ellipse at center, transparent 0 18px, rgba(8,18,55,.52) 19px 20px),
+    repeating-conic-gradient(from 0deg at 50% 48%, transparent 0 14deg, rgba(8,18,55,.6) 15deg 16deg),
+    linear-gradient(90deg, #b5122e, #ed3547 50%, #b5122e);
+  border: 3px solid #071437;
+  box-shadow: 0 0 18px rgba(217,28,55,.7);
+}
+
+.gh-spiderman-eye {
+  position: absolute;
+  top: 38px;
+  width: 25px;
+  height: 42px;
+  background: #f7fbff;
+  border: 3px solid #071437;
+  border-radius: 70% 25% 70% 25%;
+  z-index: 2;
+}
+
+.gh-eye-left {
+  left: 21px;
+  transform: rotate(25deg);
+}
+
+.gh-eye-right {
+  right: 21px;
+  transform: rotate(-25deg) scaleX(-1);
+}
+
+/* Clock */
+
+.gh-clock-face {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+
+  width: 184px;
+  height: 184px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 28%,
+      #fff,
+      #f8fafb 60%,
+      #dce3e8 100%
+    );
+
+  border: 5px solid #15171b;
+
+  box-shadow:
+    0 0 0 5px #e7edf1,
+    0 0 0 9px #080a0d,
+    0 14px 30px rgba(0,0,0,.45);
+
+  overflow: hidden;
+}
+
+/* Web inside clock */
+
+.gh-clock-face::before {
+  content: "";
+
+  position: absolute;
+  inset: 22px;
+
+  border-radius: 50%;
+
+  background:
+    repeating-radial-gradient(
+      circle,
+      transparent 0 12px,
+      rgba(70,75,80,.14) 13px 14px
+    ),
+    repeating-conic-gradient(
+      from 0deg,
+      transparent 0 14deg,
+      rgba(70,75,80,.12) 15px 16px
+    );
+
+  pointer-events: none;
+}
+
+/* Numbers */
+
+.gh-num {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30px;
+  height: 25px;
+  display: grid;
+  place-items: center;
+  color: #44484d;
+  font-family: Georgia, serif;
+  font-size: 18px;
+  font-weight: 900;
+  z-index: 5;
+  transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-74px) rotate(calc(-1 * var(--angle)));
+}
+
+.gh-n12 { --angle: 0deg; }
+.gh-n1 { --angle: 30deg; }
+.gh-n2 { --angle: 60deg; }
+.gh-n3 { --angle: 90deg; }
+.gh-n4 { --angle: 120deg; }
+.gh-n5 { --angle: 150deg; }
+.gh-n6 { --angle: 180deg; }
+.gh-n7 { --angle: 210deg; }
+.gh-n8 { --angle: 240deg; }
+.gh-n9 { --angle: 270deg; }
+.gh-n10 { --angle: 300deg; }
+.gh-n11 { --angle: 330deg; }
+
+/* Tick marks */
+
+.gh-tick {
+  position: absolute;
+
+  width: 2px;
+  height: 9px;
+
+  left: 50%;
+  top: 8px;
+
+  background: #555;
+
+  transform-origin: 50% 84px;
+
+  z-index: 4;
+}
+
+.gh-t1 {
+  transform: translateX(-50%) rotate(30deg);
+}
+
+.gh-t2 {
+  transform: translateX(-50%) rotate(60deg);
+}
+
+.gh-t4 {
+  transform: translateX(-50%) rotate(120deg);
+}
+
+.gh-t5 {
+  transform: translateX(-50%) rotate(150deg);
+}
+
+.gh-t7 {
+  transform: translateX(-50%) rotate(210deg);
+}
+
+.gh-t8 {
+  transform: translateX(-50%) rotate(240deg);
+}
+
+.gh-t10 {
+  transform: translateX(-50%) rotate(300deg);
+}
+
+.gh-t11 {
+  transform: translateX(-50%) rotate(330deg);
+}
+
+/* Clock hands */
+
+.gh-hand {
+  position: absolute;
+
+  left: 50%;
+  bottom: 50%;
+
+  transform-origin: 50% 100%;
+
+  transform:
+    translateX(-50%)
+    rotate(0deg);
+
+  border-radius: 999px;
+
+  z-index: 10;
+
+  pointer-events: none;
+}
+
+.gh-hour {
+  width: 7px;
+  height: 45px;
+  background: #15171a;
+}
+
+.gh-minute {
+  width: 5px;
+  height: 63px;
+  background: #24282c;
+}
+
+.gh-second {
+  width: 2px;
+  height: 73px;
+  background: #e31e3c;
+
+  box-shadow:
+    0 0 7px rgba(227,30,60,.7);
+}
+
+/* Center */
+
+.gh-center {
+  position: absolute;
+
+  width: 14px;
+  height: 14px;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%,-50%);
+
+  border-radius: 50%;
+
+  background: #e3203c;
+  border: 2px solid #111;
+
+  z-index: 15;
+
+  box-shadow: 0 0 8px #e3203c;
+}
+
+/* =====================================================
+   SPIDER INSIDE CLOCK
+===================================================== */
+
+.gh-mini-spider-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  z-index: 20;
+  --orbit-x: 0px;
+  --orbit-y: 0px;
+  transform: translate(var(--orbit-x), var(--orbit-y));
+}
+
+.gh-mini-spider {
+  position: absolute;
+  width: 65px;
+  height: 80px;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%) rotate(var(--spider-rot, 0deg));
+  animation: ghSpiderWalk 0.7s ease-in-out infinite alternate;
+}
+
+.gh-fire-burst {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120px;
+  height: 120px;
+  transform: translate(-50%, -50%) scale(0.2);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255,210,90,0.95) 0%, rgba(255,120,20,0.9) 18%, rgba(255,65,30,0.72) 38%, rgba(255,0,0,0.12) 56%, transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 18;
+  filter: blur(2px);
+}
+
+.gh-clock-face.gh-fire-flare .gh-fire-burst {
+  animation: ghFireBurst 0.7s ease-out forwards;
+}
+
+.gh-mini-head {
+  position: absolute;
+
+  width: 31px;
+  height: 27px;
+
+  left: 17px;
+  top: 8px;
+
+  border-radius: 50%;
+
+  background: #050607;
+}
+
+.gh-mini-head span {
+  position: absolute;
+
+  width: 7px;
+  height: 10px;
+
+  top: 8px;
+
+  border-radius: 50%;
+
+  background: #fff;
+
+  box-shadow: 0 0 5px #fff;
+}
+
+.gh-mini-head span:first-child {
+  left: 5px;
+  transform: rotate(-20deg);
+}
+
+.gh-mini-head span:last-child {
+  right: 5px;
+  transform: rotate(20deg);
+}
+
+.gh-mini-body {
+  position: absolute;
+
+  width: 24px;
+  height: 42px;
+
+  left: 20px;
+  top: 29px;
+
+  border-radius:
+    50% 50% 45% 45%;
+
+  background:
+    radial-gradient(
+      circle at 32% 25%,
+      #292929,
+      #020304 70%
+    );
+}
+
+/* Legs */
+
+.gh-leg {
+  position: absolute;
+
+  width: 33px;
+  height: 2px;
+
+  border-radius: 20px;
+
+  background: #090a0b;
+
+  transform-origin: left center;
+  animation: ghLegStep 0.7s ease-in-out infinite alternate;
+}
+
+.gh-l1 {
+  left: 23px;
+  top: 35px;
+  transform: rotate(205deg);
+  animation-delay: 0.05s;
+}
+
+.gh-l2 {
+  left: 23px;
+  top: 41px;
+  transform: rotate(191deg);
+  animation-delay: 0.1s;
+}
+
+.gh-l3 {
+  left: 23px;
+  top: 48px;
+  transform: rotate(177deg);
+  animation-delay: 0.15s;
+}
+
+.gh-l4 {
+  left: 23px;
+  top: 55px;
+  transform: rotate(163deg);
+  animation-delay: 0.2s;
+}
+
+.gh-l5 {
+  left: 41px;
+  top: 35px;
+  transform: rotate(-25deg);
+  animation-delay: 0.25s;
+}
+
+.gh-l6 {
+  left: 41px;
+  top: 41px;
+  transform: rotate(-11deg);
+  animation-delay: 0.3s;
+}
+
+.gh-l7 {
+  left: 41px;
+  top: 48px;
+  transform: rotate(3deg);
+  animation-delay: 0.35s;
+}
+
+.gh-l8 {
+  left: 41px;
+  top: 55px;
+  transform: rotate(17deg);
+  animation-delay: 0.4s;
+}
+
+@keyframes ghSpiderWalk {
+  0% {
+    transform: translate(-50%, -50%) rotate(-4deg) scale(1);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(4deg) scale(1.05);
+  }
+}
+
+@keyframes ghLegStep {
+  0% {
+    transform: rotate(var(--leg-rot, 0deg)) scaleY(0.95);
+  }
+  100% {
+    transform: rotate(calc(var(--leg-rot, 0deg) + 12deg)) scaleY(1.05);
+  }
+}
+
+@keyframes ghFireBurst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.15);
+  }
+  20% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+}
+
+/* =====================================================
+   HORROR FULL SCREEN
+===================================================== */
+
+#ghHorrorLayer {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 999999;
+
+  display: none;
+
+  overflow: hidden;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(90,0,15,.22),
+      rgba(0,0,0,.94)
+    );
+}
+
+#ghHorrorLayer.gh-active {
+  display: block;
+
+  animation:
+    ghHorrorAppear .25s ease forwards;
+}
+
+/* Horror web */
+
+.gh-horror-web {
+  position: absolute;
+
+  width: 700px;
+  height: 700px;
+
+  border-radius: 50%;
+
+  background:
+    repeating-radial-gradient(
+      circle,
+      transparent 0 27px,
+      rgba(255,255,255,.10) 28px 30px
+    ),
+    repeating-conic-gradient(
+      from 0deg,
+      transparent 0 11deg,
+      rgba(255,255,255,.08) 12px 13px
+    );
+
+  opacity: .55;
+}
+
+.gh-web-left {
+  left: -350px;
+  top: -330px;
+
+  animation:
+    ghWebRotate 15s linear infinite;
+}
+
+.gh-web-right {
+  right: -350px;
+  bottom: -340px;
+
+  animation:
+    ghWebRotateReverse 18s linear infinite;
+}
+
+/* Horror text */
+
+.gh-horror-title {
+  position: absolute;
+
+  left: 50%;
+  bottom: 9%;
+
+  transform: translateX(-50%);
+
+  width: 90%;
+
+  text-align: center;
+
+  color: #ff2746;
+
+  font-size:
+    clamp(20px,4vw,44px);
+
+  font-weight: 1000;
+
+  letter-spacing: 5px;
+
+  text-shadow:
+    0 0 8px #ff2746,
+    0 0 20px #ff2746;
+
+  animation:
+    ghGlitch .35s infinite;
+}
+
+.gh-spiderman-stage {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.gh-spiderman-character {
+  position: relative;
+  width: 190px;
+  height: 260px;
+  filter: drop-shadow(0 0 22px rgba(234,24,54,.75));
+}
+
+#ghHorrorLayer.gh-active .gh-spiderman-character {
+  animation: ghSpiderManSequence 5s ease-in-out both;
+}
+
+.gh-spiderman-mask {
+  position: absolute;
+  left: 35px;
+  top: 0;
+  width: 120px;
+  height: 132px;
+  border: 4px solid #071437;
+  border-radius: 48% 48% 42% 42%;
+  background:
+    repeating-radial-gradient(ellipse at center, transparent 0 21px, rgba(5,15,51,.6) 22px 24px),
+    repeating-conic-gradient(from 0deg at 50% 48%, transparent 0 14deg, rgba(5,15,51,.62) 15deg 17deg),
+    linear-gradient(90deg, #ae102d, #ef3548 50%, #ae102d);
+  z-index: 2;
+}
+
+.gh-mask-eye {
+  position: absolute;
+  top: 42px;
+  width: 34px;
+  height: 55px;
+  border: 4px solid #071437;
+  border-radius: 70% 25% 70% 25%;
+  background: #fff;
+}
+
+.gh-mask-eye-left {
+  left: 23px;
+  transform: rotate(25deg);
+}
+
+.gh-mask-eye-right {
+  right: 23px;
+  transform: rotate(-25deg) scaleX(-1);
+}
+
+.gh-spiderman-chest {
+  position: absolute;
+  left: 14px;
+  bottom: 0;
+  width: 162px;
+  height: 150px;
+  border: 4px solid #071437;
+  border-radius: 47% 47% 16% 16%;
+  background:
+    repeating-radial-gradient(ellipse at center, transparent 0 25px, rgba(5,15,51,.55) 26px 28px),
+    linear-gradient(90deg, #ac102c 0 48%, #15346c 49% 100%);
+}
+
+.gh-chest-spider {
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  color: #fff;
+  font-size: 46px;
+  transform: translate(-50%, -50%);
+  text-shadow: 0 0 12px #fff, 0 0 22px #e91e3d;
+}
+
+.gh-spider-countdown {
+  min-width: 92px;
+  padding: 7px 18px;
+  border: 2px solid #ff2746;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(8,8,14,.8);
+  box-shadow: 0 0 14px rgba(255,39,70,.7);
+  font-size: 24px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.gh-gift-box {
+  position: relative;
+  width: 150px;
+  height: 105px;
+  margin-top: -18px;
+  border: 4px solid #ffd34e;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #d52242 0 42%, #f04a54 43% 57%, #d52242 58%);
+  box-shadow: 0 12px 24px rgba(0,0,0,.55), 0 0 22px rgba(255,43,71,.7);
+}
+
+#ghHorrorLayer.gh-active .gh-gift-box {
+  animation: ghGiftSequence 5s ease-in-out both;
+}
+
+.gh-gift-lid {
+  position: absolute;
+  left: -9px;
+  top: -18px;
+  width: 160px;
+  height: 25px;
+  border: 4px solid #ffd34e;
+  border-radius: 7px;
+  background: #e7344d;
+  transform-origin: 8% 100%;
+  z-index: 3;
+}
+
+#ghHorrorLayer.gh-active .gh-gift-lid {
+  animation: ghGiftOpen .65s 1.15s ease-out both;
+}
+
+.gh-gift-lid::after {
+  content: "";
+  position: absolute;
+  left: 63px;
+  top: -20px;
+  width: 28px;
+  height: 28px;
+  border: 5px solid #ffd34e;
+  border-radius: 50%;
+}
+
+.gh-gift-ribbon {
+  position: absolute;
+  z-index: 2;
+  background: #ffd34e;
+}
+
+.gh-ribbon-vertical {
+  left: 62px;
+  top: 0;
+  width: 23px;
+  height: 100%;
+}
+
+.gh-ribbon-horizontal {
+  left: 0;
+  top: 37px;
+  width: 100%;
+  height: 20px;
+}
+
+.gh-blue-helper {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  width: 82px;
+  height: 88px;
+  border: 4px solid #071437;
+  border-radius: 48% 48% 42% 42%;
+  background: #159bd1;
+  transform: translate(-50%, 80px);
+  z-index: 1;
+}
+
+#ghHorrorLayer.gh-active .gh-blue-helper {
+  animation: ghHelperRise 5s ease-in-out both;
+}
+
+.gh-helper-ear {
+  position: absolute;
+  top: -11px;
+  width: 25px;
+  height: 27px;
+  border: 3px solid #071437;
+  border-radius: 55% 55% 25% 25%;
+  background: #159bd1;
+}
+
+.gh-helper-ear-left { left: 8px; transform: rotate(-25deg); }
+.gh-helper-ear-right { right: 8px; transform: rotate(25deg); }
+
+.gh-helper-eye {
+  position: absolute;
+  top: 27px;
+  width: 14px;
+  height: 19px;
+  border: 2px solid #071437;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.gh-helper-eye-left { left: 19px; }
+.gh-helper-eye-right { right: 19px; }
+
+.gh-helper-bell {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 18px;
+  height: 12px;
+  border: 3px solid #ffd34e;
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+
+.gh-gift-symbol {
+  position: absolute;
+  left: 50%;
+  top: 250px;
+  z-index: 5;
+  opacity: 0;
+  font-size: 34px;
+  filter: drop-shadow(0 0 8px #ffd34e);
+  transform: translateX(-50%) scale(.2);
+}
+
+#ghHorrorLayer.gh-active .gh-gift-symbol {
+  animation: ghGiftSymbolPop 5s ease-in-out both;
+}
+
+@keyframes ghSpiderManSequence {
+  0%, 8% { opacity: 0; transform: translateY(45px) scale(.7); }
+  18%, 38% { opacity: 1; transform: translateY(0) scale(1); }
+  58%, 100% { opacity: 1; transform: translateY(-145px) scale(.78); }
+}
+
+@keyframes ghGiftSequence {
+  0%, 25% { opacity: 0; transform: translateY(170px) scale(.75); }
+  36%, 72% { opacity: 1; transform: translateY(0) scale(1); }
+  82%, 100% { opacity: 0; transform: translateY(180px) scale(.72); }
+}
+
+@keyframes ghGiftOpen {
+  from { transform: rotate(0); }
+  to { transform: rotate(-28deg) translate(-8px, -8px); }
+}
+
+@keyframes ghHelperRise {
+  0%, 34% { transform: translate(-50%, 80px); }
+  45%, 72% { transform: translate(-50%, -34px); }
+  82%, 100% { transform: translate(-50%, 80px); }
+}
+
+@keyframes ghGiftSymbolPop {
+  0%, 40% { opacity: 0; transform: translateX(-50%) translateY(25px) scale(.2) rotate(-15deg); }
+  50%, 70% { opacity: 1; transform: translateX(-50%) translateY(-38px) scale(1.15) rotate(12deg); }
+  80% { opacity: 1; transform: translateX(-50%) translateY(-38px) scale(1.35) rotate(18deg); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(-38px) scale(.72) rotate(0deg); }
+}
+
+@media (max-width: 520px) {
+  .gh-spiderman-stage { top: 43%; transform: translate(-50%, -50%) scale(.82); }
+}
+
+@keyframes ghSpiderManEnter {
+  from { opacity: 0; transform: translate(-50%, -40%) scale(.65); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* =====================================================
+   HORROR SPIDERS
+===================================================== */
+
+.gh-horror-spider {
+  position: absolute;
+  width: 95px;
+  height: 115px;
+  will-change: transform;
+  filter: drop-shadow(0 0 8px rgba(255,15,50,.7));
+  left: 50%;
+  top: 50%;
+}
+
+/* Head */
+
+.gh-horror-spider .h-head {
+  position: absolute;
+
+  width: 42px;
+  height: 36px;
+
+  left: 26px;
+  top: 11px;
+
+  border-radius: 50%;
+
+  background: #030405;
+}
+
+/* Body */
+
+.gh-horror-spider .h-body {
+  position: absolute;
+
+  width: 38px;
+  height: 53px;
+
+  left: 29px;
+  top: 42px;
+
+  border-radius:
+    50% 50% 45% 45%;
+
+  background:
+    radial-gradient(
+      circle at 30% 25%,
+      #333,
+      #020304 70%
+    );
+
+  border: 1px solid #ef183d;
+
+  box-shadow:
+    0 0 15px rgba(239,24,61,.55);
+}
+
+/* Eyes */
+
+.gh-horror-spider .h-eye {
+  position: absolute;
+
+  top: 21px;
+
+  width: 8px;
+  height: 12px;
+
+  border-radius: 50%;
+
+  background: #fff;
+
+  box-shadow:
+    0 0 10px #fff;
+}
+
+.gh-horror-spider .h-eye.left {
+  left: 33px;
+  transform: rotate(-22deg);
+}
+
+.gh-horror-spider .h-eye.right {
+  left: 53px;
+  transform: rotate(22deg);
+}
+
+/* Legs */
+
+.gh-horror-spider .h-leg {
+  position: absolute;
+
+  width: 53px;
+  height: 4px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #030303,
+      #ef1c41
+    );
+
+  box-shadow:
+    0 0 6px rgba(239,28,65,.8);
+
+  transform-origin:
+    100% 50%;
+}
+
+.gh-horror-spider .a {
+  left: 31px;
+  top: 50px;
+  transform: rotate(153deg);
+}
+
+.gh-horror-spider .b {
+  left: 31px;
+  top: 61px;
+  transform: rotate(166deg);
+}
+
+.gh-horror-spider .c {
+  left: 31px;
+  top: 72px;
+  transform: rotate(184deg);
+}
+
+.gh-horror-spider .d {
+  left: 31px;
+  top: 83px;
+  transform: rotate(201deg);
+}
+
+.gh-horror-spider .e {
+  left: 63px;
+  top: 50px;
+  transform: rotate(27deg);
+}
+
+.gh-horror-spider .f {
+  left: 63px;
+  top: 61px;
+  transform: rotate(14deg);
+}
+
+.gh-horror-spider .g {
+  left: 63px;
+  top: 72px;
+  transform: rotate(-4deg);
+}
+
+.gh-horror-spider .h {
+  left: 63px;
+  top: 83px;
+  transform: rotate(-21deg);
+}
+
+/* Entry animations */
+
+.gh-from-top {
+  animation:
+    ghFromTop 1s cubic-bezier(.16,.8,.2,1) forwards;
+}
+
+.gh-from-bottom {
+  animation:
+    ghFromBottom 1s cubic-bezier(.16,.8,.2,1) forwards;
+}
+
+.gh-from-left {
+  animation:
+    ghFromLeft 1s cubic-bezier(.16,.8,.2,1) forwards;
+}
+
+.gh-from-right {
+  animation:
+    ghFromRight 1s cubic-bezier(.16,.8,.2,1) forwards;
+}
+
+@keyframes ghFromTop {
+
+  from {
+    transform:
+      translateY(-220px)
+      scale(.45)
+      rotate(-15deg);
+
+    opacity: 0;
+  }
+
+  to {
+    transform:
+      translateY(0)
+      scale(1)
+      rotate(0deg);
+
+    opacity: 1;
+  }
+
+}
+
+@keyframes ghFromBottom {
+
+  from {
+    transform:
+      translateY(220px)
+      scale(.45)
+      rotate(15deg);
+
+    opacity: 0;
+  }
+
+  to {
+    transform:
+      translateY(0)
+      scale(1)
+      rotate(0deg);
+
+    opacity: 1;
+  }
+
+}
+
+@keyframes ghFromLeft {
+
+  from {
+    transform:
+      translateX(-220px)
+      scale(.45)
+      rotate(-18deg);
+
+    opacity: 0;
+  }
+
+  to {
+    transform:
+      translateX(0)
+      scale(1)
+      rotate(0deg);
+
+    opacity: 1;
+  }
+
+}
+
+@keyframes ghFromRight {
+
+  from {
+    transform:
+      translateX(220px)
+      scale(.45)
+      rotate(18deg);
+
+    opacity: 0;
+  }
+
+  to {
+    transform:
+      translateX(0)
+      scale(1)
+      rotate(0deg);
+
+    opacity: 1;
+  }
+
+}
+
+@keyframes ghClockFloat {
+
+  0%,100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(6px);
+  }
+
+}
+
+@keyframes ghWebPulse {
+
+  0%,100% {
+    opacity: .35;
+  }
+
+  50% {
+    opacity: .65;
+  }
+
+}
+
+@keyframes ghSpiderBreath {
+
+  0%,100% {
+    transform:
+      translate(-50%,-50%)
+      scale(1)
+      rotate(-2deg);
+  }
+
+  50% {
+    transform:
+      translate(-50%,-48%)
+      scale(1.04)
+      rotate(2deg);
+  }
+
+}
+
+@keyframes ghHorrorAppear {
+
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+
+}
+
+@keyframes ghWebRotate {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+@keyframes ghWebRotateReverse {
+
+  to {
+    transform: rotate(-360deg);
+  }
+
+}
+
+@keyframes ghGlitch {
+
+  0%,100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .45;
+  }
+
+}
+
+@media(max-width:600px) {
+
+  #ghSpiderClockWrap {
+    padding: 5px 0 14px;
+  }
+
+  .gh-spider-clock {
+    width: 180px;
+    height: 180px;
+  }
+
+  .gh-clock-face {
+    width: 150px;
+    height: 150px;
+    left: 15px;
+    top: 15px;
+  }
+
+  .gh-num {
+    font-size: 15px;
+  }
+
+  .gh-horror-spider {
+    transform: scale(.75);
+  }
 }

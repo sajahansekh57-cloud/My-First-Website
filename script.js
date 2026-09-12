@@ -203,6 +203,7 @@ function closeProfilePanel() {
 const games = [
   {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-1", rating:"4.9", url:"games/neon-dodge/index.html"},
   {id:"train-your-brain", title:"Train Your Brain", category:"Puzzle", type:"Featured", emoji:"🧠", color:"color-2", rating:"4.8", url:"games/train-your-brain/index.html"},
+  {id:"sky-scramble", title:"Sky Scramble", category:"Arcade", type:"Featured", emoji:"✈️", color:"color-3", rating:"4.7", url:"games/sky-scramble/index.html"},
   {id:"neon-racer", title:"Neon Racer", category:"Driving", type:"Popular", emoji:"🏎️", color:"color-1", rating:"4.8"},
   {id:"block-blitz", title:"Block Blitz", category:"Puzzle", type:"Featured", emoji:"🧱", color:"color-2", rating:"4.7"},
   {id:"pixel-warzone", title:"Pixel Warzone", category:"Shooting", type:"Popular", emoji:"🔫", color:"color-3", rating:"4.9"},
@@ -220,7 +221,7 @@ const games = [
   {id:"mini-golf", title:"Mini Golf", category:"Sports", type:"New", emoji:"⛳", color:"color-15", rating:"4.5"}
 ];
 
-const homeGameIds = new Set(["neon-dodge", "train-your-brain"]);
+const homeGameIds = new Set(["neon-dodge", "train-your-brain", "sky-scramble"]);
 
 function loadRecent() {
   try { return JSON.parse(localStorage.getItem("gamehub_recent") || "[]"); }
@@ -238,8 +239,9 @@ function escapeHtml(value) {
 }
 
 function gameCard(game, featured=false) {
+  const featuredSize = game.id === "sky-scramble" ? "large" : game.id === "neon-dodge" ? "medium" : "medium";
   return `
-    <article class="${featured ? "featured-card " + (game.id === "neon-dodge" ? "large" : "medium") : "game-card"}"
+    <article class="${featured ? "featured-card " + featuredSize : "game-card"}"
              data-game-id="${game.id}" tabindex="0">
       <div class="${featured ? "featured-art" : "game-art"} ${game.color}">${game.emoji}</div>
       <div class="game-content">
@@ -893,3 +895,781 @@ if (
     );
   }, 350);
 }
+/* ===================================
+   REAL TIME SPIDER CLOCK
+=================================== */
+
+function updateSpiderClock() {
+  const now = new Date();
+
+  const seconds = now.getSeconds();
+  const milliseconds = now.getMilliseconds();
+
+  const minutes = now.getMinutes() + seconds / 60;
+  const hours = (now.getHours() % 12) + minutes / 60;
+
+  const secondDegree =
+    (seconds + milliseconds / 1000) * 6;
+
+  const minuteDegree =
+    minutes * 6;
+
+  const hourDegree =
+    hours * 30;
+
+  const hourHand = document.getElementById("hourHand");
+  const minuteHand = document.getElementById("minuteHand");
+  const secondHand = document.getElementById("secondHand");
+
+  if (hourHand) {
+    hourHand.style.transform =
+      `translateX(-50%) rotate(${hourDegree}deg)`;
+  }
+
+  if (minuteHand) {
+    minuteHand.style.transform =
+      `translateX(-50%) rotate(${minuteDegree}deg)`;
+  }
+
+  if (secondHand) {
+    secondHand.style.transform =
+      `translateX(-50%) rotate(${secondDegree}deg)`;
+  }
+
+  requestAnimationFrame(updateSpiderClock);
+}
+
+requestAnimationFrame(updateSpiderClock);
+
+
+/* =====================================================
+   GAMEHUB SPIDER CLOCK
+===================================================== */
+
+(function () {
+
+  /* ================================
+     REAL TIME CLOCK
+  ================================= */
+
+  const hourHand =
+    document.getElementById("ghHour");
+
+  const minuteHand =
+    document.getElementById("ghMinute");
+
+  const secondHand =
+    document.getElementById("ghSecond");
+
+  const spiderOrbit =
+    document.querySelector(".gh-mini-spider-orbit");
+
+  const clockFace =
+    document.querySelector(".gh-clock-face");
+
+  let lastSecondAtTwelve = false;
+
+  function triggerFireBurst() {
+    if (!clockFace) return;
+
+    clockFace.classList.remove("gh-fire-flare");
+
+    void clockFace.offsetWidth;
+
+    clockFace.classList.add("gh-fire-flare");
+
+    clearTimeout(triggerFireBurst.timer);
+
+    triggerFireBurst.timer = setTimeout(() => {
+      clockFace.classList.remove("gh-fire-flare");
+    }, 700);
+  }
+
+
+  function updateSpiderClock() {
+
+    const now = new Date();
+
+    const milliseconds =
+      now.getMilliseconds();
+
+    const seconds =
+      now.getSeconds() +
+      milliseconds / 1000;
+
+    const minutes =
+      now.getMinutes() +
+      seconds / 60;
+
+    const hours =
+      (now.getHours() % 12) +
+      minutes / 60;
+
+
+    const hourDegree =
+      hours * 30;
+
+    const minuteDegree =
+      minutes * 6;
+
+    const secondDegree =
+      seconds * 6;
+
+    const secondCycle =
+      Math.floor(seconds % 60);
+
+    const orbitRadius = 86;
+    const orbitAngle =
+      (seconds * 6 - 90) * (Math.PI / 180);
+
+    const orbitX =
+      Math.cos(orbitAngle) * orbitRadius;
+
+    const orbitY =
+      Math.sin(orbitAngle) * orbitRadius;
+
+    if (spiderOrbit) {
+      spiderOrbit.style.setProperty("--orbit-x", `${orbitX}px`);
+      spiderOrbit.style.setProperty("--orbit-y", `${orbitY}px`);
+      spiderOrbit.style.setProperty("--spider-rot", `${(orbitAngle * 180 / Math.PI) + 90}deg`);
+    }
+
+    if (secondCycle === 0 && !lastSecondAtTwelve) {
+      triggerFireBurst();
+      lastSecondAtTwelve = true;
+    }
+
+    if (secondCycle !== 0) {
+      lastSecondAtTwelve = false;
+    }
+
+
+    if (hourHand) {
+
+      hourHand.style.transform =
+        `translateX(-50%) rotate(${hourDegree}deg)`;
+
+    }
+
+
+    if (minuteHand) {
+
+      minuteHand.style.transform =
+        `translateX(-50%) rotate(${minuteDegree}deg)`;
+
+    }
+
+
+    if (secondHand) {
+
+      secondHand.style.transform =
+        `translateX(-50%) rotate(${secondDegree}deg)`;
+
+    }
+
+
+    requestAnimationFrame(
+      updateSpiderClock
+    );
+
+  }
+
+
+  requestAnimationFrame(
+    updateSpiderClock
+  );
+
+
+
+  /* ================================
+     HORROR ELEMENTS
+  ================================= */
+
+  const clock =
+    document.getElementById(
+      "ghSpiderClock"
+    );
+
+  const horrorLayer =
+    document.getElementById(
+      "ghHorrorLayer"
+    );
+
+  const spiderContainer =
+    document.getElementById(
+      "ghSpiderContainer"
+    );
+
+
+  let horrorActive = false;
+
+  let horrorTimer = null;
+
+  let horrorCountdownTimer = null;
+
+  let audioContext = null;
+
+
+
+  /* ================================
+     HORROR SOUND
+  ================================= */
+
+  function playHorrorSound() {
+
+    try {
+
+      const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+
+      if (!AudioContext) {
+        return;
+      }
+
+
+      audioContext =
+        audioContext ||
+        new AudioContext();
+
+
+      if (
+        audioContext.state ===
+        "suspended"
+      ) {
+
+        audioContext.resume();
+
+      }
+
+
+      const now =
+        audioContext.currentTime;
+
+
+      /* Deep sound */
+
+      const gain =
+        audioContext.createGain();
+
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        now
+      );
+
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.16,
+        now + 0.08
+      );
+
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + 2.5
+      );
+
+
+      gain.connect(
+        audioContext.destination
+      );
+
+
+      const low =
+        audioContext.createOscillator();
+
+
+      low.type =
+        "sawtooth";
+
+
+      low.frequency.setValueAtTime(
+        80,
+        now
+      );
+
+
+      low.frequency.exponentialRampToValueAtTime(
+        30,
+        now + 2
+      );
+
+
+      low.connect(gain);
+
+      low.start(now);
+
+      low.stop(
+        now + 2.5
+      );
+
+
+      /* Creepy high sound */
+
+      const high =
+        audioContext.createOscillator();
+
+
+      const highGain =
+        audioContext.createGain();
+
+
+      high.type =
+        "triangle";
+
+
+      high.frequency.setValueAtTime(
+        420,
+        now
+      );
+
+
+      high.frequency.exponentialRampToValueAtTime(
+        100,
+        now + 1
+      );
+
+
+      highGain.gain.setValueAtTime(
+        0.0001,
+        now
+      );
+
+
+      highGain.gain.exponentialRampToValueAtTime(
+        0.05,
+        now + 0.08
+      );
+
+
+      highGain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + 1.2
+      );
+
+
+      high.connect(highGain);
+
+      highGain.connect(
+        audioContext.destination
+      );
+
+
+      high.start(now);
+
+      high.stop(
+        now + 1.2
+      );
+
+
+    } catch (error) {
+
+      console.log(
+        "Horror sound unavailable"
+      );
+
+    }
+
+  }
+
+
+
+  /* ================================
+     CREATE SPIDER
+  ================================= */
+
+  function createHorrorSpider(
+    direction
+  ) {
+
+    const spider =
+      document.createElement(
+        "div"
+      );
+
+
+    spider.className =
+      "gh-horror-spider";
+
+
+    if (
+      direction ===
+      "top"
+    ) {
+
+      spider.classList.add(
+        "gh-from-top"
+      );
+
+    }
+
+
+    if (
+      direction ===
+      "bottom"
+    ) {
+
+      spider.classList.add(
+        "gh-from-bottom"
+      );
+
+    }
+
+
+    if (
+      direction ===
+      "left"
+    ) {
+
+      spider.classList.add(
+        "gh-from-left"
+      );
+
+    }
+
+
+    if (
+      direction ===
+      "right"
+    ) {
+
+      spider.classList.add(
+        "gh-from-right"
+      );
+
+    }
+
+
+    /* Head */
+
+    const head =
+      document.createElement(
+        "span"
+      );
+
+    head.className =
+      "h-head";
+
+
+    /* Body */
+
+    const body =
+      document.createElement(
+        "span"
+      );
+
+    body.className =
+      "h-body";
+
+
+    /* Eyes */
+
+    const eyeLeft =
+      document.createElement(
+        "span"
+      );
+
+    eyeLeft.className =
+      "h-eye left";
+
+
+    const eyeRight =
+      document.createElement(
+        "span"
+      );
+
+    eyeRight.className =
+      "h-eye right";
+
+
+    spider.appendChild(body);
+
+    spider.appendChild(head);
+
+    spider.appendChild(eyeLeft);
+
+    spider.appendChild(eyeRight);
+
+
+    /* Legs */
+
+    const legNames = [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g",
+      "h"
+    ];
+
+
+    legNames.forEach(
+      function (name) {
+
+        const leg =
+          document.createElement(
+            "i"
+          );
+
+
+        leg.className =
+          "h-leg " + name;
+
+
+        spider.appendChild(
+          leg
+        );
+
+      }
+    );
+
+
+    /* Position */
+
+    if (
+      direction === "top" ||
+      direction === "bottom"
+    ) {
+
+      spider.style.left =
+        (
+          3 +
+          Math.random() * 94
+        ) + "%";
+
+    } else {
+
+      spider.style.top =
+        (
+          4 +
+          Math.random() * 88
+        ) + "%";
+
+    }
+
+
+    if (
+      direction === "top"
+    ) {
+
+      spider.style.top =
+        "-140px";
+
+    }
+
+
+    if (
+      direction === "bottom"
+    ) {
+
+      spider.style.bottom =
+        "-140px";
+
+    }
+
+
+    if (
+      direction === "left"
+    ) {
+
+      spider.style.left =
+        "-140px";
+
+    }
+
+
+    if (
+      direction === "right"
+    ) {
+
+      spider.style.right =
+        "-140px";
+
+    }
+
+
+    /* Random size */
+
+    const size =
+      0.6 +
+      Math.random() * 0.8;
+
+
+    spider.style.zoom =
+      size.toFixed(2);
+
+
+    return spider;
+
+  }
+
+
+
+  /* ================================
+     START 5 SECOND HORROR
+  ================================= */
+
+  function startSpiderHorror() {
+
+    if (horrorActive) {
+      return;
+    }
+
+
+    horrorActive = true;
+
+
+    /* Reset the overlay state */
+
+    spiderContainer.innerHTML =
+      "";
+
+    const countdown =
+      document.getElementById("ghSpiderCountdown");
+
+    const giftSymbol =
+      document.getElementById("ghGiftSymbol");
+
+    const giftSymbols = [
+      "✨",
+      "🎁",
+      "⭐",
+      "💫",
+      "🔑",
+      "🪄"
+    ];
+
+    let secondsLeft = 5;
+
+    if (countdown) {
+      countdown.textContent = secondsLeft;
+    }
+
+    if (giftSymbol) {
+      giftSymbol.textContent =
+        giftSymbols[Math.floor(Math.random() * giftSymbols.length)];
+    }
+
+    clearInterval(
+      horrorCountdownTimer
+    );
+
+    horrorCountdownTimer = setInterval(
+      function () {
+        secondsLeft -= 1;
+
+        if (countdown) {
+          countdown.textContent = Math.max(secondsLeft, 0);
+        }
+      },
+      1000
+    );
+
+
+    /* Show horror screen */
+
+    horrorLayer.classList.add(
+      "gh-active"
+    );
+
+
+    /* Sound */
+
+    playHorrorSound();
+
+
+    /* Exactly 5 seconds */
+
+    clearTimeout(
+      horrorTimer
+    );
+
+
+    horrorTimer =
+      setTimeout(
+        function () {
+
+          horrorLayer.classList.remove(
+            "gh-active"
+          );
+
+
+          spiderContainer.innerHTML =
+            "";
+
+          clearInterval(
+            horrorCountdownTimer
+          );
+
+          if (countdown) {
+            countdown.textContent = "0";
+          }
+
+
+          horrorActive =
+            false;
+
+        },
+        5000
+      );
+
+  }
+
+
+
+  /* ================================
+     CLOCK CLICK
+  ================================= */
+
+  if (clock) {
+
+    clock.addEventListener(
+      "click",
+      startSpiderHorror
+    );
+
+
+    /* Keyboard */
+
+    clock.addEventListener(
+      "keydown",
+      function (event) {
+
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+
+          event.preventDefault();
+
+          startSpiderHorror();
+
+        }
+
+      }
+    );
+
+
+    /* Mobile */
+
+    clock.addEventListener(
+      "touchstart",
+      function (event) {
+
+        event.preventDefault();
+
+        startSpiderHorror();
+
+      },
+      {
+        passive: false
+      }
+    );
+
+  }
+
+})();
