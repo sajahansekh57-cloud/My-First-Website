@@ -222,7 +222,7 @@ const games = [
   {id:"naruto-shinobi", title:"Naruto: Shinobi Chronicles", category:"Action", type:"New", emoji:"🍥", color:"color-6", rating:"4.8", url:"Naruto-Game/index.html"},
 ];
 
-cconst homeGameIds = new Set([
+const homeGameIds = new Set([
   "neon-dodge",
   "train-your-brain",
   "sky-scramble",
