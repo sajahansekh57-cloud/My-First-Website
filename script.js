@@ -204,6 +204,7 @@ const games = [
   {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"✈️", color:"color-1", rating:"4.9", url:"games/neon-dodge/index.html"},
   {id:"train-your-brain", title:"Train Your Brain", category:"Puzzle", type:"Featured", emoji:"🧠", color:"color-2", rating:"4.8", url:"games/train-your-brain/index.html"},
   {id:"sky-scramble", title:"Sky Scramble", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-3", rating:"4.7", url:"games/sky-scramble/index.html"},
+  {id:"naruto-shinobi", title:"Shinobi Chronicles", category:"Action", type:"New", emoji:"🍥", color:"color-6", rating:"4.8", url:"games/Naruto-Game/index.html"},
   {id:"neon-racer", title:"Neon Racer", category:"Driving", type:"Popular", emoji:"🏎️", color:"color-1", rating:"4.8"},
   {id:"block-blitz", title:"Block Blitz", category:"Puzzle", type:"Featured", emoji:"🧱", color:"color-2", rating:"4.7"},
   {id:"pixel-warzone", title:"Pixel Warzone", category:"Shooting", type:"Popular", emoji:"🔫", color:"color-3", rating:"4.9"},
@@ -219,7 +220,6 @@ const games = [
   {id:"word-quest", title:"Word Quest", category:"Word", type:"Popular", emoji:"🔤", color:"color-13", rating:"4.7"},
   {id:"space-dodge", title:"Space Dodge", category:"Arcade", type:"New", emoji:"🚀", color:"color-14", rating:"4.6"},
   {id:"mini-golf", title:"Mini Golf", category:"Sports", type:"New", emoji:"⛳", color:"color-15", rating:"4.5"},
-  {id:"naruto-shinobi", title:"Naruto: Shinobi Chronicles", category:"Action", type:"New", emoji:"🍥", color:"color-6", rating:"4.8", url:"Naruto-Game/index.html"},
 ];
 
 const homeGameIds = new Set([
