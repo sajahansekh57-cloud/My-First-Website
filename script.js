@@ -222,7 +222,12 @@ const games = [
   {id:"naruto-shinobi", title:"Naruto: Shinobi Chronicles", category:"Action", type:"New", emoji:"🍥", color:"color-6", rating:"4.8", url:"Naruto-Game/index.html"}
 ];
 
-const homeGameIds = new Set(["neon-dodge", "train-your-brain", "sky-scramble", "naruto-shinobi"]);
+cconst homeGameIds = new Set([
+  "neon-dodge",
+  "train-your-brain",
+  "sky-scramble",
+  "naruto-shinobi"
+]);
 
 function loadRecent() {
   try { return JSON.parse(localStorage.getItem("gamehub_recent") || "[]"); }
