@@ -219,7 +219,7 @@ const games = [
   {id:"word-quest", title:"Word Quest", category:"Word", type:"Popular", emoji:"🔤", color:"color-13", rating:"4.7"},
   {id:"space-dodge", title:"Space Dodge", category:"Arcade", type:"New", emoji:"🚀", color:"color-14", rating:"4.6"},
   {id:"mini-golf", title:"Mini Golf", category:"Sports", type:"New", emoji:"⛳", color:"color-15", rating:"4.5"},
-  {id:"naruto-shinobi", title:"Naruto: Shinobi Chronicles", category:"Action", type:"New", emoji:"🍥", color:"color-6", rating:"4.8", url:"Naruto-Game/index.html"}
+  {id:"naruto-shinobi", title:"Naruto: Shinobi Chronicles", category:"Action", type:"New", emoji:"🍥", color:"color-6", rating:"4.8", url:"Naruto-Game/index.html"},
 ];
 
 cconst homeGameIds = new Set([
