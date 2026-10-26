@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10172a">
+  <title>Memory Match | My Gaming Website</title>
+  <link rel="stylesheet" href="memory-match.css">
+  <script src="memory-match.js" defer></script>
+</head>
+<body>
+  <main class="page">
+    <header class="topbar">
+      <a class="back-link" href="index.html" aria-label="Back to homepage">← Home</a>
+      <span class="brand">MY ARCADE</span>
+      <span class="top-pill">BRAIN GAME</span>
+    </header>
 
+    <section class="intro" aria-labelledby="game-title">
+      <p class="eyebrow">FOCUS • REMEMBER • MATCH</p>
+      <h1 id="game-title">Memory Match</h1>
+      <p class="subtitle">Flip two cards, find matching pairs, and clear the board with as few moves as possible.</p>
+    </section>
+
+    <section class="game-panel" aria-label="Memory Match game">
+      <div class="stats" aria-live="polite">
+        <div class="stat"><span class="stat-label">MOVES</span><strong id="moves">0</strong></div>
+        <div class="stat"><span class="stat-label">PAIRS</span><strong id="pairs">0 / 8</strong></div>
+        <div class="stat"><span class="stat-label">TIME</span><strong id="time">00:00</strong></div>
+      </div>
+
+      <div class="controls">
+        <label class="difficulty-control" for="difficulty">
+          <span>Difficulty</span>
+          <select id="difficulty">
+            <option value="easy">Easy · 6 pairs</option>
+            <option value="normal" selected>Normal · 8 pairs</option>
+            <option value="hard">Hard · 10 pairs</option>
+          </select>
+        </label>
+        <button id="restartButton" class="secondary-button" type="button">↻ Restart</button>
+      </div>
+
+      <div id="message" class="message" role="status" aria-live="polite">Choose two cards to find a pair.</div>
+      <div id="board" class="board" aria-label="Memory cards"></div>
+
+      <div id="winPanel" class="win-panel" hidden>
+        <div class="win-icon" aria-hidden="true">🏆</div>
+        <h2>Board cleared!</h2>
+        <p id="resultText">You found every pair.</p>
+        <button id="playAgainButton" class="primary-button" type="button">Play again</button>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Tip: remember the cards you have already seen. Your best score is saved on this device.</p>
+    </footer>
+  </main>
+</body>
+</html>
