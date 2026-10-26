@@ -201,10 +201,11 @@ function closeProfilePanel() {
 }
 
 const games = [
-  {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"✈️", color:"color-1", rating:"4.9", url:"games/neon-dodge/index.html"},
   {id:"train-your-brain", title:"Train Your Brain", category:"Puzzle", type:"Featured", emoji:"🧠", color:"color-2", rating:"4.8", url:"games/train-your-brain/index.html"},
-  {id:"sky-scramble", title:"Sky Scramble", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-3", rating:"4.7", url:"games/sky-scramble/index.html"},
+  {id:"Memory Match", title:"Memory Match", category:"Puzzle", type:"Updated", emoji:"🎯", color:"color-10", rating:"4.6", url:"games/Memory Match/index.html"   },
   {id:"naruto-shinobi", title:"Shinobi Chronicles", category:"Action", type:"New", emoji:"🍥", color:"color-6", rating:"4.8", url:"games/Naruto-Game/index.html"},
+  {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"✈️", color:"color-1", rating:"4.9", url:"games/neon-dodge/index.html"},
+  {id:"sky-scramble", title:"Sky Scramble", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-3", rating:"4.7", url:"games/sky-scramble/index.html"},
   {id:"neon-racer", title:"Neon Racer", category:"Driving", type:"Popular", emoji:"🏎️", color:"color-1", rating:"4.8"},
   {id:"block-blitz", title:"Block Blitz", category:"Puzzle", type:"Featured", emoji:"🧱", color:"color-2", rating:"4.7"},
   {id:"pixel-warzone", title:"Pixel Warzone", category:"Shooting", type:"Popular", emoji:"🔫", color:"color-3", rating:"4.9"},
@@ -214,7 +215,6 @@ const games = [
   {id:"empire-city", title:"Empire City", category:"Strategy", type:"New", emoji:"🏙️", color:"color-7", rating:"4.7"},
   {id:"sky-pilot", title:"Sky Pilot", category:"Sports", type:"New", emoji:"✈️", color:"color-8", rating:"4.4"},
   {id:"hex-stack", title:"Hexa Stack", category:"Puzzle", type:"New", emoji:"🔷", color:"color-9", rating:"4.9"},
-  {id:"bodycam", title:"Bodycam Shooter", category:"Shooting", type:"Updated", emoji:"🎯", color:"color-10", rating:"4.6"},
   {id:"candy-pop", title:"Candy Pop", category:"Arcade", type:"Popular", emoji:"🍭", color:"color-11", rating:"4.5"},
   {id:"traffic-fury", title:"Traffic Fury", category:"Driving", type:"Popular", emoji:"🚗", color:"color-12", rating:"4.8"},
   {id:"word-quest", title:"Word Quest", category:"Word", type:"Popular", emoji:"🔤", color:"color-13", rating:"4.7"},
