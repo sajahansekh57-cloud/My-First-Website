@@ -735,67 +735,69 @@
     });
   }
 
-  function updateSkillDrops(dt){
-    skillDropTimer -= dt;
+  
+function updateSkillDrops(dt) {
+  skillDropTimer -= dt;
 
-    if(skillDropTimer <= 0){
-      spawnSkillDrop();
-      skillDropTimer = 5 + Math.random() * 4;
-    }
-
-    for(let i=skillDrops.length-1; i>=0; i--){
-      const drop = skillDrops[i];
-      drop.y += drop.speed * dt;
-      drop.rot += dt * 2;
-
-      const collected = rectCircleHit(
-        player.x-player.w,
-        player.y-player.h/2,
-        player.w*2,
-        player.h,
-        drop.x,
-        drop.y,
-        drop.size
-      );
-
-      if(collected){
-        activeSkill = drop;
-        updateSkillButton();
-        burst(drop.x, drop.y, 18);
-        score += 12;
-        skillDrops.splice(i,1);
-        continue;
-      }
-
-      if(drop.y - drop.size > H){
-        skillDrops.splice(i,1);
-      }
-    }
+  if (skillDropTimer <= 0) {
+    spawnSkillDrop();
+    skillDropTimer = 5 + Math.random() * 4;
   }
 
-  function activateSkill(){
-    if(!activeSkill || !running || paused) return;
+  for (let i = skillDrops.length - 1; i >= 0; i--) {
+    const drop = skillDrops[i];
 
-    const skill = activeSkill.type;
-    const skillLabel = activeSkill.label;
-    activeSkill = null;
-    updateSkillButton();
-    skillEffectTimer = 5;
-    skillEffectLabel = skillLabel;
-    updateSkillTimer();
+    drop.y += drop.speed * dt;
+    drop.rot += dt * 2;
 
-    if(skill === "rapid"){
-      rapidFireTimer = 5;
+    const collected = rectCircleHit(
+      player.x - player.w,
+      player.y - player.h / 2,
+      player.w * 2,
+      player.h,
+      drop.x,
+      drop.y,
+      drop.size
+    );
+
+    if (collected) {
+      // Collect korlei power-up auto activate hobe
+      activateSkill(drop);
+
+      burst(drop.x, drop.y, 18);
+      score += 12;
+      skillDrops.splice(i, 1);
+      continue;
     }
 
-    if(skill === "shield"){
-      player.invincible = Math.max(player.invincible, 5);
-    }
-
-    if(skill === "speed"){
-      boostTimer = 5;
+    if (drop.y - drop.size > H) {
+      skillDrops.splice(i, 1);
     }
   }
+}
+
+function activateSkill(skill) {
+  if (!skill || !running || paused) return;
+
+  // Skill collect korar sathe sathe effect start
+  skillEffectTimer = 5;
+  skillEffectLabel = skill.label;
+
+  if (skill.type === "rapid") {
+    rapidFireTimer = 5;
+  }
+
+  if (skill.type === "shield") {
+    player.invincible = Math.max(player.invincible, 5);
+  }
+
+  if (skill.type === "speed") {
+    boostTimer = 5;
+  }
+
+  updateSkillButton();
+  updateSkillTimer();
+}
 
 
   // ==========================================================
