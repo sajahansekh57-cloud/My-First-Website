@@ -1,17 +1,24 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#10172a">
+  <meta name="description" content="Play Memory Match, remember the cards, earn points and complete 30 levels.">
   <title>Memory Match | My Gaming Website</title>
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
+
 <body>
   <main class="page">
+
     <header class="topbar">
-      <a class="back-link" href="index.html" aria-label="Back to homepage">← Home</a>
+      <a class="back-link" href="../../index.html" aria-label="Back to Game Hub">
+        ← Home
+      </a>
+
       <span class="brand">MY ARCADE</span>
       <span class="top-pill">BRAIN GAME</span>
     </header>
@@ -19,42 +26,101 @@
     <section class="intro" aria-labelledby="game-title">
       <p class="eyebrow">FOCUS • REMEMBER • MATCH</p>
       <h1 id="game-title">Memory Match</h1>
-      <p class="subtitle">Flip two cards, find matching pairs, and clear the board with as few moves as possible.</p>
+      <p class="subtitle">
+        Memorize the cards, match the pairs, protect your hearts and complete all 30 levels!
+      </p>
     </section>
 
     <section class="game-panel" aria-label="Memory Match game">
+
       <div class="stats" aria-live="polite">
-        <div class="stat"><span class="stat-label">MOVES</span><strong id="moves">0</strong></div>
-        <div class="stat"><span class="stat-label">PAIRS</span><strong id="pairs">0 / 8</strong></div>
-        <div class="stat"><span class="stat-label">TIME</span><strong id="time">00:00</strong></div>
+        <div class="stat">
+          <span class="stat-label">MOVES</span>
+          <strong id="moves">0</strong>
+        </div>
+
+        <div class="stat">
+          <span class="stat-label">PAIRS</span>
+          <strong id="pairs">0 / 1</strong>
+        </div>
+
+        <div class="stat">
+          <span class="stat-label">TIME</span>
+          <strong id="time">00:00</strong>
+        </div>
+
+        <div class="stat">
+          <span class="stat-label">CARDS</span>
+          <strong id="cardCount">2 / 12</strong>
+        </div>
+
+        <div class="stat">
+          <span class="stat-label">SCORE</span>
+          <strong id="score">0</strong>
+        </div>
       </div>
+
+      <!-- Hearts and level indicators are managed by JavaScript. -->
 
       <div class="controls">
-        <label class="difficulty-control" for="difficulty">
-          <span>Difficulty</span>
-          <select id="difficulty">
-            <option value="easy">Easy · 6 pairs</option>
-            <option value="normal" selected>Normal · 8 pairs</option>
-            <option value="hard">Hard · 10 pairs</option>
-          </select>
-        </label>
-        <button id="restartButton" class="secondary-button" type="button">↻ Restart</button>
+        <button id="restartButton" class="secondary-button" type="button">
+          ↻ Restart
+        </button>
+
+        <button id="challengeButton" class="primary-button" type="button">
+          Daily Challenge
+        </button>
       </div>
 
-      <div id="message" class="message" role="status" aria-live="polite">Choose two cards to find a pair.</div>
+      <div id="challengeInfo" class="challenge-info" hidden>
+        <span id="challengeDate"></span>
+        <span id="challengeStatus"></span>
+      </div>
+
+      <div id="message" class="message" role="status" aria-live="polite">
+        Get ready! Memorize the cards.
+      </div>
+
       <div id="board" class="board" aria-label="Memory cards"></div>
 
+      <!-- Result panel: each ID appears only once. -->
       <div id="winPanel" class="win-panel" hidden>
         <div class="win-icon" aria-hidden="true">🏆</div>
-        <h2>Board cleared!</h2>
+
+        <h2 id="resultTitle">Board cleared!</h2>
+
         <p id="resultText">You found every pair.</p>
-        <button id="playAgainButton" class="primary-button" type="button">Play again</button>
+
+        <div class="result-buttons">
+          <button id="backToGame" class="secondary-button" type="button">
+            Restart Game
+          </button>
+
+          <button id="playAgainButton" class="primary-button" type="button">
+            Play Again
+          </button>
+
+          <a class="secondary-button game-hub-button" href="../../index.html">
+            Game Hub
+          </a>
+        </div>
       </div>
+
+      <!-- Game-over animation -->
+      <div id="boomOverlay" class="boom-overlay" hidden aria-hidden="true">
+        <div class="boom-text">BOOM!</div>
+        <div class="boom-emoji">💥</div>
+      </div>
+
     </section>
 
     <footer class="footer">
-      <p>Tip: remember the cards you have already seen. Your best score is saved on this device.</p>
+      <p>
+        Remember each card carefully. Match pairs to earn points.
+        Protect your hearts and progress through all 30 levels!
+      </p>
     </footer>
+
   </main>
 </body>
 </html>
