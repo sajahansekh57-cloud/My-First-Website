@@ -1,3 +1,4 @@
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
@@ -11,14 +12,9 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
 
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  arrayUnion
-} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+/* =========================================
+   FIREBASE
+========================================= */
 
 const firebaseConfig = {
   apiKey: "AIzaSyA5WKh6tXIXLFxWAwmY1z5bBBPV8DVJPUM",
@@ -32,520 +28,688 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
+
 const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
-const safelySetText = (selector, value) => {
-  const el = $(selector);
-  if (el) el.textContent = value;
-};
-const safelyToggleClass = (selector, className, force) => {
-  const el = $(selector);
-  if (el) el.classList.toggle(className, force);
-};
 
 let currentUser = null;
 let guestProfile = loadGuestProfile();
-let userProfile = loadUserProfile();
 let recentIds = loadRecent();
+let activeSection = "home";
+let activeCategory = "";
+
+/* =========================================
+   CENTRAL GAME REGISTRY
+   Add new games to this array.
+========================================= */
+
+const games = [
+  {
+    id: "train-your-brain",
+    title: "Train Your Brain",
+    category: "Puzzle",
+    type: "Featured",
+    emoji: "🧠",
+    color: "color-2",
+    rating: "4.8",
+    url: "games/train-your-brain/index.html"
+  },
+  {
+    id: "memory-match",
+    title: "Memory Match",
+    category: "Puzzle",
+    type: "Updated",
+    emoji: "🎯",
+    color: "color-10",
+    rating: "4.6",
+    url: "games/Memory Match/index.html"
+  },
+  {
+    id: "naruto-shinobi",
+    title: "Shinobi Chronicles",
+    category: "Action",
+    type: "New",
+    emoji: "🍥",
+    color: "color-6",
+    rating: "4.8",
+    url: "games/Naruto-Game/index.html"
+  },
+  {
+    id: "neon-dodge",
+    title: "Neon Dodge",
+    category: "Arcade",
+    type: "Featured",
+    emoji: "✈️",
+    color: "color-1",
+    rating: "4.9",
+    url: "games/neon-dodge/index.html"
+  },
+  {
+    id: "sky-scramble",
+    title: "Sky Scramble",
+    category: "Arcade",
+    type: "Featured",
+    emoji: "⚡",
+    color: "color-3",
+    rating: "4.7",
+    url: "games/sky-scramble/index.html"
+  },
+  {
+    id: "neon-racer",
+    title: "Neon Racer",
+    category: "Driving",
+    type: "Popular",
+    emoji: "🏎️",
+    color: "color-1",
+    rating: "4.8"
+  },
+  {
+    id: "block-blitz",
+    title: "Block Blitz",
+    category: "Puzzle",
+    type: "Featured",
+    emoji: "🧱",
+    color: "color-2",
+    rating: "4.7"
+  },
+  {
+    id: "pixel-warzone",
+    title: "Pixel Warzone",
+    category: "Shooting",
+    type: "Popular",
+    emoji: "🎯",
+    color: "color-3",
+    rating: "4.9"
+  },
+  {
+    id: "castle-defense",
+    title: "Castle Defense",
+    category: "Strategy",
+    type: "Featured",
+    emoji: "🏰",
+    color: "color-4",
+    rating: "4.6"
+  },
+  {
+    id: "armored-bots",
+    title: "Armored Bots",
+    category: "Action",
+    type: "Featured",
+    emoji: "🤖",
+    color: "color-5",
+    rating: "4.8"
+  },
+  {
+    id: "shop-simulator",
+    title: "Shop Simulator",
+    category: "Simulation",
+    type: "New",
+    emoji: "🛒",
+    color: "color-6",
+    rating: "4.5"
+  },
+  {
+    id: "empire-city",
+    title: "Empire City",
+    category: "Strategy",
+    type: "New",
+    emoji: "🏙️",
+    color: "color-7",
+    rating: "4.7"
+  },
+  {
+    id: "sky-pilot",
+    title: "Sky Pilot",
+    category: "Sports",
+    type: "New",
+    emoji: "✈️",
+    color: "color-8",
+    rating: "4.4"
+  },
+  {
+    id: "hex-stack",
+    title: "Hexa Stack",
+    category: "Puzzle",
+    type: "New",
+    emoji: "🔷",
+    color: "color-9",
+    rating: "4.9"
+  },
+  {
+    id: "candy-pop",
+    title: "Candy Pop",
+    category: "Arcade",
+    type: "Popular",
+    emoji: "🍭",
+    color: "color-11",
+    rating: "4.5"
+  },
+  {
+    id: "traffic-fury",
+    title: "Traffic Fury",
+    category: "Driving",
+    type: "Popular",
+    emoji: "🚗",
+    color: "color-12",
+    rating: "4.8"
+  },
+  {
+    id: "word-quest",
+    title: "Word Quest",
+    category: "Word",
+    type: "Popular",
+    emoji: "🔤",
+    color: "color-13",
+    rating: "4.7"
+  },
+  {
+    id: "space-dodge",
+    title: "Space Dodge",
+    category: "Arcade",
+    type: "New",
+    emoji: "🚀",
+    color: "color-14",
+    rating: "4.6"
+  },
+  {
+    id: "mini-golf",
+    title: "Mini Golf",
+    category: "Sports",
+    type: "New",
+    emoji: "⛳",
+    color: "color-15",
+    rating: "4.5"
+  }
+];
+
+/* =========================================
+   STORAGE HELPERS
+========================================= */
 
 function loadGuestProfile() {
   try {
-    const profile = JSON.parse(
+    return JSON.parse(
       localStorage.getItem("gamehub_guest_profile") || "null"
     );
-    if (!profile) return null;
-    return {
-      name: profile.name || "",
-      dob: profile.dob || "",
-      about: profile.about || "",
-      gender: profile.gender || "",
-      favoriteGame: profile.favoriteGame || "",
-      occupation: profile.occupation || "",
-      isGuest: true
-    };
   } catch {
     return null;
   }
 }
 
-function loadUserProfile() {
-  try {
-    const profile = JSON.parse(
-      localStorage.getItem("gamehub_user_profile") || "null"
-    );
-    if (!profile) return {};
-    return {
-      about: profile.about || "",
-      gender: profile.gender || "",
-      favoriteGame: profile.favoriteGame || "",
-      occupation: profile.occupation || "",
-      dob: profile.dob || ""
-    };
-  } catch {
-    return {};
-  }
-}
-
 function saveGuestProfile(profile) {
-  if (!profile) {
-    localStorage.removeItem("gamehub_guest_profile");
-    return;
-  }
-
-  localStorage.setItem(
-    "gamehub_guest_profile",
-    JSON.stringify(profile)
-  );
-}
-
-function saveUserProfile(profile) {
-  if (!profile) {
-    localStorage.removeItem("gamehub_user_profile");
-    return;
-  }
-
-  localStorage.setItem(
-    "gamehub_user_profile",
-    JSON.stringify(profile)
-  );
-}
-
-function getProfileCompletion(profile = getActiveProfile()) {
-  const data = profile || {};
-  const checks = [
-    Boolean(data.about && data.about.trim()),
-    Boolean(data.gender),
-    Boolean(data.favoriteGame && data.favoriteGame.trim()),
-    Boolean(data.occupation && data.occupation.trim()),
-    Boolean(data.dob)
-  ];
-
-  const filled = checks.filter(Boolean).length;
-  return Math.round((filled / checks.length) * 100);
-}
-
-function getActiveProfile() {
-  return currentUser ? userProfile : guestProfile;
-}
-
-function syncProfileUI() {
-  const activeProfile = getActiveProfile() || {};
-  const displayName = currentUser
-    ? (currentUser.displayName || currentUser.email || "Player")
-    : (guestProfile?.name || "Guest");
-  const initials = displayName.trim().charAt(0).toUpperCase() || "G";
-  const percent = getProfileCompletion(activeProfile);
-
-  const avatarText = $("#avatarText");
-  const profileAvatar = $("#profileAvatar");
-  const profileName = $("#profileName");
-  const profileRole = $("#profileRole");
-  const currentAbout = $("#profileAbout");
-  const profileGender = $("#profileGender");
-  const profileFavoriteGame = $("#profileFavoriteGame");
-  const profileOccupation = $("#profileOccupation");
-  const profileDob = $("#profileDob");
-  const percentEl = $("#profilePercent");
-  const bar = $("#profileBar");
-
-  if (avatarText) avatarText.textContent = initials;
-  if (profileAvatar) profileAvatar.textContent = initials;
-  if (profileName) profileName.textContent = displayName;
-  if (profileRole) profileRole.textContent = currentUser ? "Logged in" : "Guest account";
-  if (currentAbout) currentAbout.value = activeProfile.about || "";
-  if (profileGender) profileGender.value = activeProfile.gender || "";
-  if (profileFavoriteGame) profileFavoriteGame.value = activeProfile.favoriteGame || "";
-  if (profileOccupation) profileOccupation.value = activeProfile.occupation || "";
-  if (profileDob) profileDob.value = activeProfile.dob || "";
-  if (percentEl) percentEl.textContent = `${percent}%`;
-  if (bar) bar.style.width = `${percent}%`;
-}
-
-function saveProfileFields() {
-  const profile = currentUser ? userProfile : guestProfile;
-  if (!profile) return;
-
-  profile.about = $("#profileAbout")?.value.trim() || "";
-  profile.gender = $("#profileGender")?.value || "";
-  profile.favoriteGame = $("#profileFavoriteGame")?.value.trim() || "";
-  profile.occupation = $("#profileOccupation")?.value.trim() || "";
-  profile.dob = $("#profileDob")?.value || "";
-
-  if (currentUser) {
-    saveUserProfile(profile);
+  if (profile) {
+    localStorage.setItem(
+      "gamehub_guest_profile",
+      JSON.stringify(profile)
+    );
   } else {
-    saveGuestProfile(profile);
+    localStorage.removeItem("gamehub_guest_profile");
   }
-
-  syncProfileUI();
 }
-
-function toggleProfilePanel(forceOpen) {
-  const panel = $("#profilePanel");
-  if (!panel) return;
-
-  if (typeof forceOpen === "boolean") {
-    panel.classList.toggle("hidden", !forceOpen);
-    return;
-  }
-
-  panel.classList.toggle("hidden");
-}
-
-function closeProfilePanel() {
-  toggleProfilePanel(false);
-}
-
-const games = [
-  {id:"train-your-brain", title:"Train Your Brain", category:"Puzzle", type:"Featured", emoji:"🧠", color:"color-2", rating:"4.8", url:"games/train-your-brain/index.html"},
-  {id:"Memory Match", title:"Memory Match", category:"Puzzle", type:"Updated", emoji:"🎯", color:"color-10", rating:"4.6", url:"games/Memory Match/index.html"   },
-  {id:"naruto-shinobi", title:"Shinobi Chronicles", category:"Action", type:"New", emoji:"🍥", color:"color-6", rating:"4.8", url:"games/Naruto-Game/index.html"},
-  {id:"neon-dodge", title:"Neon Dodge", category:"Arcade", type:"Featured", emoji:"✈️", color:"color-1", rating:"4.9", url:"games/neon-dodge/index.html"},
-  {id:"sky-scramble", title:"Sky Scramble", category:"Arcade", type:"Featured", emoji:"⚡", color:"color-3", rating:"4.7", url:"games/sky-scramble/index.html"},
-  {id:"neon-racer", title:"Neon Racer", category:"Driving", type:"Popular", emoji:"🏎️", color:"color-1", rating:"4.8"},
-  {id:"block-blitz", title:"Block Blitz", category:"Puzzle", type:"Featured", emoji:"🧱", color:"color-2", rating:"4.7"},
-  {id:"pixel-warzone", title:"Pixel Warzone", category:"Shooting", type:"Popular", emoji:"🔫", color:"color-3", rating:"4.9"},
-  {id:"castle-defense", title:"Castle Defense", category:"Strategy", type:"Featured", emoji:"🏰", color:"color-4", rating:"4.6"},
-  {id:"armored-bots", title:"Armored Bots", category:"Action", type:"Featured", emoji:"🤖", color:"color-5", rating:"4.8"},
-  {id:"shop-simulator", title:"Shop Simulator", category:"Simulation", type:"New", emoji:"🛒", color:"color-6", rating:"4.5"},
-  {id:"empire-city", title:"Empire City", category:"Strategy", type:"New", emoji:"🏙️", color:"color-7", rating:"4.7"},
-  {id:"sky-pilot", title:"Sky Pilot", category:"Sports", type:"New", emoji:"✈️", color:"color-8", rating:"4.4"},
-  {id:"hex-stack", title:"Hexa Stack", category:"Puzzle", type:"New", emoji:"🔷", color:"color-9", rating:"4.9"},
-  {id:"candy-pop", title:"Candy Pop", category:"Arcade", type:"Popular", emoji:"🍭", color:"color-11", rating:"4.5"},
-  {id:"traffic-fury", title:"Traffic Fury", category:"Driving", type:"Popular", emoji:"🚗", color:"color-12", rating:"4.8"},
-  {id:"word-quest", title:"Word Quest", category:"Word", type:"Popular", emoji:"🔤", color:"color-13", rating:"4.7"},
-  {id:"space-dodge", title:"Space Dodge", category:"Arcade", type:"New", emoji:"🚀", color:"color-14", rating:"4.6"},
-  {id:"mini-golf", title:"Mini Golf", category:"Sports", type:"New", emoji:"⛳", color:"color-15", rating:"4.5"},
-];
-
-const homeGameIds = new Set([
-  "neon-dodge",
-  "train-your-brain",
-  "sky-scramble",
-  "naruto-shinobi"
-]);
 
 function loadRecent() {
-  try { return JSON.parse(localStorage.getItem("gamehub_recent") || "[]"); }
-  catch { return []; }
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem("gamehub_recent") || "[]"
+    );
+    return Array.isArray(saved) ? saved : [];
+  } catch {
+    return [];
+  }
 }
 
 function saveRecent() {
-  localStorage.setItem("gamehub_recent", JSON.stringify(recentIds.slice(0, 10)));
+  localStorage.setItem(
+    "gamehub_recent",
+    JSON.stringify(recentIds.slice(0, 10))
+  );
 }
 
 function escapeHtml(value) {
-  return String(value).replace(/[&<>"']/g, c => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-  }[c]));
+  return String(value).replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
 }
 
-function gameCard(game, featured=false) {
-  const featuredSize = game.id === "sky-scramble" ? "large" : game.id === "neon-dodge" ? "medium" : "medium";
+/* =========================================
+   GAME CARDS
+========================================= */
+
+function gameCard(game) {
   return `
-    <article class="${featured ? "featured-card " + featuredSize : "game-card"}"
-             data-game-id="${game.id}" tabindex="0">
-      <div class="${featured ? "featured-art" : "game-art"} ${game.color}">${game.emoji}</div>
+    <article class="game-card"
+      data-game-id="${escapeHtml(game.id)}"
+      tabindex="0"
+      role="button"
+      aria-label="Play ${escapeHtml(game.title)}">
+
+      <div class="game-art ${escapeHtml(game.color || "color-1")}">
+        ${escapeHtml(game.emoji || "🎮")}
+      </div>
+
       <div class="game-content">
         <div class="game-title">${escapeHtml(game.title)}</div>
-        <div class="game-meta">${escapeHtml(game.category)} • ★ ${game.rating}</div>
+        <div class="game-meta">
+          ${escapeHtml(game.category)} · ★ ${escapeHtml(game.rating || "—")}
+        </div>
       </div>
+
       <div class="play-chip">Play</div>
-    </article>`;
+    </article>
+  `;
+}
+
+function renderGrid(selector, list) {
+  const element = $(selector);
+  if (!element) return;
+
+  element.innerHTML = list.map(gameCard).join("");
 }
 
 function renderHome() {
-  const homeGames = games.filter(game => homeGameIds.has(game.id));
-  $("#featuredGrid").innerHTML = homeGames.map(g => gameCard(g,true)).join("");
-  updateResultsNote(homeGames.length);
-  bindGameClicks();
+  const featured = games.filter(game =>
+    game.type === "Featured"
+  );
+
+  renderGrid("#featuredGrid", featured);
+  renderGrid("#allGrid", games);
+
+  const count = $("#allGameCount");
+  if (count) count.textContent = `${games.length} games`;
+
+  renderRecent();
+  renderTaggedSections();
 }
 
-function renderAllGames() {
-  $("#allGrid").innerHTML = games.filter(game => !homeGameIds.has(game.id)).map(g => gameCard(g)).join("");
-  updateResultsNote(games.length - homeGameIds.size);
-  bindGameClicks();
+function renderTaggedSections() {
+  renderGrid(
+    "#newGrid",
+    games.filter(game => game.type === "New")
+  );
+
+  renderGrid(
+    "#popularGrid",
+    games.filter(game => game.type === "Popular")
+  );
+
+  renderGrid(
+    "#updatedGrid",
+    games.filter(game => game.type === "Updated")
+  );
+
+  // Add type: "Original" to games intended for this section.
+  renderGrid(
+    "#originalsGrid",
+    games.filter(game => game.type === "Original")
+  );
+
+  // Add multiplayer: true to games supporting multiplayer.
+  renderGrid(
+    "#multiplayerGrid",
+    games.filter(game => game.multiplayer === true)
+  );
 }
 
 function renderRecent() {
-  const recent = recentIds.map(id => games.find(g => g.id===id)).filter(Boolean);
-  $("#recentGrid").innerHTML = recent.map(g => gameCard(g)).join("");
-  $("#recentEmpty").classList.toggle("hidden", recent.length !== 0);
-  updateResultsNote(recent.length);
-  bindGameClicks();
+  const recentGames = recentIds
+    .map(id => games.find(game => game.id === id))
+    .filter(Boolean);
+
+  renderGrid("#recentGrid", recentGames);
+
+  const empty = $("#recentEmpty");
+  if (empty) empty.hidden = recentGames.length > 0;
+}
+
+function renderCategory(category) {
+  const results = games.filter(
+    game => game.category.toLowerCase() === category.toLowerCase()
+  );
+
+  const title = $("#categoryTitle");
+  if (title) title.textContent = `${category} Games`;
+
+  renderGrid("#categoryGrid", results);
+
+  const empty = $("#categoryEmpty");
+  if (empty) empty.hidden = results.length > 0;
 }
 
 function renderSearch(query) {
   const q = query.trim().toLowerCase();
-  const results = q
-    ? games.filter(g => `${g.title} ${g.category} ${g.type}`.toLowerCase().includes(q))
-    : [];
-  $("#searchGrid").innerHTML = results.map(g => gameCard(g)).join("");
-  $("#searchEmpty").classList.toggle("hidden", results.length !== 0);
-  updateResultsNote(results.length);
-  bindGameClicks();
+
+  const results = games.filter(game =>
+    `${game.title} ${game.category} ${game.type}`
+      .toLowerCase()
+      .includes(q)
+  );
+
+  const title = $("#searchTitle");
+  if (title) title.textContent = `Results for "${query}"`;
+
+  renderGrid("#searchGrid", results);
+
+  const empty = $("#searchEmpty");
+  if (empty) empty.hidden = results.length > 0;
 }
 
-function updateResultsNote(count) {
-  safelySetText("#resultsNote", `${count} ${count === 1 ? "game" : "games"}`);
+/* =========================================
+   NAVIGATION
+========================================= */
+
+function hideAllSections() {
+  $$(".page-section").forEach(section => {
+    section.hidden = true;
+    section.classList.remove("active");
+  });
 }
 
-function setActiveNav(section) {
-  $$(".nav-item").forEach(btn => btn.classList.toggle("active", btn.dataset.section===section));
-}
+function showPage(id) {
+  hideAllSections();
 
-function closeSidebar() {
-  const sidebar = $("#sidebar");
-  const mobileMenu = $("#mobileMenu");
-  if (sidebar) sidebar.classList.remove("open");
-  if (mobileMenu) {
-    mobileMenu.setAttribute("aria-expanded", "false");
-    mobileMenu.setAttribute("aria-label", "Open menu");
+  const section = document.getElementById(id);
+  if (section) {
+    section.hidden = false;
+    section.classList.add("active");
   }
 }
 
-function toggleSidebar() {
-  const sidebar = $("#sidebar");
-  const mobileMenu = $("#mobileMenu");
-  if (!sidebar) return;
-
-  const isOpen = sidebar.classList.toggle("open");
-  if (mobileMenu) {
-    mobileMenu.setAttribute("aria-expanded", String(isOpen));
-    mobileMenu.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
-  }
+function setActiveNav(name) {
+  $$(".nav-item").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.section === name
+    );
+  });
 }
 
-function showSection(section) {
-  $$(".game-section").forEach(s => s.classList.add("hidden"));
-  const title = $("#pageTitle");
-  if (title) title.textContent = "Our games";
+function showSection(name) {
+  activeSection = name;
+  activeCategory = "";
 
-  if (section==="home" || section==="popular") {
-    $("#featuredSection")?.classList.remove("hidden");
-    $("#newSection")?.classList.remove("hidden");
-    $("#popularSection")?.classList.remove("hidden");
-    if (section==="popular" && title) title.textContent = "Popular games";
-  } else if (section==="new") {
-    $("#newSection")?.classList.remove("hidden");
-    if (title) title.textContent = "New games";
-  } else if (section==="recent") {
-    $("#recentSection")?.classList.remove("hidden");
+  const sectionMap = {
+    home: "homeSection",
+    all: "homeSection",
+    recent: "homeSection",
+    new: "newSection",
+    popular: "popularSection",
+    updated: "updatedSection",
+    originals: "originalsSection",
+    multiplayer: "multiplayerSection",
+    leaderboards: "leaderboardsSection"
+  };
+
+  showPage(sectionMap[name] || "homeSection");
+  setActiveNav(name);
+
+  // Home displays all games, including featured games.
+  if (name === "home") {
+    renderHome();
+    $("#featuredSection")?.scrollIntoView({ behavior: "smooth" });
+  } else if (name === "all") {
+    renderGrid("#allGrid", games);
+    $("#allSection")?.scrollIntoView({ behavior: "smooth" });
+  } else if (name === "recent") {
     renderRecent();
-    if (title) title.textContent = "Recently played";
-  } else if (section==="all") {
-    $("#allSection")?.classList.remove("hidden");
-    renderAllGames();
-    if (title) title.textContent = "All games";
-  } else {
-    $("#featuredSection")?.classList.remove("hidden");
-    if (title) title.textContent = `${section.charAt(0).toUpperCase()}${section.slice(1)} games`;
+    $("#recentSection")?.scrollIntoView({ behavior: "smooth" });
+  } else if (name === "new" || name === "popular" ||
+             name === "updated" || name === "originals" ||
+             name === "multiplayer" || name === "leaderboards") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  setActiveNav(section);
-  window.scrollTo({top:0,behavior:"smooth"});
+  closeSidebar();
+}
+
+function openCategory(category) {
+  activeCategory = category;
+  activeSection = "category";
+
+  showPage("categorySection");
+  setActiveNav("");
+
+  renderCategory(category);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
   closeSidebar();
 }
 
 function openSearch(query) {
-  $$(".game-section").forEach(s => s.classList.add("hidden"));
-  $("#searchSection")?.classList.remove("hidden");
-  const pageTitle = $("#pageTitle");
-  if (pageTitle) pageTitle.textContent = `Search: ${query}`;
-  renderSearch(query);
+  if (!query.trim()) {
+    showSection("home");
+    return;
+  }
+
+  activeSection = "search";
+  activeCategory = "";
+
+  showPage("searchSection");
   setActiveNav("");
-  window.scrollTo({top:0,behavior:"smooth"});
+
+  renderSearch(query);
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-function bindGameClicks() {
-  $$(".game-card, .featured-card").forEach(card => {
-    if (card.dataset.bound === "true") return;
-    card.dataset.bound = "true";
-    const handler = () => {
-      const game = games.find(g => g.id===card.dataset.gameId);
-      if (!game) return;
-      recentIds = [game.id, ...recentIds.filter(id => id!==game.id)].slice(0,10);
-      saveRecent();
-      if (currentUser) {
-        const ref = doc(db,"users",currentUser.uid);
-        getDoc(ref).then(snap => {
-          if (!snap.exists()) {
-            return setDoc(ref,{
-              uid:currentUser.uid,
-              displayName:currentUser.displayName || "Player",
-              email:currentUser.email || "",
-              recentGames:recentIds,
-              favorites:[],
-              createdAt:Date.now(),
-              updatedAt:Date.now()
-            });
-          }
-          return updateDoc(ref,{recentGames:arrayUnion(game.id),updatedAt:Date.now()});
-        }).catch(err => console.warn("Cloud recent save:",err));
-      }
-      if (game.url) {
-        window.location.href = game.url;
-        return;
-      }
-      showToast(`"${game.title}" selected. Add the real game later.`);
-    };
-    card.addEventListener("click",handler);
-    card.addEventListener("keydown",e => {
-      if (e.key==="Enter" || e.key===" ") { e.preventDefault(); handler(); }
-    });
-  });
+function closeSidebar() {
+  $("#sidebar")?.classList.remove("open");
 }
+
+function toggleSidebar() {
+  $("#sidebar")?.classList.toggle("open");
+}
+
+/* =========================================
+   GAME LAUNCHING
+========================================= */
+
+function playGame(id) {
+  const game = games.find(item => item.id === id);
+  if (!game) return;
+
+  if (!game.url) {
+    showToast(`${game.title} is not available yet.`);
+    return;
+  }
+
+  recentIds = [
+    game.id,
+    ...recentIds.filter(existingId => existingId !== game.id)
+  ].slice(0, 10);
+
+  saveRecent();
+  renderRecent();
+
+  // Keep relative paths working on GitHub Pages.
+  window.location.href = game.url;
+}
+
+document.addEventListener("click", event => {
+  const card = event.target.closest("[data-game-id]");
+  if (card) playGame(card.dataset.gameId);
+});
+
+document.addEventListener("keydown", event => {
+  if (
+    (event.key === "Enter" || event.key === " ") &&
+    event.target.matches("[data-game-id]")
+  ) {
+    event.preventDefault();
+    playGame(event.target.dataset.gameId);
+  }
+});
+
+/* =========================================
+   TOAST
+========================================= */
+
+let toastTimer;
 
 function showToast(message) {
-  const toast = $("#toast");
+  const container = $("#toastContainer");
+  if (!container) {
+    console.info(message);
+    return;
+  }
+
+  const toast = document.createElement("div");
+  toast.className = "toast";
   toast.textContent = message;
-  toast.classList.remove("hidden");
-  clearTimeout(showToast.timer);
-  showToast.timer = setTimeout(() => toast.classList.add("hidden"), 3200);
+
+  container.appendChild(toast);
+
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.remove(), 3200);
 }
 
-function openLoginModal() {
-  const forgotPassword = $("#forgotPassword");
-  if (forgotPassword) forgotPassword.classList.add("hidden");
-  const loginModal = $("#loginModal");
-  if (loginModal) loginModal.classList.remove("hidden");
+/* =========================================
+   MODALS
+========================================= */
+
+function openModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) modal.hidden = false;
 }
 
-function closeLoginModal() {
-  const loginModal = $("#loginModal");
-  if (loginModal) loginModal.classList.add("hidden");
+function closeModal(id) {
+  const modal = document.getElementById(id);
+  if (modal) modal.hidden = true;
 }
 
-function getUserInitial(user) {
-  const source =
-    (user?.displayName && user.displayName.trim()) ||
-    (user?.email && user.email.trim()) ||
-    "G";
+document.addEventListener("click", event => {
+  const closeButton = event.target.closest("[data-close-modal]");
 
-  return source.charAt(0).toUpperCase();
-}
+  if (closeButton) {
+    const modal = closeButton.closest(".modal-overlay");
+    if (modal) modal.hidden = true;
+  }
 
-// ============================================================
-// GUEST PROFILE
-// ============================================================
-function openGuestModal() {
-  $("#guestName").value = guestProfile?.name || "";
-  $("#guestDob").value = guestProfile?.dob || "";
-  $("#guestModal").classList.remove("hidden");
-}
+  if (
+    event.target.classList.contains("modal-overlay")
+  ) {
+    event.target.hidden = true;
+  }
+});
 
-function closeGuestModal() {
-  $("#guestModal").classList.add("hidden");
+/* =========================================
+   GUEST PROFILE
+========================================= */
+
+function updateProfileUI() {
+  const name = currentUser?.displayName ||
+    currentUser?.email ||
+    guestProfile?.name ||
+    "Guest";
+
+  const profileName = $("#profileName");
+  const profileEmail = $("#profileEmail");
+  const profileAvatar = $("#profileAvatar");
+  const authArea = $("#authArea");
+
+  if (profileName) profileName.textContent = name;
+
+  if (profileEmail) {
+    profileEmail.textContent = currentUser?.email || "Guest account";
+  }
+
+  if (profileAvatar) {
+    profileAvatar.textContent = name.charAt(0).toUpperCase();
+  }
+
+  if (authArea) {
+    if (currentUser || guestProfile) {
+      authArea.innerHTML = `
+        <button class="avatar-btn" id="openProfileButton"
+          type="button" aria-label="Open profile">
+          ${escapeHtml(name.charAt(0).toUpperCase())}
+        </button>
+      `;
+    } else {
+      authArea.innerHTML = "";
+    }
+  }
 }
 
 function continueAsGuest() {
-  const name = $("#guestName").value.trim();
-  const dob = $("#guestDob").value;
+  const name = $("#guestName")?.value.trim();
 
   if (!name) {
-    showToast("Enter your name.");
+    showToast("Please enter a nickname.");
     return;
   }
 
-  if (!dob) {
-    showToast("Select your date of birth.");
-    return;
-  }
-
-  guestProfile = {
-    name,
-    dob,
-    about: guestProfile?.about || "",
-    gender: guestProfile?.gender || "",
-    favoriteGame: guestProfile?.favoriteGame || "",
-    occupation: guestProfile?.occupation || "",
-    isGuest: true
-  };
-
+  guestProfile = { name, isGuest: true };
   saveGuestProfile(guestProfile);
 
-  currentUser = null;
-
-  closeGuestModal();
-  updateAuthUI(null);
-  toggleProfilePanel(true);
+  closeModal("guestProfileModal");
+  closeModal("loginModal");
+  updateProfileUI();
 
   showToast(`Welcome, ${name}!`);
 }
 
-function updateAuthUI(user) {
-  currentUser = user;
-
-  const hasGuest = !user && !!guestProfile;
-  const hasIdentity = !!user || hasGuest;
-
-  safelyToggleClass("#guestStatus", "hidden", hasIdentity);
-  safelyToggleClass("#openLogin", "hidden", hasIdentity);
-  safelyToggleClass("#userMenu", "hidden", !hasIdentity);
-
-  if (user) {
-    const displayName = user.displayName || user.email || "Player";
-    safelySetText("#avatarText", displayName.charAt(0).toUpperCase());
-    syncProfileUI();
-    loadUserData(user);
-    ensureUserDocument(user);
-    return;
+document.addEventListener("click", event => {
+  if (event.target.closest("#openProfileButton")) {
+    const panel = $("#profilePanel");
+    if (panel) panel.hidden = !panel.hidden;
   }
 
-  if (guestProfile) {
-    syncProfileUI();
-    return;
+  if (event.target.closest("[data-close-profile]")) {
+    const panel = $("#profilePanel");
+    if (panel) panel.hidden = true;
   }
 
-  safelySetText("#avatarText", "G");
-  closeProfilePanel();
-}
-async function ensureUserDocument(user) {
-  try {
-    const ref = doc(db,"users",user.uid);
-    const snap = await getDoc(ref);
-    if (!snap.exists()) {
-      await setDoc(ref,{
-        uid:user.uid,
-        displayName:user.displayName || "Player",
-        email:user.email || "",
-        photoURL:user.photoURL || "",
-        recentGames:recentIds,
-        favorites:[],
-        createdAt:Date.now(),
-        updatedAt:Date.now()
+  if (event.target.closest("#saveGuestProfile")) {
+    continueAsGuest();
+  }
+
+  if (event.target.closest("#logoutButton")) {
+    if (currentUser) {
+      signOut(auth).catch(error => {
+        console.error(error);
+        showToast("Could not log out.");
       });
+    } else {
+      guestProfile = null;
+      saveGuestProfile(null);
+      updateProfileUI();
     }
-  } catch(err) {
-    console.warn("User document save skipped:",err);
+
+    closeModal("profilePanel");
+    const panel = $("#profilePanel");
+    if (panel) panel.hidden = true;
+    showToast("Logged out.");
   }
-}
+});
 
-async function loadUserData(user) {
-  try {
-    const snap = await getDoc(doc(db,"users",user.uid));
-    if (!snap.exists()) return;
-    const data = snap.data();
-    if (Array.isArray(data.recentGames)) {
-      recentIds = [...new Set([...data.recentGames,...recentIds])].slice(0,10);
-      saveRecent();
-    }
-  } catch(err) {
-    console.warn("User cloud data load skipped:",err);
-  }
-}
+/* =========================================
+   LOGIN / SIGNUP BUTTONS
+========================================= */
 
-async function loginWithEmail() {
+$("#loginButton")?.addEventListener("click", () => {
+  openModal("loginModal");
+});
 
-  const email =
-    $("#loginEmail").value.trim();
+$("#signupButton")?.addEventListener("click", () => {
+  window.location.href = "signup.html";
+});
 
-  const password =
-    $("#loginPassword").value;
+$("#guestLoginButton")?.addEventListener("click", () => {
+  closeModal("loginModal");
+  openModal("guestProfileModal");
+});
+
+$("#loginForm")?.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const email = $("#loginEmail")?.value.trim();
+  const password = $("#loginPassword")?.value;
 
   if (!email || !password) {
     showToast("Enter your email and password.");
@@ -553,308 +717,251 @@ async function loginWithEmail() {
   }
 
   try {
-
-    const result =
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-    // Successful login: reload Home page.
-    // Firebase preserves the signed-in session.
-    window.location.replace(
-      "index.html?login=success"
-    );
-
+    await signInWithEmailAndPassword(auth, email, password);
+    closeModal("loginModal");
+    showToast("Login successful!");
   } catch (error) {
-
     console.error("Login error:", error);
-
-    $("#forgotPassword")
-      .classList
-      .remove("hidden");
-
-    if (error.code === "auth/invalid-email") {
-      showToast("Please enter a valid email.");
-    } else if (error.code === "auth/too-many-requests") {
-      showToast("Too many attempts. Try again later.");
-    } else if (error.code === "auth/operation-not-allowed") {
-      showToast("Email/Password sign-in is not enabled in Firebase.");
-    } else {
-      showToast("Email or password is incorrect.");
-    }
+    showToast("Login failed. Check your email and password.");
   }
-}
+});
 
-async function sendReset() {
-  const email = $("#resetEmail").value.trim();
+$("#googleLoginButton")?.addEventListener("click", async () => {
+  try {
+    await signInWithPopup(auth, googleProvider);
+    closeModal("loginModal");
+    showToast("Google login successful!");
+  } catch (error) {
+    console.error(error);
+    showToast("Google login failed. Check Firebase settings.");
+  }
+});
+
+$("#facebookLoginButton")?.addEventListener("click", async () => {
+  try {
+    await signInWithPopup(auth, facebookProvider);
+    closeModal("loginModal");
+    showToast("Facebook login successful!");
+  } catch (error) {
+    console.error(error);
+    showToast("Facebook login failed. Check Firebase settings.");
+  }
+});
+
+$("#forgotPasswordButton")?.addEventListener("click", async () => {
+  const email =
+    $("#resetEmail")?.value.trim() ||
+    $("#loginEmail")?.value.trim();
 
   if (!email) {
-    showToast("Enter your email first.");
+    openModal("resetPasswordModal");
     return;
   }
 
   try {
-    await sendPasswordResetEmail(auth,email);
-    $("#resetModal").classList.add("hidden");
-    $("#loginModal").classList.add("hidden");
-    showToast("Reset email sent. Check your Gmail inbox and spam folder.");
-  } catch(error) {
-    console.error("Reset password:",error);
+    await sendPasswordResetEmail(auth, email);
+    closeModal("loginModal");
+    closeModal("resetPasswordModal");
+    showToast("Password reset email sent.");
+  } catch (error) {
+    console.error(error);
+    showToast("Could not send reset email. Check the email address.");
+  }
+});
+
+$("#resetPasswordForm")?.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const email = $("#resetEmail")?.value.trim();
+  if (!email) {
+    showToast("Enter your email.");
+    return;
+  }
+
+  try {
+    await sendPasswordResetEmail(auth, email);
+    closeModal("resetPasswordModal");
+    showToast("Password reset email sent.");
+  } catch (error) {
+    console.error(error);
     showToast("Could not send reset email.");
   }
-}
+});
 
-async function socialLogin(providerName) {
-
-  try {
-
-    const provider =
-      providerName === "google"
-        ? googleProvider
-        : facebookProvider;
-
-    const result =
-      await signInWithPopup(
-        auth,
-        provider
-      );
-
-    const user = result.user;
-
-    await ensureUserDocument(user);
-
-    // Successful social login: reload Home page.
-    window.location.replace(
-      "index.html?login=success"
-    );
-
-  } catch (error) {
-
-    console.error(
-      "Social login error:",
-      error
-    );
-
-    let message = "Login failed.";
-
-    if (
-      error.code ===
-      "auth/popup-closed-by-user"
-    ) {
-      message =
-        "Login popup was closed.";
-    } else if (
-      error.code ===
-      "auth/popup-blocked"
-    ) {
-      message =
-        "Please allow popups for this website.";
-    } else if (
-      error.code ===
-      "auth/unauthorized-domain"
-    ) {
-      message =
-        "Add your GitHub domain in Firebase Authorized domains.";
-    } else if (
-      error.code ===
-      "auth/operation-not-allowed"
-    ) {
-      message =
-        "This login provider is not enabled in Firebase.";
-    } else if (error.message) {
-      message =
-        error.message;
-    }
-
-    showToast(message);
+$("#logoutButton")?.addEventListener("click", () => {
+  if (currentUser) signOut(auth).catch(console.error);
+  else {
+    guestProfile = null;
+    saveGuestProfile(null);
+    updateProfileUI();
   }
+
+  const panel = $("#profilePanel");
+  if (panel) panel.hidden = true;
+});
+
+/* =========================================
+   SPIDER CLOCK
+========================================= */
+
+function updateClock() {
+  const now = new Date();
+
+  const hours = now.getHours() % 12;
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+  const milliseconds = now.getMilliseconds();
+
+  const hour = $("#ghHour");
+  const minute = $("#ghMinute");
+  const second = $("#ghSecond");
+
+  if (hour) {
+    hour.style.transform =
+      `rotate(${(hours + minutes / 60) * 30}deg)`;
+  }
+
+  if (minute) {
+    minute.style.transform =
+      `rotate(${(minutes + seconds / 60) * 6}deg)`;
+  }
+
+  if (second) {
+    second.style.transform =
+      `rotate(${(seconds + milliseconds / 1000) * 6}deg)`;
+  }
+
+  requestAnimationFrame(updateClock);
 }
 
-function init() {
-  if (!$("#pageTitle") || !$("#featuredGrid") || !$("#searchInput")) {
+$("#spiderClock")?.addEventListener("click", () => {
+  const overlay = $("#ghHorrorLayer");
+  if (!overlay) return;
+
+  overlay.hidden = false;
+
+  setTimeout(() => {
+    overlay.hidden = true;
+  }, 5000);
+});
+
+$("#closeHorrorEffect")?.addEventListener("click", () => {
+  const overlay = $("#ghHorrorLayer");
+  if (overlay) overlay.hidden = true;
+});
+
+/* =========================================
+   EVENT WIRING
+========================================= */
+
+document.addEventListener("click", event => {
+  const sectionButton = event.target.closest("[data-section]");
+
+  if (sectionButton) {
+    showSection(sectionButton.dataset.section);
     return;
   }
 
+  const categoryButton = event.target.closest("[data-category]");
+
+  if (categoryButton) {
+    openCategory(categoryButton.dataset.category);
+  }
+});
+
+$("#searchForm")?.addEventListener("submit", event => {
+  event.preventDefault();
+  openSearch($("#searchInput")?.value || "");
+});
+
+$("#searchInput")?.addEventListener("input", event => {
+  const value = event.target.value.trim();
+
+  if (!value) {
+    showSection("home");
+  } else {
+    openSearch(value);
+  }
+});
+
+$("#menuToggle")?.addEventListener("click", toggleSidebar);
+
+document.addEventListener("click", event => {
+  const sidebar = $("#sidebar");
+  const toggle = $("#menuToggle");
+
+  if (
+    sidebar?.classList.contains("open") &&
+    !sidebar.contains(event.target) &&
+    !toggle?.contains(event.target)
+  ) {
+    closeSidebar();
+  }
+});
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    $$(".modal-overlay").forEach(modal => {
+      modal.hidden = true;
+    });
+
+    const overlay = $("#ghHorrorLayer");
+    if (overlay) overlay.hidden = true;
+
+    closeSidebar();
+
+    const panel = $("#profilePanel");
+    if (panel) panel.hidden = true;
+  }
+});
+
+/* =========================================
+   AUTH STATE
+========================================= */
+
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+  updateProfileUI();
+
+  if (user) {
+    closeModal("loginModal");
+    closeModal("guestProfileModal");
+  }
+});
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+function init() {
   renderHome();
-
-  $$(".nav-item").forEach(btn =>
-    btn.addEventListener("click",() => showSection(btn.dataset.section))
-  );
-
-  $$(".text-link").forEach(btn =>
-    btn.addEventListener("click",() => showSection(btn.dataset.section))
-  );
-
-  $$(".category-item").forEach(btn =>
-    btn.addEventListener("click",() => {
-      $("#searchInput").value = btn.dataset.category;
-      openSearch(btn.dataset.category);
-    })
-  );
-
-  $$("[data-home]").forEach(el =>
-    el.addEventListener("click",e => {
-      e.preventDefault();
-      $("#searchInput").value = "";
-      showSection("home");
-    })
-  );
-
-  $("#searchInput").addEventListener("input",e => {
-    const value = e.target.value.trim();
-    if (value) openSearch(value);
-    else showSection("home");
-  });
-
-  $("#avatarButton").addEventListener("click",() => {
-    if (!guestProfile && !currentUser) return;
-    toggleProfilePanel();
-  });
-
-  $("#closeProfileBtn").addEventListener("click", closeProfilePanel);
-
-  $("#profileAbout").addEventListener("input", saveProfileFields);
-  $("#profileGender").addEventListener("change", saveProfileFields);
-  $("#profileFavoriteGame").addEventListener("input", saveProfileFields);
-  $("#profileOccupation").addEventListener("input", saveProfileFields);
-  $("#profileDob").addEventListener("change", saveProfileFields);
-
-  $("#logoutBtn").addEventListener("click", () => {
-    if (currentUser) {
-      signOut(auth).catch(() => {});
-    } else {
-      guestProfile = null;
-      saveGuestProfile(null);
-    }
-
-    userProfile = {};
-    saveUserProfile(userProfile);
-    currentUser = null;
-    updateAuthUI(null);
-    closeProfilePanel();
-    showToast("Logged out.");
-  });
-
-  $("#openLogin").addEventListener("click",openLoginModal);
-  $("#closeLogin").addEventListener("click",closeLoginModal);
-
-  $("#loginForm").addEventListener("submit",e => {
-    e.preventDefault();
-    loginWithEmail();
-  });
-
-  $("#forgotPassword").addEventListener("click",() => {
-    $("#resetEmail").value = $("#loginEmail").value.trim();
-    $("#resetModal").classList.remove("hidden");
-  });
-
-  $("#closeReset").addEventListener("click",() =>
-    $("#resetModal").classList.add("hidden")
-  );
-
-  $("#backToLogin").addEventListener("click",() => {
-    $("#resetModal").classList.add("hidden");
-    openLoginModal();
-  });
-
-  $("#sendResetEmail").addEventListener("click",sendReset);
-
-  $("#continueGuest").addEventListener(
-    "click",
-    () => {
-      closeLoginModal();
-      openGuestModal();
-    }
-  );
-
-  $("#closeGuest").addEventListener(
-    "click",
-    closeGuestModal
-  );
-
-  $("#startGuest").addEventListener(
-    "click",
-    continueAsGuest
-  );
-
-  $("#guestModal").addEventListener(
-    "click",
-    event => {
-      if (event.target.id === "guestModal") {
-        closeGuestModal();
-      }
-    }
-  );
-
-  $("#googleLogin").addEventListener(
-    "click",
-    () => socialLogin("google")
-  );
-
-  $("#facebookLogin").addEventListener(
-    "click",
-    () => socialLogin("facebook")
-  );
-
-  // Only open signup when the user is NOT already logged in.
-
-  $("#mobileMenu").addEventListener(
-    "click",
-    toggleSidebar
-  );
-
-  document.addEventListener(
-    "click",
-    event => {
-      const sidebar = $("#sidebar");
-      const mobileMenu = $("#mobileMenu");
-      if (
-        sidebar?.classList.contains("open") &&
-        !sidebar.contains(event.target) &&
-        !mobileMenu?.contains(event.target)
-      ) {
-        closeSidebar();
-      }
-    }
-  );
-
-  $("#loginModal").addEventListener("click",e => {
-    if (e.target.id==="loginModal") {
-      closeLoginModal();
-    }
-  });
-
-  $("#resetModal").addEventListener("click",e => {
-    if (e.target.id==="resetModal") {
-      $("#resetModal").classList.add("hidden");
-    }
-  });
-
-  document.addEventListener("keydown",e => {
-    if (e.key==="Escape") {
-      closeLoginModal();
-      $("#resetModal").classList.add("hidden");
-      closeSidebar();
-    }
-  });
-
-  onAuthStateChanged(auth,user => {
-    updateAuthUI(user);
-  });
+  updateProfileUI();
+  updateClock();
 
   const params = new URLSearchParams(window.location.search);
 
-  if (params.get("signup")==="success") {
-    setTimeout(() => {
-      showToast("Account created successfully!");
-      window.history.replaceState(
-        {},
-        document.title,
-        window.location.pathname
-      );
-    },500);
+  if (params.get("signup") === "success") {
+    showToast("Account created successfully!");
+  }
+
+  if (params.get("login") === "success") {
+    showToast("Welcome back to GameHub!");
+  }
+
+  if (params.get("openLogin") === "1") {
+    openModal("loginModal");
+  }
+
+  if (
+    params.has("signup") ||
+    params.has("login") ||
+    params.has("openLogin")
+  ) {
+    window.history.replaceState(
+      {},
+      document.title,
+      window.location.pathname
+    );
   }
 }
 
@@ -863,819 +970,3 @@ if (document.readyState === "loading") {
 } else {
   init();
 }
-
-// ============================================================
-// URL ACTIONS
-// ============================================================
-const pageParams =
-  new URLSearchParams(
-    window.location.search
-  );
-
-if (
-  pageParams.get("openLogin") === "1"
-) {
-  setTimeout(() => {
-    openLoginModal();
-
-    window.history.replaceState(
-      {},
-      document.title,
-      window.location.pathname
-    );
-  }, 150);
-}
-
-if (
-  pageParams.get("login") === "success"
-) {
-  setTimeout(() => {
-    showToast(
-      "Login successful! Welcome to GameHub."
-    );
-
-    window.history.replaceState(
-      {},
-      document.title,
-      window.location.pathname
-    );
-  }, 350);
-}
-/* ===================================
-   REAL TIME SPIDER CLOCK
-=================================== */
-
-function updateSpiderClock() {
-  const now = new Date();
-
-  const seconds = now.getSeconds();
-  const milliseconds = now.getMilliseconds();
-
-  const minutes = now.getMinutes() + seconds / 60;
-  const hours = (now.getHours() % 12) + minutes / 60;
-
-  const secondDegree =
-    (seconds + milliseconds / 1000) * 6;
-
-  const minuteDegree =
-    minutes * 6;
-
-  const hourDegree =
-    hours * 30;
-
-  const hourHand = document.getElementById("hourHand");
-  const minuteHand = document.getElementById("minuteHand");
-  const secondHand = document.getElementById("secondHand");
-
-  if (hourHand) {
-    hourHand.style.transform =
-      `translateX(-50%) rotate(${hourDegree}deg)`;
-  }
-
-  if (minuteHand) {
-    minuteHand.style.transform =
-      `translateX(-50%) rotate(${minuteDegree}deg)`;
-  }
-
-  if (secondHand) {
-    secondHand.style.transform =
-      `translateX(-50%) rotate(${secondDegree}deg)`;
-  }
-
-  requestAnimationFrame(updateSpiderClock);
-}
-
-requestAnimationFrame(updateSpiderClock);
-
-
-/* =====================================================
-   GAMEHUB SPIDER CLOCK
-===================================================== */
-
-(function () {
-
-  /* ================================
-     REAL TIME CLOCK
-  ================================= */
-
-  const hourHand =
-    document.getElementById("ghHour");
-
-  const minuteHand =
-    document.getElementById("ghMinute");
-
-  const secondHand =
-    document.getElementById("ghSecond");
-
-  const spiderOrbit =
-    document.querySelector(".gh-mini-spider-orbit");
-
-  const clockFace =
-    document.querySelector(".gh-clock-face");
-
-  let lastSecondAtTwelve = false;
-
-  function triggerFireBurst() {
-    if (!clockFace) return;
-
-    clockFace.classList.remove("gh-fire-flare");
-
-    void clockFace.offsetWidth;
-
-    clockFace.classList.add("gh-fire-flare");
-
-    clearTimeout(triggerFireBurst.timer);
-
-    triggerFireBurst.timer = setTimeout(() => {
-      clockFace.classList.remove("gh-fire-flare");
-    }, 700);
-  }
-
-
-  function updateSpiderClock() {
-
-    const now = new Date();
-
-    const milliseconds =
-      now.getMilliseconds();
-
-    const seconds =
-      now.getSeconds() +
-      milliseconds / 1000;
-
-    const minutes =
-      now.getMinutes() +
-      seconds / 60;
-
-    const hours =
-      (now.getHours() % 12) +
-      minutes / 60;
-
-
-    const hourDegree =
-      hours * 30;
-
-    const minuteDegree =
-      minutes * 6;
-
-    const secondDegree =
-      seconds * 6;
-
-    const secondCycle =
-      Math.floor(seconds % 60);
-
-    const orbitRadius = 86;
-    const orbitAngle =
-      (seconds * 6 - 90) * (Math.PI / 180);
-
-    const orbitX =
-      Math.cos(orbitAngle) * orbitRadius;
-
-    const orbitY =
-      Math.sin(orbitAngle) * orbitRadius;
-
-    if (spiderOrbit) {
-      spiderOrbit.style.setProperty("--orbit-x", `${orbitX}px`);
-      spiderOrbit.style.setProperty("--orbit-y", `${orbitY}px`);
-      spiderOrbit.style.setProperty("--spider-rot", `${(orbitAngle * 180 / Math.PI) + 90}deg`);
-    }
-
-    if (secondCycle === 0 && !lastSecondAtTwelve) {
-      triggerFireBurst();
-      lastSecondAtTwelve = true;
-    }
-
-    if (secondCycle !== 0) {
-      lastSecondAtTwelve = false;
-    }
-
-
-    if (hourHand) {
-
-      hourHand.style.transform =
-        `translateX(-50%) rotate(${hourDegree}deg)`;
-
-    }
-
-
-    if (minuteHand) {
-
-      minuteHand.style.transform =
-        `translateX(-50%) rotate(${minuteDegree}deg)`;
-
-    }
-
-
-    if (secondHand) {
-
-      secondHand.style.transform =
-        `translateX(-50%) rotate(${secondDegree}deg)`;
-
-    }
-
-
-    requestAnimationFrame(
-      updateSpiderClock
-    );
-
-  }
-
-
-  requestAnimationFrame(
-    updateSpiderClock
-  );
-
-
-
-  /* ================================
-     HORROR ELEMENTS
-  ================================= */
-
-  const clock =
-    document.getElementById(
-      "ghSpiderClock"
-    );
-
-  const horrorLayer =
-    document.getElementById(
-      "ghHorrorLayer"
-    );
-
-  const spiderContainer =
-    document.getElementById(
-      "ghSpiderContainer"
-    );
-
-
-  let horrorActive = false;
-
-  let horrorTimer = null;
-
-  let horrorCountdownTimer = null;
-
-  let audioContext = null;
-
-
-
-  /* ================================
-     HORROR SOUND
-  ================================= */
-
-  function playHorrorSound() {
-
-    try {
-
-      const AudioContext =
-        window.AudioContext ||
-        window.webkitAudioContext;
-
-
-      if (!AudioContext) {
-        return;
-      }
-
-
-      audioContext =
-        audioContext ||
-        new AudioContext();
-
-
-      if (
-        audioContext.state ===
-        "suspended"
-      ) {
-
-        audioContext.resume();
-
-      }
-
-
-      const now =
-        audioContext.currentTime;
-
-
-      /* Deep sound */
-
-      const gain =
-        audioContext.createGain();
-
-
-      gain.gain.setValueAtTime(
-        0.0001,
-        now
-      );
-
-
-      gain.gain.exponentialRampToValueAtTime(
-        0.16,
-        now + 0.08
-      );
-
-
-      gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + 2.5
-      );
-
-
-      gain.connect(
-        audioContext.destination
-      );
-
-
-      const low =
-        audioContext.createOscillator();
-
-
-      low.type =
-        "sawtooth";
-
-
-      low.frequency.setValueAtTime(
-        80,
-        now
-      );
-
-
-      low.frequency.exponentialRampToValueAtTime(
-        30,
-        now + 2
-      );
-
-
-      low.connect(gain);
-
-      low.start(now);
-
-      low.stop(
-        now + 2.5
-      );
-
-
-      /* Creepy high sound */
-
-      const high =
-        audioContext.createOscillator();
-
-
-      const highGain =
-        audioContext.createGain();
-
-
-      high.type =
-        "triangle";
-
-
-      high.frequency.setValueAtTime(
-        420,
-        now
-      );
-
-
-      high.frequency.exponentialRampToValueAtTime(
-        100,
-        now + 1
-      );
-
-
-      highGain.gain.setValueAtTime(
-        0.0001,
-        now
-      );
-
-
-      highGain.gain.exponentialRampToValueAtTime(
-        0.05,
-        now + 0.08
-      );
-
-
-      highGain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + 1.2
-      );
-
-
-      high.connect(highGain);
-
-      highGain.connect(
-        audioContext.destination
-      );
-
-
-      high.start(now);
-
-      high.stop(
-        now + 1.2
-      );
-
-
-    } catch (error) {
-
-      console.log(
-        "Horror sound unavailable"
-      );
-
-    }
-
-  }
-
-
-
-  /* ================================
-     CREATE SPIDER
-  ================================= */
-
-  function createHorrorSpider(
-    direction
-  ) {
-
-    const spider =
-      document.createElement(
-        "div"
-      );
-
-
-    spider.className =
-      "gh-horror-spider";
-
-
-    if (
-      direction ===
-      "top"
-    ) {
-
-      spider.classList.add(
-        "gh-from-top"
-      );
-
-    }
-
-
-    if (
-      direction ===
-      "bottom"
-    ) {
-
-      spider.classList.add(
-        "gh-from-bottom"
-      );
-
-    }
-
-
-    if (
-      direction ===
-      "left"
-    ) {
-
-      spider.classList.add(
-        "gh-from-left"
-      );
-
-    }
-
-
-    if (
-      direction ===
-      "right"
-    ) {
-
-      spider.classList.add(
-        "gh-from-right"
-      );
-
-    }
-
-
-    /* Head */
-
-    const head =
-      document.createElement(
-        "span"
-      );
-
-    head.className =
-      "h-head";
-
-
-    /* Body */
-
-    const body =
-      document.createElement(
-        "span"
-      );
-
-    body.className =
-      "h-body";
-
-
-    /* Eyes */
-
-    const eyeLeft =
-      document.createElement(
-        "span"
-      );
-
-    eyeLeft.className =
-      "h-eye left";
-
-
-    const eyeRight =
-      document.createElement(
-        "span"
-      );
-
-    eyeRight.className =
-      "h-eye right";
-
-
-    spider.appendChild(body);
-
-    spider.appendChild(head);
-
-    spider.appendChild(eyeLeft);
-
-    spider.appendChild(eyeRight);
-
-
-    /* Legs */
-
-    const legNames = [
-      "a",
-      "b",
-      "c",
-      "d",
-      "e",
-      "f",
-      "g",
-      "h"
-    ];
-
-
-    legNames.forEach(
-      function (name) {
-
-        const leg =
-          document.createElement(
-            "i"
-          );
-
-
-        leg.className =
-          "h-leg " + name;
-
-
-        spider.appendChild(
-          leg
-        );
-
-      }
-    );
-
-
-    /* Position */
-
-    if (
-      direction === "top" ||
-      direction === "bottom"
-    ) {
-
-      spider.style.left =
-        (
-          3 +
-          Math.random() * 94
-        ) + "%";
-
-    } else {
-
-      spider.style.top =
-        (
-          4 +
-          Math.random() * 88
-        ) + "%";
-
-    }
-
-
-    if (
-      direction === "top"
-    ) {
-
-      spider.style.top =
-        "-140px";
-
-    }
-
-
-    if (
-      direction === "bottom"
-    ) {
-
-      spider.style.bottom =
-        "-140px";
-
-    }
-
-
-    if (
-      direction === "left"
-    ) {
-
-      spider.style.left =
-        "-140px";
-
-    }
-
-
-    if (
-      direction === "right"
-    ) {
-
-      spider.style.right =
-        "-140px";
-
-    }
-
-
-    /* Random size */
-
-    const size =
-      0.6 +
-      Math.random() * 0.8;
-
-
-    spider.style.zoom =
-      size.toFixed(2);
-
-
-    return spider;
-
-  }
-
-
-
-  /* ================================
-     START 5 SECOND HORROR
-  ================================= */
-
-  function startSpiderHorror() {
-
-    if (horrorActive) {
-      return;
-    }
-
-
-    horrorActive = true;
-
-
-    /* Reset the overlay state */
-
-    spiderContainer.innerHTML =
-      "";
-
-    const countdown =
-      document.getElementById("ghSpiderCountdown");
-
-    const giftSymbol =
-      document.getElementById("ghGiftSymbol");
-
-    const giftSymbols = [
-      "✨",
-      "🎁",
-      "⭐",
-      "💫",
-      "🔑",
-      "🪄"
-    ];
-
-    let secondsLeft = 5;
-
-    if (countdown) {
-      countdown.textContent = secondsLeft;
-    }
-
-    if (giftSymbol) {
-      giftSymbol.textContent =
-        giftSymbols[Math.floor(Math.random() * giftSymbols.length)];
-    }
-
-    clearInterval(
-      horrorCountdownTimer
-    );
-
-    horrorCountdownTimer = setInterval(
-      function () {
-        secondsLeft -= 1;
-
-        if (countdown) {
-          countdown.textContent = Math.max(secondsLeft, 0);
-        }
-      },
-      1000
-    );
-
-
-    /* Show horror screen */
-
-    horrorLayer.classList.add(
-      "gh-active"
-    );
-
-
-    /* Sound */
-
-    playHorrorSound();
-
-
-    /* Exactly 5 seconds */
-
-    clearTimeout(
-      horrorTimer
-    );
-
-
-    horrorTimer =
-      setTimeout(
-        function () {
-
-          horrorLayer.classList.remove(
-            "gh-active"
-          );
-
-
-          spiderContainer.innerHTML =
-            "";
-
-          clearInterval(
-            horrorCountdownTimer
-          );
-
-          if (countdown) {
-            countdown.textContent = "0";
-          }
-
-
-          horrorActive =
-            false;
-
-        },
-        5000
-      );
-
-  }
-
-
-
-  /* ================================
-     CLOCK CLICK
-  ================================= */
-
-  if (clock) {
-
-    clock.addEventListener(
-      "click",
-      startSpiderHorror
-    );
-
-
-    /* Keyboard */
-
-    clock.addEventListener(
-      "keydown",
-      function (event) {
-
-        if (
-          event.key === "Enter" ||
-          event.key === " "
-        ) {
-
-          event.preventDefault();
-
-          startSpiderHorror();
-
-        }
-
-      }
-    );
-
-
-    /* Mobile */
-
-    clock.addEventListener(
-      "touchstart",
-      function (event) {
-
-        event.preventDefault();
-
-        startSpiderHorror();
-
-      },
-      {
-        passive: false
-      }
-    );
-
-  }
-
-})();
