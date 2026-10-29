@@ -1,0 +1,473 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5-Minute Fun | Mini Games</title>
+
+<style>
+*{box-sizing:border-box}
+:root{color-scheme:dark}
+body{
+  margin:0;font-family:Arial,sans-serif;color:#fff;
+  background:linear-gradient(135deg,#0b1024,#17123a,#071c2e);
+  min-height:100vh
+}
+button{cursor:pointer;font-weight:bold;border:0}
+header{
+  padding:18px 5%;display:flex;justify-content:space-between;
+  align-items:center;gap:12px;flex-wrap:wrap;
+  border-bottom:1px solid #ffffff20;background:#090d1dcc
+}
+.logo{font-size:23px;font-weight:900;color:#55f5df}
+.back{
+  color:white;background:#252d49;padding:11px 16px;
+  border-radius:10px;text-decoration:none
+}
+main{max-width:1100px;margin:auto;padding:25px 16px 50px}
+.hero{text-align:center;padding:22px 0 28px}
+.hero h1{font-size:clamp(32px,6vw,52px);margin:8px 0}
+.hero h1 span{color:#55f5df}
+.hero p{color:#c0c8e7;line-height:1.6}
+.game-list{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:15px;margin-bottom:25px
+}
+.game-card{
+  background:#ffffff0c;border:1px solid #ffffff20;
+  padding:20px;border-radius:17px;transition:.2s
+}
+.game-card:hover{transform:translateY(-3px);border-color:#55f5df}
+.game-card .emoji{font-size:34px}
+.game-card h3{margin:12px 0 8px}
+.game-card p{font-size:14px;color:#bdc6e5;line-height:1.5}
+.play-btn,.action-btn{
+  background:#55f5df;color:#081323;padding:12px 16px;
+  border-radius:10px;margin-top:8px
+}
+.play-btn{width:100%}
+.panel{
+  display:none;background:#ffffff0c;border:1px solid #ffffff25;
+  border-radius:20px;padding:22px;min-height:300px
+}
+.panel.active{display:block}
+.panel h2{margin-top:0}
+.status{color:#55f5df;font-weight:bold}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin:15px 0}
+.stat{background:#ffffff12;padding:12px 16px;border-radius:10px}
+.stat strong{display:block;font-size:23px;margin-top:5px}
+#tapArea{
+  height:250px;background:#0a1025;border:1px solid #ffffff22;
+  border-radius:14px;position:relative;overflow:hidden;margin-top:16px
+}
+#target{
+  display:none;position:absolute;width:55px;height:55px;
+  border-radius:50%;background:#ff4e91;color:white;
+  font-size:25px;box-shadow:0 0 25px #ff4e9166
+}
+.big-button{
+  display:block;margin:20px auto;padding:18px 28px;
+  min-width:190px;border-radius:14px;font-size:18px;
+  background:#55f5df;color:#071323
+}
+#reactionButton{background:#f8c84b}
+.math-question,.memory-question{font-size:clamp(30px,7vw,46px);font-weight:bold;text-align:center;margin:28px 0}
+.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:500px;margin:20px auto}
+.answer-btn{
+  padding:16px 8px;border-radius:12px;background:#252d49;color:white;
+  font-size:19px;border:1px solid #ffffff20
+}
+.answer-btn:hover{background:#39476d}
+input{
+  display:block;width:100%;max-width:320px;margin:18px auto;
+  padding:14px;border-radius:10px;border:1px solid #ffffff30;
+  background:#10162e;color:white;font-size:20px;text-align:center
+}
+.message{text-align:center;min-height:26px;color:#55f5df;font-weight:bold}
+.center{text-align:center}
+.hidden{display:none!important}
+footer{text-align:center;color:#8993b6;padding:20px}
+@media(max-width:500px){
+  header{padding:14px}
+  .panel{padding:15px}
+  #tapArea{height:220px}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="logo">⚡ 5-MINUTE FUN</div>
+  <a class="back" href="index.html">← Back to Home</a>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Ready for <span>Quick Fun?</span></h1>
+    <p>Play quick mini-games, beat your score and challenge your brain!</p>
+  </section>
+
+  <section class="game-list" id="gameList">
+    <article class="game-card">
+      <div class="emoji">🎯</div>
+      <h3>Quick Tap Challenge</h3>
+      <p>Tap the moving target as many times as you can in 30 seconds.</p>
+      <button class="play-btn" data-game="tap">Play Now</button>
+    </article>
+
+    <article class="game-card">
+      <div class="emoji">⚡</div>
+      <h3>Reaction Test</h3>
+      <p>Wait for the green signal, then click as fast as possible.</p>
+      <button class="play-btn" data-game="reaction">Play Now</button>
+    </article>
+
+    <article class="game-card">
+      <div class="emoji">🧠</div>
+      <h3>Crazy Math Rush</h3>
+      <p>Answer as many addition questions as you can in 30 seconds.</p>
+      <button class="play-btn" data-game="math">Play Now</button>
+    </article>
+
+    <article class="game-card">
+      <div class="emoji">🔢</div>
+      <h3>Memory Speed Test</h3>
+      <p>Memorize a number, then enter it after it disappears.</p>
+      <button class="play-btn" data-game="memory">Play Now</button>
+    </article>
+  </section>
+
+  <!-- QUICK TAP -->
+  <section class="panel" id="tapPanel">
+    <h2>🎯 Quick Tap Challenge</h2>
+    <div class="stats">
+      <div class="stat">Time<strong id="tapTime">30</strong></div>
+      <div class="stat">Score<strong id="tapScore">0</strong></div>
+      <div class="stat">Best<strong id="tapBest">0</strong></div>
+    </div>
+    <p>Click the pink target before time runs out!</p>
+    <button class="action-btn" id="tapStart">Start Game</button>
+    <div id="tapArea">
+      <button id="target" aria-label="Tap target">●</button>
+    </div>
+    <p class="message" id="tapMessage" aria-live="polite">Press Start Game to begin.</p>
+    <button class="action-btn" data-home>← All Games</button>
+  </section>
+
+  <!-- REACTION TEST -->
+  <section class="panel" id="reactionPanel">
+    <h2>⚡ Reaction Test</h2>
+    <p>Press Start. Wait until the button turns green. Don't click too early!</p>
+    <div class="stats">
+      <div class="stat">Last Reaction<strong id="reactionLast">—</strong></div>
+      <div class="stat">Best<strong id="reactionBest">—</strong></div>
+    </div>
+    <button class="big-button" id="reactionButton">Start Test</button>
+    <p class="message" id="reactionMessage" aria-live="polite">Ready?</p>
+    <button class="action-btn" data-home>← All Games</button>
+  </section>
+
+  <!-- MATH RUSH -->
+  <section class="panel" id="mathPanel">
+    <h2>🧠 Crazy Math Rush</h2>
+    <div class="stats">
+      <div class="stat">Time<strong id="mathTime">30</strong></div>
+      <div class="stat">Score<strong id="mathScore">0</strong></div>
+      <div class="stat">Best<strong id="mathBest">0</strong></div>
+    </div>
+    <div class="math-question" id="mathQuestion">Ready?</div>
+    <div class="answers" id="mathAnswers"></div>
+    <div class="center">
+      <button class="action-btn" id="mathStart">Start Game</button>
+    </div>
+    <p class="message" id="mathMessage" aria-live="polite">Solve as many sums as you can!</p>
+    <button class="action-btn" data-home>← All Games</button>
+  </section>
+
+  <!-- MEMORY TEST -->
+  <section class="panel" id="memoryPanel">
+    <h2>🔢 Memory Speed Test</h2>
+    <div class="stats">
+      <div class="stat">Round<strong id="memoryRound">0</strong></div>
+      <div class="stat">Best Round<strong id="memoryBest">0</strong></div>
+    </div>
+    <div class="memory-question" id="memoryNumber">Ready?</div>
+    <div id="memoryInputArea" class="hidden">
+      <input id="memoryInput" type="number" inputmode="numeric"
+        placeholder="Enter the number" aria-label="Enter remembered number">
+      <div class="center">
+        <button class="action-btn" id="memorySubmit">Submit Answer</button>
+      </div>
+    </div>
+    <div class="center">
+      <button class="action-btn" id="memoryStart">Start Memory Test</button>
+    </div>
+    <p class="message" id="memoryMessage" aria-live="polite">Remember the number before it disappears!</p>
+    <button class="action-btn" data-home>← All Games</button>
+  </section>
+</main>
+
+<footer>5-Minute Fun · Play fair, have fun! 🎮</footer>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+const panels = document.querySelectorAll(".panel");
+let timers = [];
+
+function clearTimers(){
+  timers.forEach(id => {
+    clearInterval(id);
+    clearTimeout(id);
+  });
+  timers = [];
+}
+function later(fn, ms){
+  const id = setTimeout(fn, ms);
+  timers.push(id);
+  return id;
+}
+function every(fn, ms){
+  const id = setInterval(fn, ms);
+  timers.push(id);
+  return id;
+}
+function stopAllGames(){
+  clearTimers();
+  tapRunning = false;
+  mathRunning = false;
+  reactionState = "idle";
+  memoryState = "idle";
+  $("target").style.display = "none";
+  $("reactionButton").style.background = "#f8c84b";
+  $("memoryInputArea").classList.add("hidden");
+  $("memoryInput").disabled = false;
+}
+function openGame(name){
+  stopAllGames();
+  $("gameList").style.display = "none";
+  panels.forEach(panel => panel.classList.remove("active"));
+  $(name + "Panel").classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showHome(){
+  stopAllGames();
+  panels.forEach(panel => panel.classList.remove("active"));
+  $("gameList").style.display = "grid";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll("[data-game]").forEach(button=>{
+  button.addEventListener("click",()=>openGame(button.dataset.game));
+});
+document.querySelectorAll("[data-home]").forEach(button=>{
+  button.addEventListener("click",showHome);
+});
+
+// QUICK TAP
+let tapRunning = false, tapScore = 0, tapTime = 30;
+let tapInterval = null;
+function moveTarget(){
+  const area = $("tapArea"), target = $("target");
+  const maxX = Math.max(0, area.clientWidth - target.offsetWidth);
+  const maxY = Math.max(0, area.clientHeight - target.offsetHeight);
+  target.style.left = Math.floor(Math.random() * (maxX + 1)) + "px";
+  target.style.top = Math.floor(Math.random() * (maxY + 1)) + "px";
+}
+function endTap(){
+  tapRunning = false;
+  clearInterval(tapInterval);
+  $("target").style.display = "none";
+  $("tapMessage").textContent = "Time's up! Your score: " + tapScore;
+  const best = Math.max(tapScore, Number(localStorage.getItem("funTapBest")||0));
+  localStorage.setItem("funTapBest",best);
+  $("tapBest").textContent = best;
+}
+$("tapBest").textContent = localStorage.getItem("funTapBest") || "0";
+$("tapStart").addEventListener("click",()=>{
+  if(tapRunning) return;
+  clearInterval(tapInterval);
+  tapRunning = true; tapScore = 0; tapTime = 30;
+  $("tapScore").textContent = "0";
+  $("tapTime").textContent = "30";
+  $("tapMessage").textContent = "Go! Tap the target!";
+  $("tapStart").textContent = "Restart Game";
+  $("target").style.display = "block";
+  moveTarget();
+  tapInterval = setInterval(()=>{
+    tapTime--;
+    $("tapTime").textContent = tapTime;
+    if(tapTime <= 0) endTap();
+  },1000);
+});
+$("target").addEventListener("click",()=>{
+  if(!tapRunning) return;
+  tapScore++;
+  $("tapScore").textContent = tapScore;
+  moveTarget();
+});
+
+// REACTION TEST
+let reactionState = "idle", reactionStarted = 0, reactionDelay = null;
+let reactionBest = Number(localStorage.getItem("funReactionBest")||0);
+$("reactionBest").textContent = reactionBest ? reactionBest + " ms" : "—";
+$("reactionButton").addEventListener("click",()=>{
+  if(reactionState === "waiting"){
+    clearTimeout(reactionDelay);
+    reactionState = "idle";
+    $("reactionButton").style.background = "#f8c84b";
+    $("reactionButton").textContent = "Try Again";
+    $("reactionMessage").textContent = "Too soon! Wait for green.";
+    return;
+  }
+  if(reactionState === "ready"){
+    const result = Date.now() - reactionStarted;
+    $("reactionLast").textContent = result + " ms";
+    if(!reactionBest || result < reactionBest){
+      reactionBest = result;
+      localStorage.setItem("funReactionBest",reactionBest);
+      $("reactionBest").textContent = reactionBest + " ms";
+    }
+    reactionState = "idle";
+    $("reactionButton").style.background = "#f8c84b";
+    $("reactionButton").textContent = "Try Again";
+    $("reactionMessage").textContent = "Your reaction: " + result + " ms!";
+    return;
+  }
+  clearTimeout(reactionDelay);
+  reactionState = "waiting";
+  $("reactionButton").style.background = "#d64b65";
+  $("reactionButton").textContent = "Wait for Green...";
+  $("reactionMessage").textContent = "Don't click yet!";
+  reactionDelay = setTimeout(()=>{
+    if(reactionState !== "waiting") return;
+    reactionState = "ready";
+    reactionStarted = Date.now();
+    $("reactionButton").style.background = "#24d879";
+    $("reactionButton").textContent = "CLICK NOW!";
+    $("reactionMessage").textContent = "GO!";
+  },1500 + Math.random()*3000);
+});
+
+// CRAZY MATH RUSH
+let mathRunning = false, mathScore = 0, mathTime = 30, mathAnswer = 0;
+let mathInterval = null;
+function makeMathQuestion(){
+  const a = Math.floor(Math.random()*90)+10;
+  const b = Math.floor(Math.random()*90)+10;
+  mathAnswer = a+b;
+  $("mathQuestion").textContent = a + " + " + b + " = ?";
+  const options = new Set([mathAnswer]);
+  while(options.size < 4){
+    let wrong = mathAnswer + Math.floor(Math.random()*31)-15;
+    if(wrong >= 0 && wrong !== mathAnswer) options.add(wrong);
+  }
+  const choices = [...options].sort(()=>Math.random()-.5);
+  $("mathAnswers").replaceChildren();
+  choices.forEach(value=>{
+    const button = document.createElement("button");
+    button.className = "answer-btn";
+    button.textContent = value;
+    button.addEventListener("click",()=>{
+      if(!mathRunning) return;
+      if(value === mathAnswer){
+        mathScore++;
+        $("mathScore").textContent = mathScore;
+        $("mathMessage").textContent = "Correct! +1 point";
+      }else{
+        $("mathMessage").textContent = "Not quite! Keep going.";
+      }
+      makeMathQuestion();
+    });
+    $("mathAnswers").appendChild(button);
+  });
+}
+function endMath(){
+  mathRunning = false;
+  clearInterval(mathInterval);
+  $("mathAnswers").replaceChildren();
+  $("mathQuestion").textContent = "Game Over!";
+  $("mathMessage").textContent = "Final score: " + mathScore;
+  const best = Math.max(mathScore,Number(localStorage.getItem("funMathBest")||0));
+  localStorage.setItem("funMathBest",best);
+  $("mathBest").textContent = best;
+}
+$("mathBest").textContent = localStorage.getItem("funMathBest")||"0";
+$("mathStart").addEventListener("click",()=>{
+  if(mathRunning) return;
+  clearInterval(mathInterval);
+  mathRunning = true; mathScore = 0; mathTime = 30;
+  $("mathScore").textContent = "0";
+  $("mathTime").textContent = "30";
+  $("mathMessage").textContent = "Go! Solve the sums!";
+  makeMathQuestion();
+  mathInterval = setInterval(()=>{
+    mathTime--;
+    $("mathTime").textContent = mathTime;
+    if(mathTime <= 0) endMath();
+  },1000);
+});
+
+// MEMORY SPEED TEST
+let memoryState = "idle", memoryRound = 0, memoryNumber = "";
+let memoryBest = Number(localStorage.getItem("funMemoryBest")||0);
+$("memoryBest").textContent = memoryBest;
+function nextMemoryRound(){
+  memoryState = "showing";
+  memoryRound++;
+  $("memoryRound").textContent = memoryRound;
+  memoryNumber = String(Math.floor(1000 + Math.random()*9000));
+  $("memoryNumber").textContent = memoryNumber;
+  $("memoryInputArea").classList.add("hidden");
+  $("memoryStart").classList.add("hidden");
+  $("memoryMessage").textContent = "Memorize it!";
+  later(()=>{
+    if(memoryState !== "showing") return;
+    $("memoryNumber").textContent = "???";
+    $("memoryInputArea").classList.remove("hidden");
+    $("memoryInput").value = "";
+    $("memoryInput").focus();
+    memoryState = "answering";
+    $("memoryMessage").textContent = "Enter the number you saw.";
+  },1800);
+}
+function finishMemory(correct){
+  if(memoryState !== "answering") return;
+  memoryState = "idle";
+  if(correct){
+    memoryBest = Math.max(memoryBest,memoryRound);
+    localStorage.setItem("funMemoryBest",memoryBest);
+    $("memoryBest").textContent = memoryBest;
+    $("memoryNumber").textContent = "Correct! 🎉";
+    $("memoryMessage").textContent = "Great memory! Next round gets harder.";
+    $("memoryInputArea").classList.add("hidden");
+    later(()=>{
+      if(!$("memoryPanel").classList.contains("active")) return;
+      nextMemoryRound();
+    },900);
+  }else{
+    $("memoryNumber").textContent = memoryNumber;
+    $("memoryMessage").textContent = "Game over! You reached round " + memoryRound + ".";
+    $("memoryInputArea").classList.add("hidden");
+    $("memoryStart").classList.remove("hidden");
+    $("memoryStart").textContent = "Try Again";
+  }
+}
+$("memoryBest").textContent = memoryBest;
+$("memoryStart").addEventListener("click",()=>{
+  if(memoryState === "showing" || memoryState === "answering") return;
+  clearTimers();
+  memoryRound = 0;
+  $("memoryRound").textContent = "0";
+  nextMemoryRound();
+});
+$("memorySubmit").addEventListener("click",()=>{
+  finishMemory($("memoryInput").value.trim() === memoryNumber);
+});
+$("memoryInput").addEventListener("keydown",event=>{
+  if(event.key === "Enter") $("memorySubmit").click();
+});
+</script>
+</body>
+</html>
