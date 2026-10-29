@@ -1,394 +1,338 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-EBBQQB06WH"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-EBBQQB06WH');
-</script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="A professional free-to-play gaming portal." />
-  <title>GameHub — Play Free Games</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10111b">
+  <meta name="description" content="Play free online games, brain games, arcade games and fun mini-games.">
+  <title>GameHub - Play Free Online Games</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <div class="app-shell">
+  <div class="app-layout">
+
+    <!-- SIDEBAR -->
     <aside class="sidebar" id="sidebar">
-      <div class="brand-row">
-        <a class="brand" href="#" data-home>
-          <span class="brand-mark">G</span>
-          <span class="brand-name">GameHub</span>
+      <a href="index.html" class="logo">
+        <span class="logo-icon">🎮</span>
+        <span>GameHub</span>
+      </a>
+
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-section="home">🏠 Home</button>
+        <button class="nav-item" data-section="all">🎮 All Games</button>
+        <button class="nav-item" data-section="recent">🕒 Recently Played</button>
+        <button class="nav-item" data-section="new">✨ New Games</button>
+        <button class="nav-item" data-section="popular">🔥 Popular Games</button>
+        <button class="nav-item" data-section="updated">🔄 Updated</button>
+        <button class="nav-item" data-section="originals">⭐ Originals</button>
+        <button class="nav-item" data-section="multiplayer">👥 Multiplayer</button>
+        <button class="nav-item" data-section="leaderboards">🏆 Leaderboards</button>
+      </nav>
+
+      <div class="sidebar-divider"></div>
+
+      <h3 class="sidebar-heading">CATEGORIES</h3>
+      <nav class="category-nav" aria-label="Game categories">
+        <button class="category-item" data-category="Action">⚔️ Action</button>
+        <button class="category-item" data-category="Adventure">🗺️ Adventure</button>
+        <button class="category-item" data-category="Arcade">🕹️ Arcade</button>
+        <button class="category-item" data-category="Board">♟️ Board</button>
+        <button class="category-item" data-category="Card">🃏 Card</button>
+        <button class="category-item" data-category="Clicker">👆 Clicker</button>
+        <button class="category-item" data-category="Driving">🏎️ Driving</button>
+        <button class="category-item" data-category=".io">🌐 .io</button>
+        <button class="category-item" data-category="Puzzle">🧩 Puzzle</button>
+        <button class="category-item" data-category="Shooting">🎯 Shooting</button>
+        <button class="category-item" data-category="Simulation">🏙️ Simulation</button>
+        <button class="category-item" data-category="Sports">⚽ Sports</button>
+        <button class="category-item" data-category="Strategy">♟️ Strategy</button>
+        <button class="category-item" data-category="Trivia">❓ Trivia</button>
+        <button class="category-item" data-category="Word">🔤 Word</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <a href="5-Miniute Fun.html" class="sidebar-fun-link">
+          🎉 5-Minute Fun
         </a>
-
-        <button class="menu-dots" type="button" aria-label="Open menu options" title="Menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+        <p>GameHub © 2026</p>
       </div>
-
-      <nav class="nav-main" aria-label="Main navigation">
-        <button class="nav-item active" data-section="home"><span>⌂</span> Home</button>
-        <button class="nav-item" data-section="all"><span>▦</span> All games</button>
-        <button class="nav-item" data-section="recent"><span>◷</span> Recently played</button>
-        <button class="nav-item" data-section="new"><span>✦</span> New</button>
-        <button class="nav-item" data-section="popular"><span>🔥</span> Popular Games</button>
-        <button class="nav-item" data-section="updated"><span>↻</span> Updated</button>
-        <button class="nav-item" data-section="originals"><span>◈</span> Originals</button>
-        <button class="nav-item" data-section="multiplayer"><span>♟</span> Multiplayer</button>
-        <button class="nav-item" data-section="leaderboards"><span>🏆</span> Leaderboards</button>
-      </nav>
-
-      <div class="nav-divider"></div>
-
-      <div class="category-title">CATEGORIES</div>
-      <nav class="nav-categories" aria-label="Categories">
-        <button class="category-item" data-category="Action">⚡ <span>Action</span></button>
-        <button class="category-item" data-category="Adventure">◉ <span>Adventure</span></button>
-        <button class="category-item" data-category="Arcade">♟ <span>Arcade</span></button>
-        <button class="category-item" data-category="Board">♜ <span>Board</span></button>
-        <button class="category-item" data-category="Card">▣ <span>Card</span></button>
-        <button class="category-item" data-category="Clicker">◉ <span>Clicker</span></button>
-        <button class="category-item" data-category="Driving">◍ <span>Driving</span></button>
-        <button class="category-item" data-category="io">● <span>.io</span></button>
-        <button class="category-item" data-category="Puzzle">🧩 <span>Puzzle</span></button>
-        <button class="category-item" data-category="Shooting">⌖ <span>Shooting</span></button>
-        <button class="category-item" data-category="Simulation">◒ <span>Simulation</span></button>
-        <button class="category-item" data-category="Sports">⚽ <span>Sports</span></button>
-        <button class="category-item" data-category="Strategy">♟ <span>Strategy</span></button>
-        <button class="category-item" data-category="Trivia">? <span>Trivia</span></button>
-        <button class="category-item" data-category="Word">W <span>Word</span></button>
-      </nav>
-
-      <div class="sidebar-footer">© 2027 GameHub</div>
     </aside>
 
-    <main class="content">
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+      <!-- TOP BAR -->
       <header class="topbar">
-        <button class="mobile-menu" id="mobileMenu" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
-        <a class="mobile-brand" href="#" data-home><span class="brand-mark">G</span> GameHub</a>
+        <button id="menuToggle" class="icon-btn" type="button"
+          aria-label="Toggle menu">☰</button>
 
-        <div class="search-wrap">
-          <span class="search-icon">⌕</span>
-          <input id="searchInput" type="search" placeholder="Search..." autocomplete="off" />
-        </div>
+        <form id="searchForm" class="search-box" role="search">
+          <span>🔎</span>
+          <input id="searchInput" type="search"
+            placeholder="Search games..." autocomplete="off">
+          <button type="submit">Search</button>
+        </form>
 
-        <div class="auth-area">
-          <button class="guest-pill" id="guestStatus">Guest</button>
-          <button class="login-btn" id="openLogin">Login</button>
-
-          <div class="user-menu-wrap hidden" id="userMenu">
-            <button class="simple-user-logo" id="avatarButton" type="button" title="Open profile">
-              <span id="avatarText">G</span>
-            </button>
-
-            <div class="profile-panel hidden" id="profilePanel" aria-live="polite">
-              <div class="profile-header">
-                <div class="profile-avatar" id="profileAvatar">G</div>
-                <div>
-                  <div class="profile-name" id="profileName">Guest</div>
-                  <div class="profile-role" id="profileRole">Guest account</div>
-                </div>
-              </div>
-
-              <label class="profile-label" for="profileAbout">About</label>
-              <textarea id="profileAbout" rows="3" maxlength="220" placeholder="Write a short intro about yourself..."></textarea>
-
-              <label class="profile-label" for="profileGender">Gender</label>
-              <select id="profileGender" class="profile-field-input">
-                <option value="">Select gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-                <option value="Prefer not to say">Prefer not to say</option>
-              </select>
-
-              <label class="profile-label" for="profileFavoriteGame">Favorite game</label>
-              <input id="profileFavoriteGame" class="profile-field-input" type="text" maxlength="40" placeholder="Your favorite game" />
-
-              <label class="profile-label" for="profileOccupation">What do you do?</label>
-              <input id="profileOccupation" class="profile-field-input" type="text" maxlength="60" placeholder="School / College / Job / Other" />
-
-              <label class="profile-label" for="profileDob">Date of birth</label>
-              <input id="profileDob" class="profile-field-input" type="date" />
-
-              <div class="profile-progress-wrap">
-                <div class="profile-progress-header">
-                  <span>Profile complete</span>
-                  <strong id="profilePercent">0%</strong>
-                </div>
-                <div class="profile-progress-bar">
-                  <span id="profileBar"></span>
-                </div>
-              </div>
-
-              <div class="profile-actions">
-                <button class="close-btn" id="closeProfileBtn" type="button">Close</button>
-                <button class="logout-btn" id="logoutBtn" type="button">Log out</button>
-              </div>
-            </div>
-          </div>
+        <div class="topbar-actions">
+          <button id="loginButton" class="secondary-btn" type="button">
+            Log In
+          </button>
+          <button id="signupButton" class="primary-btn" type="button">
+            Sign Up
+          </button>
+          <div id="authArea"></div>
         </div>
       </header>
 
+      <!-- HOME SECTION -->
+      <section class="page-section active" id="homeSection">
+        <section class="hero-section">
+          <div class="hero-content">
+            <span class="eyebrow">WELCOME TO GAMEHUB</span>
+            <h1>Play More.<br><span>Have More Fun.</span></h1>
+            <p>Discover free games, challenge your brain and beat your best score.</p>
+            <div class="hero-actions">
+              <button class="primary-btn" type="button"
+                data-section="all">Explore Games</button>
+              <a href="5-Miniute Fun.html" class="secondary-btn">
+                Try 5-Minute Fun
+              </a>
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">🎮</div>
+        </section>
 
-<!-- =========================
-     ANIMATED SPIDER CLOCK
-========================= -->
+        <!-- SPIDER CLOCK -->
+        <section class="spider-clock-section">
+          <div class="spider-clock-card">
+            <div class="spider-clock-info">
+              <span class="eyebrow">TIME FOR FUN</span>
+              <h2>Spider Clock</h2>
+              <p>Touch the clock and see what happens!</p>
+            </div>
+            <button id="spiderClock" class="spider-clock"
+              type="button" aria-label="Activate Spider Clock">
+              <span class="clock-number clock-12">12</span>
+              <span class="clock-number clock-3">3</span>
+              <span class="clock-number clock-6">6</span>
+              <span class="clock-number clock-9">9</span>
+              <span id="ghHour" class="clock-hand hour-hand"></span>
+              <span id="ghMinute" class="clock-hand minute-hand"></span>
+              <span id="ghSecond" class="clock-hand second-hand"></span>
+              <span class="clock-center"></span>
+            </button>
+          </div>
+        </section>
 
-<div id="ghSpiderClockWrap">
-  <div id="ghSpiderClock"
-       class="gh-spider-clock"
-       tabindex="0"
-       role="button"
-       aria-label="Animated Spider Clock">
+        <!-- FEATURED -->
+        <section class="games-section" id="featuredSection">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">HAND-PICKED FOR YOU</span>
+              <h2>Featured Games</h2>
+            </div>
+            <button class="text-btn" type="button" data-section="all">
+              View All →
+            </button>
+          </div>
+          <div class="games-grid" id="featuredGrid"></div>
+        </section>
 
-    <div class="gh-clock-web" aria-hidden="true">
-      <div class="gh-spiderman-bg">
-        <span class="gh-spiderman-eye gh-eye-left"></span>
-        <span class="gh-spiderman-eye gh-eye-right"></span>
-      </div>
-    </div>
+        <!-- RECENT -->
+        <section class="games-section" id="recentSection">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">CONTINUE PLAYING</span>
+              <h2>Recently Played</h2>
+            </div>
+          </div>
+          <div class="games-grid" id="recentGrid"></div>
+          <p id="recentEmpty" class="empty-message">
+            Your recently played games will appear here.
+          </p>
+        </section>
 
-    <div class="gh-clock-face">
-
-      <span class="gh-num gh-n12">12</span>
-      <span class="gh-num gh-n1">1</span>
-      <span class="gh-num gh-n2">2</span>
-      <span class="gh-num gh-n3">3</span>
-      <span class="gh-num gh-n4">4</span>
-      <span class="gh-num gh-n5">5</span>
-      <span class="gh-num gh-n6">6</span>
-      <span class="gh-num gh-n7">7</span>
-      <span class="gh-num gh-n8">8</span>
-      <span class="gh-num gh-n9">9</span>
-      <span class="gh-num gh-n10">10</span>
-      <span class="gh-num gh-n11">11</span>
-
-      <i class="gh-tick gh-t1"></i>
-      <i class="gh-tick gh-t2"></i>
-      <i class="gh-tick gh-t4"></i>
-      <i class="gh-tick gh-t5"></i>
-      <i class="gh-tick gh-t7"></i>
-      <i class="gh-tick gh-t8"></i>
-      <i class="gh-tick gh-t10"></i>
-      <i class="gh-tick gh-t11"></i>
-
-      <div id="ghHour" class="gh-hand gh-hour"></div>
-      <div id="ghMinute" class="gh-hand gh-minute"></div>
-      <div id="ghSecond" class="gh-hand gh-second"></div>
-
-      <div class="gh-center"></div>
-
-      <div class="gh-fire-burst" aria-hidden="true"></div>
-
-    </div>
-  </div>
-</div>
-
-<!-- Horror Screen -->
-
-<div id="ghHorrorLayer">
-  <div class="gh-horror-web gh-web-left"></div>
-  <div class="gh-horror-web gh-web-right"></div>
-
-  <div class="gh-horror-title">
-    DON'T LOOK AWAY...
-  </div>
-
-  <div class="gh-spiderman-stage">
-    <div class="gh-spiderman-character" aria-label="Spider-Man">
-      <div class="gh-spiderman-mask">
-        <span class="gh-mask-eye gh-mask-eye-left"></span>
-        <span class="gh-mask-eye gh-mask-eye-right"></span>
-      </div>
-      <div class="gh-spiderman-chest">
-        <span class="gh-chest-spider">✦</span>
-      </div>
-    </div>
-    <div class="gh-gift-box" aria-label="Opening gift box">
-      <div class="gh-gift-lid"></div>
-      <div class="gh-gift-ribbon gh-ribbon-vertical"></div>
-      <div class="gh-gift-ribbon gh-ribbon-horizontal"></div>
-      <div class="gh-blue-helper" aria-label="Blue robot cat">
-        <span class="gh-helper-ear gh-helper-ear-left"></span>
-        <span class="gh-helper-ear gh-helper-ear-right"></span>
-        <span class="gh-helper-eye gh-helper-eye-left"></span>
-        <span class="gh-helper-eye gh-helper-eye-right"></span>
-        <span class="gh-helper-bell"></span>
-      </div>
-    </div>
-    <div id="ghGiftSymbol" class="gh-gift-symbol" aria-hidden="true">✨</div>
-    <div id="ghSpiderCountdown" class="gh-spider-countdown" aria-live="polite">5</div>
-  </div>
-
-  <div id="ghSpiderContainer"></div>
-</div>
-
-      <section class="hero-strip">
-        <div class="hero-card hero-a">
-          <div class="hero-copy"><span class="hero-icon">🧠</span><div><strong>Train your brain</strong><small>Quick puzzles & challenges</small></div></div>
-        </div>
-        <div class="hero-card hero-b">
-          <div class="hero-copy"><span class="hero-icon">🏎️</span><div><strong>Adrenaline rush</strong><small>Speed, race & action</small></div></div>
-        </div>
-        <div class="hero-card hero-c">
-          <div class="hero-copy"><span class="hero-icon">🎉</span><div><strong>With friends</strong><small>Multiplayer fun</small></div></div>
-        </div>
-        <a class="hero-card hero-d" href="5-Miniute Fun.html" target="_blank" rel="noopener noreferrer">
-          <div class="hero-copy"><span class="hero-icon">☕</span><div><strong>5-minute fun</strong><small>Perfect for breaks</small></div></div>
-        </a>
-        <div class="hero-card hero-e">
-          <div class="hero-copy"><span class="hero-icon">🕹️</span><div><strong>Meme & arcade</strong><small>Easy to pick up</small></div></div>
-        </div>
+        <!-- ALL GAMES -->
+        <section class="games-section" id="allSection">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">YOUR NEXT ADVENTURE</span>
+              <h2>All Games</h2>
+            </div>
+            <span id="allGameCount" class="game-count"></span>
+          </div>
+          <div class="games-grid" id="allGrid"></div>
+          <p id="allEmpty" class="empty-message" hidden>
+            No games found.
+          </p>
+        </section>
       </section>
 
-      <div class="page-title-row">
-        <div>
-          <div class="eyebrow">PLAY FREE</div>
-          <h1 id="pageTitle">Our games</h1>
-        </div>
-        <div class="results-note" id="resultsNote">15 games</div>
-      </div>
-
-      <section id="featuredSection" class="game-section">
+      <!-- CATEGORY SECTION -->
+      <section class="page-section" id="categorySection" hidden>
         <div class="section-heading">
-          <h2>Play now</h2>
-          <button class="text-link" data-section="all">All games <span>›</span></button>
+          <div>
+            <span class="eyebrow">EXPLORE BY CATEGORY</span>
+            <h1 id="categoryTitle">Games</h1>
+          </div>
+          <button class="secondary-btn" type="button" data-section="home">
+            ← Home
+          </button>
         </div>
-        <div class="featured-grid" id="featuredGrid"></div>
+        <div class="games-grid" id="categoryGrid"></div>
+        <p id="categoryEmpty" class="empty-message" hidden>
+          No games in this category yet.
+        </p>
       </section>
 
-      <section id="recentSection" class="game-section hidden">
-        <div class="section-heading"><h2>Recently played</h2></div>
-        <div class="games-grid" id="recentGrid"></div>
-        <div class="empty-state hidden" id="recentEmpty">Play a game once and it will appear here.</div>
-      </section>
-
-      <section id="allSection" class="game-section hidden">
-        <div class="section-heading"><h2>All games</h2></div>
-        <div class="games-grid" id="allGrid"></div>
-      </section>
-
-      <section id="searchSection" class="game-section hidden">
-        <div class="section-heading"><h2>Search results</h2></div>
+      <!-- SEARCH SECTION -->
+      <section class="page-section" id="searchSection" hidden>
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">FIND YOUR NEXT GAME</span>
+            <h1 id="searchTitle">Search Results</h1>
+          </div>
+          <button class="secondary-btn" type="button" data-section="home">
+            ← Home
+          </button>
+        </div>
         <div class="games-grid" id="searchGrid"></div>
-        <div class="empty-state hidden" id="searchEmpty">No games found. Try another search.</div>
+        <p id="searchEmpty" class="empty-message" hidden>
+          No matching games found. Try another search.
+        </p>
       </section>
 
+      <!-- OTHER GAME LISTS -->
+      <section class="page-section" id="newSection" hidden>
+        <div class="section-heading"><h1>✨ New Games</h1></div>
+        <div class="games-grid" id="newGrid"></div>
+      </section>
+
+      <section class="page-section" id="popularSection" hidden>
+        <div class="section-heading"><h1>🔥 Popular Games</h1></div>
+        <div class="games-grid" id="popularGrid"></div>
+      </section>
+
+      <section class="page-section" id="updatedSection" hidden>
+        <div class="section-heading"><h1>🔄 Updated Games</h1></div>
+        <div class="games-grid" id="updatedGrid"></div>
+      </section>
+
+      <section class="page-section" id="originalsSection" hidden>
+        <div class="section-heading"><h1>⭐ GameHub Originals</h1></div>
+        <div class="games-grid" id="originalsGrid"></div>
+      </section>
+
+      <section class="page-section" id="multiplayerSection" hidden>
+        <div class="section-heading"><h1>👥 Multiplayer Games</h1></div>
+        <div class="games-grid" id="multiplayerGrid"></div>
+      </section>
+
+      <section class="page-section" id="leaderboardsSection" hidden>
+        <div class="section-heading"><h1>🏆 Leaderboards</h1></div>
+        <div id="leaderboardsContent">
+          <p>Game scores will appear here when leaderboard support is configured.</p>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
       <footer class="site-footer">
-        <span>GameHub</span>
-        <span>Free-to-play portal • Build your games here</span>
+        <a href="index.html" class="logo">🎮 GameHub</a>
+        <p>Play free games. Learn, compete and have fun.</p>
+        <a href="5-Miniute Fun.html">5-Minute Fun</a>
       </footer>
     </main>
   </div>
 
-  <!-- Login Modal -->
-  <div class="modal-backdrop hidden" id="loginModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-      <button class="modal-close" id="closeLogin" aria-label="Close">×</button>
-      <div class="modal-logo"><span class="brand-mark">G</span></div>
-      <h2 id="loginTitle">Login to GameHub</h2>
-      <p class="modal-subtitle">Login to save your games, scores and progress.</p>
-
+  <!-- LOGIN MODAL -->
+  <div class="modal-overlay" id="loginModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true"
+      aria-labelledby="loginTitle">
+      <button class="modal-close" type="button" data-close-modal
+        aria-label="Close">×</button>
+      <h2 id="loginTitle">Welcome Back!</h2>
+      <p>Log in to your GameHub account.</p>
       <form id="loginForm">
-        <label class="form-label" for="loginEmail">Email</label>
-        <input class="form-input" id="loginEmail" type="email" placeholder="you@gmail.com" autocomplete="email" required>
-
-        <label class="form-label" for="loginPassword">Password</label>
-        <input class="form-input" id="loginPassword" type="password" placeholder="Your password" autocomplete="current-password" required>
-
-        <button class="forgot-btn hidden" id="forgotPassword" type="button">
-          Forgot password?
-        </button>
-
-        <button class="primary-form-btn" type="submit">Login</button>
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" name="email" type="email"
+          autocomplete="email" required>
+        <label for="loginPassword">Password</label>
+        <input id="loginPassword" name="password" type="password"
+          autocomplete="current-password" required>
+        <button class="primary-btn" type="submit">Log In</button>
       </form>
-
-      <div class="or-divider"><span>or</span></div>
-
-      <button class="oauth-btn google" id="googleLogin" type="button"><span class="oauth-icon">G</span>Continue with Google</button>
-      <button class="oauth-btn facebook" id="facebookLogin" type="button"><span class="oauth-icon">f</span>Continue with Facebook</button>
-
-      <div class="guest-box">
-        <div><strong>Play as Guest</strong><span>No account needed. Progress is saved on this device.</span></div>
-        <button class="secondary-btn" id="continueGuest" type="button">Continue</button>
-      </div>
-
-      <div class="signup-bottom"><span>Don't have an account?</span><a href="signup.html" class="signup-link">Sign up</a></div>
-    </div>
-  </div>
-
-
-  <div class="modal-backdrop hidden" id="resetModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="resetTitle">
-      <button class="modal-close" id="closeReset" aria-label="Close">×</button>
-
-      <div class="modal-logo"><span class="brand-mark">G</span></div>
-
-      <h2 id="resetTitle">Reset password</h2>
-
-      <p class="modal-subtitle">
-        Enter the Gmail/email used for your GameHub account.
-        We'll send a secure password reset email.
-      </p>
-
-      <label class="form-label" for="resetEmail">Email</label>
-      <input class="form-input" id="resetEmail" type="email" placeholder="you@gmail.com" autocomplete="email">
-
-      <button class="primary-form-btn" id="sendResetEmail" type="button">
-        Send reset email
+      <button id="forgotPasswordButton" class="text-btn" type="button">
+        Forgot Password?
       </button>
-
-      <div class="signup-bottom">
-        <button id="backToLogin" type="button">Back to Login</button>
+      <div class="social-login">
+        <button id="googleLoginButton" type="button">Continue with Google</button>
+        <button id="facebookLoginButton" type="button">Continue with Facebook</button>
       </div>
-
-      <div class="login-note">
-        Firebase's standard reset flow uses a secure email link, not a 6-digit OTP.
-      </div>
-    </div>
-  </div>
-
-  <!-- Guest Profile -->
-  <div class="modal-backdrop hidden" id="guestModal">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="guestTitle">
-      <button class="modal-close" id="closeGuest" aria-label="Close">×</button>
-
-      <div class="modal-logo"><span class="brand-mark">G</span></div>
-
-      <h2 id="guestTitle">Play as Guest</h2>
-      <p class="modal-subtitle">
-        Enter your name and date of birth. No account or password is needed.
+      <p>Don't have an account?
+        <a href="signup.html">Sign Up</a>
       </p>
-
-      <label class="form-label" for="guestName">Your name</label>
-      <input class="form-input" id="guestName" type="text" maxlength="40" placeholder="Your name" autocomplete="name">
-
-      <label class="form-label" for="guestDob">Date of birth</label>
-      <input class="form-input" id="guestDob" type="date" autocomplete="bday">
-
-      <button class="primary-form-btn" id="startGuest" type="button">
+      <button id="guestLoginButton" class="secondary-btn" type="button">
         Continue as Guest
       </button>
-
-      <div class="login-note">
-        Your guest name and birth date are saved only on this device. No login is required.
-      </div>
     </div>
   </div>
 
+  <!-- GUEST PROFILE MODAL -->
+  <div class="modal-overlay" id="guestProfileModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <button class="modal-close" type="button" data-close-modal
+        aria-label="Close">×</button>
+      <h2>Guest Profile</h2>
+      <label for="guestName">Your nickname</label>
+      <input id="guestName" type="text" maxlength="24"
+        placeholder="Enter a nickname">
+      <button id="saveGuestProfile" class="primary-btn" type="button">
+        Save Profile
+      </button>
+    </div>
+  </div>
 
-  <div class="toast hidden" id="toast"></div>
+  <!-- RESET PASSWORD MODAL -->
+  <div class="modal-overlay" id="resetPasswordModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <button class="modal-close" type="button" data-close-modal
+        aria-label="Close">×</button>
+      <h2>Reset Password</h2>
+      <form id="resetPasswordForm">
+        <label for="resetEmail">Account email</label>
+        <input id="resetEmail" type="email" required>
+        <button class="primary-btn" type="submit">Send Reset Email</button>
+      </form>
+    </div>
+  </div>
 
+  <!-- PROFILE PANEL -->
+  <div class="profile-panel" id="profilePanel" hidden>
+    <button class="modal-close" type="button" data-close-profile
+      aria-label="Close profile">×</button>
+    <div id="profileAvatar">👤</div>
+    <h2 id="profileName">Player</h2>
+    <p id="profileEmail"></p>
+    <p id="profileAbout">GameHub Player</p>
+    <button id="editProfileButton" type="button">Edit Profile</button>
+    <button id="logoutButton" type="button">Log Out</button>
+  </div>
+
+  <!-- SPIDER CLOCK EFFECT OVERLAY -->
+  <div id="ghHorrorLayer" class="horror-overlay" hidden>
+    <div id="ghSpiderContainer" class="spider-container"></div>
+    <button id="closeHorrorEffect" type="button"
+      aria-label="Close effect">×</button>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div id="toastContainer" class="toast-container"
+    aria-live="polite" aria-atomic="true"></div>
+
+  <!-- EXISTING JAVASCRIPT -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
